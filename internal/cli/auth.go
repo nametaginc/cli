@@ -78,7 +78,7 @@ func GetAPIConfiguration(cmd *cobra.Command) (server string, authToken string, e
 	if err != nil {
 		return "", "", err
 	}
-	return authToken, server, nil
+	return server, authToken, nil
 }
 
 func NewAPIClient(cmd *cobra.Command) (*api.ClientWithResponses, error) {
