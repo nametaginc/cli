@@ -11,8 +11,9 @@ package cli
 
 import (
 	_ "embed"
-	"github.com/spf13/cobra"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 //go:embed "VERSION"
