@@ -22,10 +22,10 @@ brews:
     directory: Formula
     caveats: "See https://getnametag.com/docs/cli"
     homepage: "https://getnametag.com"
-    description: "Nametag command line tool"
-    license: "Apache"
+    description: "Command-line tool for Nametag"
+    license: "Apache-2.0"
     test: |
-      system "#{bin}/nametag --version"
+      system "#{bin}/nametag", "--version"
     repository:
       owner: nametaginc
       name: homebrew-nametag

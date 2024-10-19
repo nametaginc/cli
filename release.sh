@@ -46,7 +46,7 @@ rm internal/cli/server_non_prod.go
 # tests depend on lots of internal things e.g. datatest, expect,
 # etc, so we can't have them in the open source. :(
 find . -name \*_test.go -type f -exec rm {} \;
-find . -type d -name testdata | xargs rm -rf 
+find . -type d -name testdata | xargs rm -rf
 
 # fix imports
 find . -name \*.go -type f -exec sed -i.bak 's|nametaginc/nt/cli|nametaginc/cli|g' {} \;
@@ -84,5 +84,5 @@ git push --tags
 
 # make a release
 (
-	GITHUB_TOKEN=$(gh auth token) go run github.com/goreleaser/goreleaser/v2@latest release
+	GITHUB_TOKEN=$(gh auth token) go run github.com/goreleaser/goreleaser/v2@latest release --clean
 )
