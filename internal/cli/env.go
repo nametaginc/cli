@@ -1,11 +1,16 @@
 // Copyright 2024 Nametag Inc.
 //
-// All information contained herein is the property of Nametag Inc.. The
-// intellectual and technical concepts contained herein are proprietary, trade
-// secrets, and/or confidential to Nametag, Inc. and may be covered by U.S.
-// and Foreign Patents, patents in process, and are protected by trade secret or
-// copyright law. Reproduction or distribution, in whole or in part, is
-// forbidden except by express written permission of Nametag, Inc.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package cli
 
@@ -18,13 +23,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Env = subcmd(Root, &cobra.Command{
+var envCmd = subcmd(Root, &cobra.Command{
 	Use:     "env",
 	Aliases: []string{"environment", "environments", "envs"},
 	Short:   "Commands for working with environments",
 })
 
-var _ = subcmd(Env, &cobra.Command{
+var _ = subcmd(envCmd, &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "list environments",
@@ -46,6 +51,7 @@ var _ = subcmd(Env, &cobra.Command{
 
 		tbl := table.New("ID", "Name", "Public Name")
 		tbl.
+			WithWriter(cmd.OutOrStdout()).
 			WithHeaderFormatter(headerFmt).
 			WithFirstColumnFormatter(columnFmt)
 		for _, env := range lo.FromPtr(resp.JSON200).Envs {
@@ -56,7 +62,7 @@ var _ = subcmd(Env, &cobra.Command{
 	},
 })
 
-var _ = subcmd(Env, &cobra.Command{
+var _ = subcmd(envCmd, &cobra.Command{
 	Use:   "get [env]",
 	Short: "show an environment",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -72,10 +78,10 @@ var _ = subcmd(Env, &cobra.Command{
 			return fmt.Errorf("%s", resp.Status())
 		}
 
-		fmt.Printf("ID: %s\n", resp.JSON200.ID)
-		fmt.Printf("Name: %s\n", resp.JSON200.Name)
-		fmt.Printf("PublicName: %s\n", resp.JSON200.PublicName)
-		fmt.Printf("LogoURL: %s\n", resp.JSON200.LogoURL)
+		fmt.Fprintf(cmd.OutOrStdout(), "ID: %s\n", resp.JSON200.ID)
+		fmt.Fprintf(cmd.OutOrStdout(), "Name: %s\n", resp.JSON200.Name)
+		fmt.Fprintf(cmd.OutOrStdout(), "PublicName: %s\n", resp.JSON200.PublicName)
+		fmt.Fprintf(cmd.OutOrStdout(), "LogoURL: %s\n", resp.JSON200.LogoURL)
 		return nil
 	},
 })

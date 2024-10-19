@@ -47,7 +47,6 @@ const (
 // Defines values for DirectoryKind.
 const (
 	DirectoryKindAzureAD  DirectoryKind = "azure-ad"
-	DirectoryKindCustom   DirectoryKind = "custom"
 	DirectoryKindDuo      DirectoryKind = "duo"
 	DirectoryKindOkta     DirectoryKind = "okta"
 	DirectoryKindOnelogin DirectoryKind = "onelogin"
@@ -457,8 +456,6 @@ type CreateDirectoryRequest struct {
 
 // CreateDirectoryResponse defines model for CreateDirectoryResponse.
 type CreateDirectoryResponse struct {
-	CustomAuthToken *string `json:"custom_auth_token,omitempty"`
-
 	// ID The unique identifier for the directory.
 	ID string `json:"id"`
 

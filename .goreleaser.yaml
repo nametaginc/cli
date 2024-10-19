@@ -13,6 +13,24 @@ builds:
       - windows
       - darwin
 
+brews:
+  - name: nametag
+    commit_author:
+      name: Nametag Devops
+      email: devops@nametag.co
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    directory: Formula
+    caveats: "See https://getnametag.com/docs/cli"
+    homepage: "https://getnametag.com"
+    description: "Nametag command line tool"
+    license: "Apache"
+    test: |
+      system "#{bin}/nametag --version"
+    repository:
+      owner: nametaginc
+      name: homebrew-nametag
+      branch: main
+
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.

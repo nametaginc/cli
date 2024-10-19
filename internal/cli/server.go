@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//go:build ignore
-// +build ignore
+package cli
 
-package main
-
-import (
-	_ "github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen"
-)
+// Server is the URL of the Nametag server.
+//
+// This is generally constant, but is replaceable for testing and
+// non-production environments
+var Server = "https://nametag.co"
