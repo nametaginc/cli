@@ -30,7 +30,7 @@ brews:
       bin.install "{{ .Binary }}" => "{{ .ProjectName }}"
     repository:
       owner: nametaginc
-      name: homebrew-nametag
+      name: homebrew-tap
       branch: main
 
 archives:
