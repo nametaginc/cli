@@ -26,6 +26,8 @@ brews:
     license: "Apache-2.0"
     test: |
       system "#{bin}/nametag", "--version"
+    install: |
+      bin.install "{{ .Binary }}" => "{{ .ProjectName }}"
     repository:
       owner: nametaginc
       name: homebrew-nametag
