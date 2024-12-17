@@ -13,14 +13,14 @@ builds:
       - windows
       - darwin
 
-dockers:
-  - image_templates:
-      - "nametag/cli:latest"
-      - "nametag/cli:{{.Tag}}"
-      - "nametag/cli:v{{ .Major }}"
-    goos: linux
-    goarch: amd64
-    dockerfile: Dockerfile
+#dockers:
+#  - image_templates:
+#      - "nametag/cli:latest"
+#      - "nametag/cli:{{.Tag}}"
+#      - "nametag/cli:v{{ .Major }}"
+#    goos: linux
+#    goarch: amd64
+#    dockerfile: Dockerfile
 
 brews:
   - name: nametag
