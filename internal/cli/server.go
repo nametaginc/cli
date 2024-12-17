@@ -14,8 +14,23 @@
 
 package cli
 
-// Server is the URL of the Nametag server.
-//
-// This is generally constant, but is replaceable for testing and
-// non-production environments
-var Server = "https://nametag.co"
+import (
+	"os"
+
+	"github.com/spf13/cobra"
+)
+
+const defaultServer = "https://nametag.co"
+
+func getServer(cmd *cobra.Command) string {
+	if s := os.Getenv("NAMETAG_SERVER"); s != "" {
+		return s
+	}
+
+	config, err := readConfig(cmd)
+	if err == nil && config.Server != "" {
+		return config.Server
+	}
+
+	return defaultServer
+}

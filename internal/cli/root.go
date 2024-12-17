@@ -17,6 +17,8 @@ package cli
 
 import (
 	_ "embed"
+	"io"
+	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -28,20 +30,35 @@ var versionBuf []byte
 // Version is the version of the command line tool.
 var Version = strings.TrimSpace(string(versionBuf))
 
-// Root is the main command.
-var Root = &cobra.Command{
-	Use:           "nametag",
-	Short:         "Nametag command line interface",
-	Version:       Version,
-	SilenceUsage:  true,
-	SilenceErrors: true,
-}
+// Log is the logger used by the CLI
+var Log = log.New(io.Discard, "", 0)
 
-func subcmd(parent *cobra.Command, child *cobra.Command) *cobra.Command {
-	parent.AddCommand(child)
-	return child
-}
+// New creates a new root command for the Nametag CLI
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:           "nametag",
+		Short:         "Nametag command line interface",
+		Version:       Version,
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			cachedConfig = nil // for testing
 
-func init() {
-	Root.CompletionOptions.HiddenDefaultCmd = true
+			Log.SetOutput(cmd.OutOrStdout())
+			return nil
+		},
+	}
+	cmd.CompletionOptions.HiddenDefaultCmd = true
+	cmd.SetUsageTemplate(usageTemplate)
+	cmd.SetHelpTemplate(helpTemplate)
+
+	cmd.PersistentFlags().StringP("auth-token", "t", "", "Nametag API authentication token")
+	cmd.PersistentFlags().StringP("config", "c", "", "Path to Nametag CLI configuration file")
+
+	cmd.AddCommand(newAuthCmd())
+	cmd.AddCommand(newDirCmd())
+	cmd.AddCommand(newEnvCmd())
+	cmd.AddCommand(newSelfServiceCmd())
+
+	return cmd
 }

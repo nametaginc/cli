@@ -19,14 +19,72 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
+	"time"
 
+	"github.com/ghodss/yaml"
+	"github.com/golang-jwt/jwt"
 	"github.com/spf13/cobra"
 
 	"github.com/nametaginc/cli/internal/api"
 )
 
-func init() {
-	Root.PersistentFlags().StringP("auth-token", "t", "", "Nametag API authentication token")
+// Config represents the format of the configuration file that
+// contains the authentication token and other settings.
+type Config struct {
+	Version string `yaml:"version"`
+	Server  string `yaml:",omitempty"`
+	Token   string `yaml:"token"`
+}
+
+func configPath(cmd *cobra.Command) (string, error) {
+	param, err := cmd.Flags().GetString("config")
+	if err != nil {
+		return "", err
+	}
+	if param != "" {
+		return param, nil
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	configPath := filepath.Join(home, ".config", "nametag", "config.yaml")
+	if err := os.MkdirAll(filepath.Dir(configPath), 0700); err != nil {
+		return "", err
+	}
+	return configPath, nil
+}
+
+var (
+	cachedConfig *Config
+)
+
+func readConfig(cmd *cobra.Command) (*Config, error) {
+	if cachedConfig != nil {
+		return cachedConfig, nil
+	}
+	path, err := configPath(cmd)
+	if err != nil {
+		return nil, err
+	}
+	configBuf, err := os.ReadFile(path) //nolint:gosec  // no file inclusion vulnerability; this is a client side application where it's okay to specify a path
+	if os.IsNotExist(err) {
+		return &Config{}, nil
+	} else if err != nil {
+		return nil, err
+	}
+	var config Config
+	if err := yaml.Unmarshal(configBuf, &config); err != nil {
+		return nil, fmt.Errorf("configuration file is not valid: %s: %w", path, err)
+	}
+	if config.Version != "1" {
+		return nil, fmt.Errorf("unsupported configuration file version: %s", config.Version)
+	}
+
+	cachedConfig = &config
+	return &config, nil
 }
 
 func getAuthToken(cmd *cobra.Command) (authToken string, err error) {
@@ -38,7 +96,25 @@ func getAuthToken(cmd *cobra.Command) (authToken string, err error) {
 		authToken = os.Getenv("NAMETAG_AUTH_TOKEN")
 	}
 	if authToken == "" {
-		return "", fmt.Errorf("specify an authentication token with --auth-token or $NAMETAG_AUTH_TOKEN")
+		config, err := readConfig(cmd)
+		if err != nil {
+			return "", err
+		}
+		authToken = config.Token
+	}
+
+	if authToken != "" {
+		var claims jwt.StandardClaims
+		_, _, err := new(jwt.Parser).ParseUnverified(authToken, &claims)
+		if err == nil && time.Now().After(time.Unix(claims.ExpiresAt, 0)) {
+			fmt.Fprintf(cmd.ErrOrStderr(), "Your authentication token has expired. Do you need to run `nametag auth login` again?\n")
+			os.Exit(1)
+		}
+	}
+
+	if authToken == "" {
+		fmt.Fprintf(cmd.ErrOrStderr(), "Cannot find an authentation token. Do you need to run `nametag auth login`?\n")
+		os.Exit(1)
 	}
 
 	return authToken, nil
@@ -52,11 +128,13 @@ func NewAPIClient(cmd *cobra.Command) (*api.ClientWithResponses, error) {
 		return nil, err
 	}
 
-	client, err := api.NewClientWithResponses(Server, api.WithRequestEditorFn(
+	client, err := api.NewClientWithResponses(getServer(cmd), api.WithRequestEditorFn(
 		func(ctx context.Context, req *http.Request) error {
 			req.Header.Add("Authorization", "Bearer "+authToken)
 			return nil
-		}))
+		}),
+		api.WithHTTPClient(HTTPClient),
+	)
 	if err != nil {
 		return nil, err
 	}

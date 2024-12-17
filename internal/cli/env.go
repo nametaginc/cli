@@ -23,65 +23,76 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var envCmd = subcmd(Root, &cobra.Command{
-	Use:     "env",
-	Aliases: []string{"environment", "environments", "envs"},
-	Short:   "Commands for working with environments",
-})
+func newEnvCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "env",
+		Aliases: []string{"environment", "environments", "envs"},
+		Short:   "Commands for working with environments",
+	}
+	cmd.AddCommand(newEnvListCmd())
+	cmd.AddCommand(newEnvGetCmd())
+	return cmd
+}
 
-var _ = subcmd(envCmd, &cobra.Command{
-	Use:     "list",
-	Aliases: []string{"ls"},
-	Short:   "list environments",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		client, err := NewAPIClient(cmd)
-		if err != nil {
-			return err
-		}
-		resp, err := client.ListEnvsWithResponse(cmd.Context())
-		if err != nil {
-			return err
-		}
-		if resp.StatusCode() != 200 {
-			return fmt.Errorf("%s", resp.Status())
-		}
+func newEnvListCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "list",
+		Aliases: []string{"ls"},
+		Short:   "list environments",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := NewAPIClient(cmd)
+			if err != nil {
+				return err
+			}
+			resp, err := client.ListEnvsWithResponse(cmd.Context())
+			if err != nil {
+				return err
+			}
+			if resp.StatusCode() != 200 {
+				return fmt.Errorf("%s", resp.Status())
+			}
 
-		headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
-		columnFmt := color.New(color.FgYellow).SprintfFunc()
+			headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+			columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-		tbl := table.New("ID", "Name", "Public Name")
-		tbl.
-			WithWriter(cmd.OutOrStdout()).
-			WithHeaderFormatter(headerFmt).
-			WithFirstColumnFormatter(columnFmt)
-		for _, env := range lo.FromPtr(resp.JSON200).Envs {
-			tbl.AddRow(env.ID, env.Name, env.PublicName)
-		}
-		tbl.Print()
-		return nil
-	},
-})
+			tbl := table.New("ID", "Name", "Public Name")
+			tbl.
+				WithWriter(cmd.OutOrStdout()).
+				WithHeaderFormatter(headerFmt).
+				WithFirstColumnFormatter(columnFmt)
+			for _, env := range lo.FromPtr(resp.JSON200).Envs {
+				tbl.AddRow(env.ID, env.Name, env.PublicName)
+			}
+			tbl.Print()
+			return nil
+		},
+	}
+	return cmd
+}
 
-var _ = subcmd(envCmd, &cobra.Command{
-	Use:   "get [env]",
-	Short: "show an environment",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		client, err := NewAPIClient(cmd)
-		if err != nil {
-			return err
-		}
-		resp, err := client.GetEnvWithResponse(cmd.Context(), args[0])
-		if err != nil {
-			return err
-		}
-		if resp.StatusCode() >= 400 {
-			return fmt.Errorf("%s", resp.Status())
-		}
+func newEnvGetCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get [env]",
+		Short: "show an environment",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := NewAPIClient(cmd)
+			if err != nil {
+				return err
+			}
+			resp, err := client.GetEnvWithResponse(cmd.Context(), args[0])
+			if err != nil {
+				return err
+			}
+			if resp.StatusCode() >= 400 {
+				return fmt.Errorf("%s", resp.Status())
+			}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "ID: %s\n", resp.JSON200.ID)
-		fmt.Fprintf(cmd.OutOrStdout(), "Name: %s\n", resp.JSON200.Name)
-		fmt.Fprintf(cmd.OutOrStdout(), "PublicName: %s\n", resp.JSON200.PublicName)
-		fmt.Fprintf(cmd.OutOrStdout(), "LogoURL: %s\n", resp.JSON200.LogoURL)
-		return nil
-	},
-})
+			fmt.Fprintf(cmd.OutOrStdout(), "ID: %s\n", resp.JSON200.ID)
+			fmt.Fprintf(cmd.OutOrStdout(), "Name: %s\n", resp.JSON200.Name)
+			fmt.Fprintf(cmd.OutOrStdout(), "PublicName: %s\n", resp.JSON200.PublicName)
+			fmt.Fprintf(cmd.OutOrStdout(), "LogoURL: %s\n", resp.JSON200.LogoURL)
+			return nil
+		},
+	}
+	return cmd
+}

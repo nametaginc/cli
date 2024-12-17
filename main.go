@@ -15,15 +15,9 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/nametaginc/cli/internal/cli"
 )
 
 func main() {
-	if err := cli.Root.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	cli.Main()
 }

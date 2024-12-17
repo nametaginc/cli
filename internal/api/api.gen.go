@@ -23,6 +23,14 @@ const (
 	NoneScopes   = "none.Scopes"
 )
 
+// Defines values for AccountBulkUpdateStatus.
+const (
+	AccountBulkUpdateItemStatusBadRequest AccountBulkUpdateStatus = 400
+	AccountBulkUpdateItemStatusConflict   AccountBulkUpdateStatus = 409
+	AccountBulkUpdateItemStatusNotFound   AccountBulkUpdateStatus = 404
+	AccountBulkUpdateItemStatusOK         AccountBulkUpdateStatus = 204
+)
+
 // Defines values for AuthorizeReturn.
 const (
 	AuthorizeReturnChrome  AuthorizeReturn = "chrome"
@@ -77,6 +85,20 @@ const (
 	NumericRequestStatusRejectedInReview NumericRequestStatus = 550
 	NumericRequestStatusRejectedUnusable NumericRequestStatus = 551
 	NumericRequestStatusRevoked          NumericRequestStatus = 403
+)
+
+// Defines values for RecoveryMicrositeFlow.
+const (
+	Enroll  RecoveryMicrositeFlow = "enroll"
+	Recover RecoveryMicrositeFlow = "recover"
+)
+
+// Defines values for RecoveryMicrositeOperation.
+const (
+	Mfa                 RecoveryMicrositeOperation = "mfa"
+	Password            RecoveryMicrositeOperation = "password"
+	TemporaryAccessPass RecoveryMicrositeOperation = "temporary-access-pass"
+	Unlock              RecoveryMicrositeOperation = "unlock"
 )
 
 // Defines values for RecoveryPolicy.
@@ -175,8 +197,27 @@ const (
 
 // Defines values for ListEnvRequestsParamsSort.
 const (
+	LastCreated      ListEnvRequestsParamsSort = "last_created"
 	LastUpdated      ListEnvRequestsParamsSort = "last_updated"
+	MinusLastCreated ListEnvRequestsParamsSort = "-last_created"
 	MinusLastUpdated ListEnvRequestsParamsSort = "-last_updated"
+)
+
+// Defines values for ListEnvRequestsParamsStatusFilter.
+const (
+	Active               ListEnvRequestsParamsStatusFilter = "active"
+	Expired              ListEnvRequestsParamsStatusFilter = "expired"
+	ScheduledForDeletion ListEnvRequestsParamsStatusFilter = "scheduledForDeletion"
+)
+
+// Defines values for ListEnvRequestsParamsUpdatedAt.
+const (
+	All       ListEnvRequestsParamsUpdatedAt = "all"
+	Lastmonth ListEnvRequestsParamsUpdatedAt = "lastmonth"
+	Month     ListEnvRequestsParamsUpdatedAt = "month"
+	Today     ListEnvRequestsParamsUpdatedAt = "today"
+	Week      ListEnvRequestsParamsUpdatedAt = "week"
+	Year      ListEnvRequestsParamsUpdatedAt = "year"
 )
 
 // Defines values for Oauth2AuthorizeParamsResponseType.
@@ -226,6 +267,9 @@ const (
 	Plain Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod = "plain"
 	S256  Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod = "S256"
 )
+
+// AccountBulkUpdateStatus A status code that describes whether the operation was successful
+type AccountBulkUpdateStatus int
 
 // APIKey defines model for APIKey.
 type APIKey struct {
@@ -279,6 +323,44 @@ type Account struct {
 	Photo         *AccountPhoto `json:"photo,omitempty"`
 }
 
+// AccountBulkUpdateRequest defines model for AccountBulkUpdateRequest.
+type AccountBulkUpdateRequest struct {
+	// Accounts A list of account update operations
+	Accounts []AccountBulkUpdateRequestItem `json:"accounts"`
+}
+
+// AccountBulkUpdateRequestItem defines model for AccountBulkUpdateRequestItem.
+type AccountBulkUpdateRequestItem struct {
+	// Subject The subject for this person. Set this to an empty string to remove the binding for this person.
+	Subject *string `json:"subject,omitempty"`
+
+	// BirthDate The subject's date of birth. If this is set prior to the account being bound to a `subject`, then the birth  date on their ID must match this date. You can also specify the hash or HMAC of the person's birth date.  See [Birth date hashes](/docs/birth-date-hash) for details.
+	BirthDate *string `json:"birth_date,omitempty"`
+
+	// ID The unique identifier of the account. This can be the Nametag ID
+	// for the account, the immutable ID of the account (e.g. the GUID in
+	// Azure AD), or one of the identifiers associated with the account,
+	// (e.g. the email address, username, or UPN).
+	ID string `json:"id"`
+}
+
+// AccountBulkUpdateResponse defines model for AccountBulkUpdateResponse.
+type AccountBulkUpdateResponse struct {
+	Results []AccountBulkUpdateResponseItem `json:"results"`
+}
+
+// AccountBulkUpdateResponseItem The status of each operation specified in the request
+type AccountBulkUpdateResponseItem struct {
+	// ID The account identifier provided in the request
+	ID string `json:"id"`
+
+	// Status A status code that describes whether the operation was successful
+	Status AccountBulkUpdateStatus `json:"status"`
+
+	// Error A description of the error that occurred.
+	Error *string `json:"error,omitempty"`
+}
+
 // AccountPhoto defines model for AccountPhoto.
 type AccountPhoto struct {
 	// SHA256 The SHA256 hash of the uploaded image.
@@ -294,8 +376,7 @@ type AccountUpdateRequest struct {
 	Subject *string `json:"subject,omitempty"`
 
 	// BirthDate The subject's date of birth. If this is set prior to the account being bound to a `subject`, then the birth  date on their ID must match this date.
-	// You can also specify the SHA256 hash of the person's email address and birth date. The format of the field should be `sha256:HASH` where `HASH` is the hex-encoded SHA256 hash of the lower-cased email, a newline, and the birth date in the format `YYYY-MM-DD`.  For example, if the person's birth date is January 2nd, 2006 then you hash "alice@example.com\n2006-01-02" and the resulting hash is `sha256:7dc9eb50ce8330b4691590447d86b9caf6f7f1fe88b029ce571cf8533cc62c89`.
-	// Similarly you can specify `hmac-sha256:HMAC` where `HMAC` is the hex-encoded HMAC SHA256 hash of same string as above using the webhook secret as the key. If the webhook shared secret is  `webhook-0194fdc2fa2ffcc041d3ff12045b73c86e4ff95ff662a5eee82abdf44a2d0b75` then you could specify  `hmac-sha256:88a0f947381a5a6fe1bed4b89f932140267bec6d90be4decc8f758676b4cd302`.
+	// You can also specify the hash or HMAC of the person's birth date. See [Birth date hashes](/docs/birth-date-hash) for details.
 	BirthDate *string `json:"birth_date,omitempty"`
 }
 
@@ -449,6 +530,9 @@ type CreateAPIKeyResponse struct {
 
 // CreateDirectoryRequest defines model for CreateDirectoryRequest.
 type CreateDirectoryRequest struct {
+	// Env The ID of the environment to create this directory for
+	Env string `json:"env"`
+
 	// Kind The type of the directory connection.
 	Kind        DirectoryKind `json:"kind"`
 	Credentials *Credentials  `json:"credentials,omitempty"`
@@ -569,6 +653,9 @@ type CreateTemplateRequest struct {
 
 	// RequireSelfieReverification If true, existing users must provide a new selfie to validate their identity.
 	RequireSelfieReverification *bool `json:"require_selfie_reverification,omitempty"`
+
+	// QRCustomText The Custom QR code text for this template.
+	QRCustomText *string `json:"qr_custom_text,omitempty"`
 }
 
 // CreateTemplateResponse defines model for CreateTemplateResponse.
@@ -600,16 +687,28 @@ type Directory struct {
 	// ID The unique identifier for the directory.
 	ID string `json:"id"`
 
+	// Env The environment this directory belongs to.
+	Env string `json:"env"`
+
 	// Kind The type of the directory connection.
 	Kind DirectoryKind `json:"kind"`
 
 	// Name The internal name of the directory.
 	// This field is derived from inspecting the directory itself, for example for  Entra ID this field is the primary domain name. This field is used to you identify the directory.
-	Name           string              `json:"name"`
-	MfaPolicy      RecoveryPolicyRules `json:"mfa_policy"`
-	PasswordPolicy RecoveryPolicyRules `json:"password_policy"`
-	UnlockPolicy   RecoveryPolicyRules `json:"unlock_policy"`
-	Credentials    *PartialCredentials `json:"credentials,omitempty"`
+	Name                      string              `json:"name"`
+	AuthenticatePolicy        RecoveryPolicyRules `json:"authenticate_policy"`
+	MfaPolicy                 RecoveryPolicyRules `json:"mfa_policy"`
+	PasswordPolicy            RecoveryPolicyRules `json:"password_policy"`
+	TemporaryAccessPassPolicy RecoveryPolicyRules `json:"temporary_access_pass_policy"`
+	UnlockPolicy              RecoveryPolicyRules `json:"unlock_policy"`
+
+	// TemporaryAccessPassLifetimeMinutes The validity period of a temporary access pass in minutes.
+	// For Entra ID, this value must be between 10 and 43200 (equivalent to 30 days).  If not specified, the defaultLifetimeInMinutes setting in the  [Temporary Access Pass authentication method policy](https://learn.microsoft.com/en-us/graph/api/resources/temporaryaccesspassauthenticationmethodconfiguration?view=graph-rest-1.0) is applied.
+	TemporaryAccessPassLifetimeMinutes *int `json:"temporary_access_pass_lifetime_minutes,omitempty"`
+
+	// TemporaryAccessPassReusable True if temporary access passes can be used more than once. If unspecified,  temporary access passes are usable only once.
+	TemporaryAccessPassReusable *bool               `json:"temporary_access_pass_reusable,omitempty"`
+	Credentials                 *PartialCredentials `json:"credentials,omitempty"`
 
 	// LastSyncStartedAt When the last sync started.
 	LastSyncStartedAt *time.Time `json:"last_sync_started_at,omitempty"`
@@ -628,6 +727,9 @@ type Directory struct {
 
 	// SyncRunning true if the directory sync is currently running
 	SyncRunning bool `json:"sync_running"`
+
+	// BirthDateHMACSecretExists true if a shared secret for birth date HMACs has been set
+	BirthDateHMACSecretExists bool `json:"birth_date_hmac_secret_exists"`
 }
 
 // DirectoryGroup defines model for DirectoryGroup.
@@ -682,8 +784,20 @@ type EnvStorage struct {
 	// S3BucketEU The S3 bucket for data stored in Europe. Must be in the eu-west-1 AWS region.
 	S3BucketEU *string `json:"s3_bucket_eu,omitempty"`
 
+	// S3BucketIN The S3 bucket for data stored in India. Must be in the ap-south-1 AWS region.
+	S3BucketIN *string `json:"s3_bucket_in,omitempty"`
+
 	// AWSRoleARN The role Nametag should use to access the S3 buckets.
 	AWSRoleARN *string `json:"aws_role_arn,omitempty"`
+
+	// AzureBlobSasUS Azure Blob Storage presigned (SAS) URL. Should be in the eastus region.
+	AzureBlobSasUS *string `json:"azure_blob_us,omitempty"`
+
+	// AzureBlobSasEU Azure Blob Storage presigned (SAS) URL. Should be in the northeurope region.
+	AzureBlobSasEU *string `json:"azure_blob_eu,omitempty"`
+
+	// AzureBlobSasIN Azure Blob Storage presigned (SAS) URL. Should be in the centralindia region.
+	AzureBlobSasIN *string `json:"azure_blob_in,omitempty"`
 }
 
 // EnvUpdateRequest defines model for EnvUpdateRequest.
@@ -727,8 +841,9 @@ type GetDirectoriesResponse struct {
 
 // GetRequestsResponse defines model for GetRequestsResponse.
 type GetRequestsResponse struct {
-	NextOffset string    `json:"next_offset"`
-	Requests   []Request `json:"requests"`
+	Requests         []Request `json:"requests"`
+	NextOffset       string    `json:"next_offset"`
+	TotalResultCount int64     `json:"total_result_count"`
 }
 
 // GovtidDetailsValue defines model for GovtidDetailsValue.
@@ -856,6 +971,9 @@ type OrgMember struct {
 
 	// InvitePending True if the member has been invited to the organization but has not  yet signed in.
 	InvitePending bool `json:"invite_pending"`
+
+	// RequestsCount The number of request the member has sent.
+	RequestsCount *int `json:"requests_count,omitempty"`
 }
 
 // OrgUpdateRequest defines model for OrgUpdateRequest.
@@ -927,6 +1045,26 @@ type PropertyResponseRequest struct {
 	Scopes []Scope `json:"scopes"`
 }
 
+// RecoveryMicrositeFlow defines model for RecoveryMicrositeFlow.
+type RecoveryMicrositeFlow string
+
+// RecoveryMicrositeOperation defines model for RecoveryMicrositeOperation.
+type RecoveryMicrositeOperation string
+
+// RecoveryMicrositePresignRequest defines model for RecoveryMicrositePresignRequest.
+type RecoveryMicrositePresignRequest struct {
+	Email       *string                       `json:"email,omitempty"`
+	Ttl         time.Duration                 `json:"ttl"`
+	Operations  *[]RecoveryMicrositeOperation `json:"operations,omitempty"`
+	Directories *[]string                     `json:"directories,omitempty"`
+	Flow        *RecoveryMicrositeFlow        `json:"flow,omitempty"`
+}
+
+// RecoveryMicrositePresignResponse defines model for RecoveryMicrositePresignResponse.
+type RecoveryMicrositePresignResponse struct {
+	Url string `json:"url"`
+}
+
 // RecoveryPolicy defines model for RecoveryPolicy.
 type RecoveryPolicy string
 
@@ -936,6 +1074,18 @@ type RecoveryPolicyRules struct {
 	// When Nametag evaluates policy, the first entry in this list that matches will be applied. If no group matches, then the default policy is applied.
 	Groups  []GroupRecoveryPolicy `json:"groups"`
 	Default RecoveryPolicy        `json:"default"`
+}
+
+// RefreshWebhookSecretRequest defines model for RefreshWebhookSecretRequest.
+type RefreshWebhookSecretRequest struct {
+	// EnvID The environment identifier for which the webhook secret is to be refreshed
+	EnvID string `json:"envID"`
+}
+
+// RefreshWebhookSecretResponse defines model for RefreshWebhookSecretResponse.
+type RefreshWebhookSecretResponse struct {
+	// WebhookSharedSecret The new webhook shared secret
+	WebhookSharedSecret string `json:"webhook_shared_secret"`
 }
 
 // Request defines model for Request.
@@ -985,6 +1135,18 @@ type Request struct {
 	Properties    RequestProperties    `json:"properties"`
 	Mobile        *RequestMobileDevice `json:"mobile,omitempty"`
 	Browser       *RequestBrowser      `json:"browser,omitempty"`
+
+	// IsKnownUser If the user is known as an account
+	IsKnownUser *bool `json:"is_known_user,omitempty"`
+
+	// MarkedForDeletionAfter Indicates whether the person associated with this request has asked for their data to be deleted and the earliest time that will occur at.
+	MarkedForDeletionAfter *time.Time `json:"marked_for_deletion_after,omitempty"`
+
+	// Photo The photo associate with this person
+	Photo *string `json:"photo,omitempty"`
+
+	// ExternalIds External IDs for accounts if the user is known
+	ExternalIds *[]string `json:"external_ids,omitempty"`
 }
 
 // RequestBrowser defines model for RequestBrowser.
@@ -1132,6 +1294,9 @@ type Template struct {
 
 	// RequireSelfieReverification If true, existing users must provide a new selfie to validate their identity.
 	RequireSelfieReverification bool `json:"require_selfie_reverification"`
+
+	// QRCustomText The Custom QR code text for this template.
+	QRCustomText string `json:"qr_custom_text"`
 }
 
 // TemplateScopeDefinition defines model for TemplateScopeDefinition.
@@ -1175,6 +1340,24 @@ type TokenResponseError struct {
 	Code             string `json:"error"`
 	ErrorDescription string `json:"error_description,omitempty"`
 	URI              string `json:"uri,omitempty"`
+}
+
+// UpdateDirectoryRequest defines model for UpdateDirectoryRequest.
+type UpdateDirectoryRequest struct {
+	AuthenticatePolicy        *RecoveryPolicyRules `json:"authenticate_policy,omitempty"`
+	PasswordPolicy            *RecoveryPolicyRules `json:"password_policy,omitempty"`
+	MfaPolicy                 *RecoveryPolicyRules `json:"mfa_policy,omitempty"`
+	UnlockPolicy              *RecoveryPolicyRules `json:"unlock_policy,omitempty"`
+	TemporaryAccessPassPolicy *RecoveryPolicyRules `json:"temporary_access_pass_policy,omitempty"`
+
+	// TemporaryAccessPassLifetimeMinutes The validity period of a temporary access pass in minutes
+	TemporaryAccessPassLifetimeMinutes *int `json:"temporary_access_pass_lifetime_minutes,omitempty"`
+
+	// TemporaryAccessPassReusable True if temporary access passes can be used more than once
+	TemporaryAccessPassReusable *bool `json:"temporary_access_pass_reusable,omitempty"`
+
+	// BirthDateHMACSecret A shared secret for hashed birth dates in the directory
+	BirthDateHMACSecret []byte `json:"birth_date_hmac_secret,omitempty"`
 }
 
 // UpdateOrgMemberRequest defines model for UpdateOrgMemberRequest.
@@ -1228,6 +1411,9 @@ type UpdateTemplateRequest struct {
 
 	// RequireSelfieReverification If true, existing users must provide a new selfie to validate their identity.
 	RequireSelfieReverification *bool `json:"require_selfie_reverification,omitempty"`
+
+	// QRCustomText The Custom QR code text for this template.
+	QRCustomText *string `json:"qr_custom_text,omitempty"`
 }
 
 // Webhook defines model for Webhook.
@@ -1263,6 +1449,9 @@ type WebhookDefinition struct {
 
 	// Events The names of the events that should be sent.
 	Events []WebhookEventType `json:"events"`
+
+	// AuthorizationHeader The value of the Authorization header to include in the webhook request.
+	AuthorizationHeader *string `json:"authorization_header,omitempty"`
 }
 
 // WebhookDefinitionUpdate defines model for WebhookDefinitionUpdate.
@@ -1271,6 +1460,9 @@ type WebhookDefinitionUpdate struct {
 	URL     *string            `json:"url,omitempty"`
 	Enabled *bool              `json:"enabled,omitempty"`
 	Events  []WebhookEventType `json:"events,omitempty"`
+
+	// AuthorizationHeader The value of the Authorization header to include in the webhook request.
+	AuthorizationHeader *string `json:"authorization_header,omitempty"`
 }
 
 // WebhookEventType defines model for WebhookEventType.
@@ -1336,11 +1528,6 @@ type Oauth2PollParams struct {
 	CookieSession *string `form:"session,omitempty" json:"session,omitempty"`
 }
 
-// ListDirectoriesParams defines parameters for ListDirectories.
-type ListDirectoriesParams struct {
-	Env *string `form:"env,omitempty" json:"env,omitempty"`
-}
-
 // DeleteLogoParams defines parameters for DeleteLogo.
 type DeleteLogoParams struct {
 	// Kind The kind of logo to remove
@@ -1360,15 +1547,23 @@ type UploadLogoParams struct {
 
 // ListEnvRequestsParams defines parameters for ListEnvRequests.
 type ListEnvRequestsParams struct {
-	Q         *string                    `form:"q,omitempty" json:"q,omitempty"`
-	Requestor *string                    `form:"requestor,omitempty" json:"requestor,omitempty"`
-	Count     *int                       `form:"count,omitempty" json:"count,omitempty"`
-	Offset    *string                    `form:"offset,omitempty" json:"offset,omitempty"`
-	Sort      *ListEnvRequestsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+	Q            *string                            `form:"q,omitempty" json:"q,omitempty"`
+	Requestor    *string                            `form:"requestor,omitempty" json:"requestor,omitempty"`
+	Count        *int                               `form:"count,omitempty" json:"count,omitempty"`
+	Offset       *string                            `form:"offset,omitempty" json:"offset,omitempty"`
+	Sort         *ListEnvRequestsParamsSort         `form:"sort,omitempty" json:"sort,omitempty"`
+	StatusFilter *ListEnvRequestsParamsStatusFilter `form:"statusFilter,omitempty" json:"statusFilter,omitempty"`
+	UpdatedAt    *ListEnvRequestsParamsUpdatedAt    `form:"updatedAt,omitempty" json:"updatedAt,omitempty"`
 }
 
 // ListEnvRequestsParamsSort defines parameters for ListEnvRequests.
 type ListEnvRequestsParamsSort string
+
+// ListEnvRequestsParamsStatusFilter defines parameters for ListEnvRequests.
+type ListEnvRequestsParamsStatusFilter string
+
+// ListEnvRequestsParamsUpdatedAt defines parameters for ListEnvRequests.
+type ListEnvRequestsParamsUpdatedAt string
 
 // Oauth2AuthorizeParams defines parameters for Oauth2Authorize.
 type Oauth2AuthorizeParams struct {
@@ -1537,6 +1732,9 @@ type Oauth2AuthorizeWithRequestAndExperienceParams struct {
 	CookieSession *string `form:"session,omitempty" json:"session,omitempty"`
 }
 
+// BulkUpdateAccountsJSONRequestBody defines body for BulkUpdateAccounts for application/json ContentType.
+type BulkUpdateAccountsJSONRequestBody = AccountBulkUpdateRequest
+
 // UpdateAccountJSONRequestBody defines body for UpdateAccount for application/json ContentType.
 type UpdateAccountJSONRequestBody = AccountUpdateRequest
 
@@ -1546,20 +1744,29 @@ type CreateAPIKeyJSONRequestBody = CreateAPIKeyRequest
 // UpdateAPIKeyJSONRequestBody defines body for UpdateAPIKey for application/json ContentType.
 type UpdateAPIKeyJSONRequestBody = APIKeyUpdateRequest
 
+// CreateDirectoryJSONRequestBody defines body for CreateDirectory for application/json ContentType.
+type CreateDirectoryJSONRequestBody = CreateDirectoryRequest
+
+// UpdateDirectoryJSONRequestBody defines body for UpdateDirectory for application/json ContentType.
+type UpdateDirectoryJSONRequestBody = UpdateDirectoryRequest
+
+// SetDirectoryCredentialsJSONRequestBody defines body for SetDirectoryCredentials for application/json ContentType.
+type SetDirectoryCredentialsJSONRequestBody = Credentials
+
 // CreateEnvJSONRequestBody defines body for CreateEnv for application/json ContentType.
 type CreateEnvJSONRequestBody = CreateEnvRequest
 
 // UpdateEnvJSONRequestBody defines body for UpdateEnv for application/json ContentType.
 type UpdateEnvJSONRequestBody = EnvUpdateRequest
 
-// CreateDirectoryJSONRequestBody defines body for CreateDirectory for application/json ContentType.
-type CreateDirectoryJSONRequestBody = CreateDirectoryRequest
-
-// SetDirectoryCredentialsJSONRequestBody defines body for SetDirectoryCredentials for application/json ContentType.
-type SetDirectoryCredentialsJSONRequestBody = Credentials
-
 // UploadLogoMultipartRequestBody defines body for UploadLogo for multipart/form-data ContentType.
 type UploadLogoMultipartRequestBody UploadLogoMultipartBody
+
+// PresignRecoveryMicrositeURLJSONRequestBody defines body for PresignRecoveryMicrositeURL for application/json ContentType.
+type PresignRecoveryMicrositeURLJSONRequestBody = RecoveryMicrositePresignRequest
+
+// RefreshWebhookSecretJSONRequestBody defines body for RefreshWebhookSecret for application/json ContentType.
+type RefreshWebhookSecretJSONRequestBody = RefreshWebhookSecretRequest
 
 // CreateTemplateJSONRequestBody defines body for CreateTemplate for application/json ContentType.
 type CreateTemplateJSONRequestBody = CreateTemplateRequest
@@ -1670,6 +1877,11 @@ type ClientInterface interface {
 	// ListAccounts request
 	ListAccounts(ctx context.Context, params *ListAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BulkUpdateAccountsWithBody request with any body
+	BulkUpdateAccountsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BulkUpdateAccounts(ctx context.Context, body BulkUpdateAccountsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAccount request
 	GetAccount(ctx context.Context, account string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1706,6 +1918,36 @@ type ClientInterface interface {
 	// Oauth2Poll request
 	Oauth2Poll(ctx context.Context, requestID string, params *Oauth2PollParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListDirectories request
+	ListDirectories(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateDirectoryWithBody request with any body
+	CreateDirectoryWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateDirectory(ctx context.Context, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteDirectory request
+	DeleteDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDirectory request
+	GetDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateDirectoryWithBody request with any body
+	UpdateDirectoryWithBody(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateDirectory(ctx context.Context, directory string, body UpdateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDirectoryAuthorizationURL request
+	GetDirectoryAuthorizationURL(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetDirectoryCredentialsWithBody request with any body
+	SetDirectoryCredentialsWithBody(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetDirectoryCredentials(ctx context.Context, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SyncDirectory request
+	SyncDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListEnvs request
 	ListEnvs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1725,36 +1967,21 @@ type ClientInterface interface {
 
 	UpdateEnv(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ListDirectories request
-	ListDirectories(ctx context.Context, env string, params *ListDirectoriesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CreateDirectoryWithBody request with any body
-	CreateDirectoryWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateDirectory(ctx context.Context, env string, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// DeleteDirectory request
-	DeleteDirectory(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetDirectory request
-	GetDirectory(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetDirectoryAuthorizationURL request
-	GetDirectoryAuthorizationURL(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// SetDirectoryCredentialsWithBody request with any body
-	SetDirectoryCredentialsWithBody(ctx context.Context, env string, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	SetDirectoryCredentials(ctx context.Context, env string, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// SyncDirectory request
-	SyncDirectory(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// DeleteLogo request
 	DeleteLogo(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UploadLogoWithBody request with any body
 	UploadLogoWithBody(ctx context.Context, env string, params *UploadLogoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PresignRecoveryMicrositeURLWithBody request with any body
+	PresignRecoveryMicrositeURLWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PresignRecoveryMicrositeURL(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RefreshWebhookSecretWithBody request with any body
+	RefreshWebhookSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RefreshWebhookSecret(ctx context.Context, env string, body RefreshWebhookSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListEnvRequests request
 	ListEnvRequests(ctx context.Context, env string, params *ListEnvRequestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1875,6 +2102,30 @@ func (c *Client) BulkUploadAccountPhotosWithBody(ctx context.Context, params *Bu
 
 func (c *Client) ListAccounts(ctx context.Context, params *ListAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListAccountsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkUpdateAccountsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkUpdateAccountsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkUpdateAccounts(ctx context.Context, body BulkUpdateAccountsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkUpdateAccountsRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2041,6 +2292,138 @@ func (c *Client) Oauth2Poll(ctx context.Context, requestID string, params *Oauth
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListDirectories(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDirectoriesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateDirectoryWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateDirectoryRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateDirectory(ctx context.Context, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateDirectoryRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteDirectoryRequest(c.Server, directory)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDirectoryRequest(c.Server, directory)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateDirectoryWithBody(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateDirectoryRequestWithBody(c.Server, directory, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateDirectory(ctx context.Context, directory string, body UpdateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateDirectoryRequest(c.Server, directory, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDirectoryAuthorizationURL(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDirectoryAuthorizationURLRequest(c.Server, directory)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetDirectoryCredentialsWithBody(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetDirectoryCredentialsRequestWithBody(c.Server, directory, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetDirectoryCredentials(ctx context.Context, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetDirectoryCredentialsRequest(c.Server, directory, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SyncDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSyncDirectoryRequest(c.Server, directory)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListEnvs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListEnvsRequest(c.Server)
 	if err != nil {
@@ -2125,114 +2508,6 @@ func (c *Client) UpdateEnv(ctx context.Context, env string, body UpdateEnvJSONRe
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListDirectories(ctx context.Context, env string, params *ListDirectoriesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListDirectoriesRequest(c.Server, env, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateDirectoryWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateDirectoryRequestWithBody(c.Server, env, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateDirectory(ctx context.Context, env string, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateDirectoryRequest(c.Server, env, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeleteDirectory(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteDirectoryRequest(c.Server, env, directory)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetDirectory(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetDirectoryRequest(c.Server, env, directory)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetDirectoryAuthorizationURL(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetDirectoryAuthorizationURLRequest(c.Server, env, directory)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) SetDirectoryCredentialsWithBody(ctx context.Context, env string, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSetDirectoryCredentialsRequestWithBody(c.Server, env, directory, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) SetDirectoryCredentials(ctx context.Context, env string, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSetDirectoryCredentialsRequest(c.Server, env, directory, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) SyncDirectory(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSyncDirectoryRequest(c.Server, env, directory)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) DeleteLogo(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteLogoRequest(c.Server, env, params)
 	if err != nil {
@@ -2247,6 +2522,54 @@ func (c *Client) DeleteLogo(ctx context.Context, env string, params *DeleteLogoP
 
 func (c *Client) UploadLogoWithBody(ctx context.Context, env string, params *UploadLogoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadLogoRequestWithBody(c.Server, env, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PresignRecoveryMicrositeURLWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPresignRecoveryMicrositeURLRequestWithBody(c.Server, env, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PresignRecoveryMicrositeURL(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPresignRecoveryMicrositeURLRequest(c.Server, env, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RefreshWebhookSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRefreshWebhookSecretRequestWithBody(c.Server, env, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RefreshWebhookSecret(ctx context.Context, env string, body RefreshWebhookSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRefreshWebhookSecretRequest(c.Server, env, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2905,6 +3228,46 @@ func NewListAccountsRequest(server string, params *ListAccountsParams) (*http.Re
 	return req, nil
 }
 
+// NewBulkUpdateAccountsRequest calls the generic BulkUpdateAccounts builder with application/json body
+func NewBulkUpdateAccountsRequest(server string, body BulkUpdateAccountsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkUpdateAccountsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBulkUpdateAccountsRequestWithBody generates requests for BulkUpdateAccounts with any type of body
+func NewBulkUpdateAccountsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/accounts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetAccountRequest generates requests for GetAccount
 func NewGetAccountRequest(server string, account string) (*http.Request, error) {
 	var err error
@@ -3350,6 +3713,303 @@ func NewOauth2PollRequest(server string, requestID string, params *Oauth2PollPar
 	return req, nil
 }
 
+// NewListDirectoriesRequest generates requests for ListDirectories
+func NewListDirectoriesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateDirectoryRequest calls the generic CreateDirectory builder with application/json body
+func NewCreateDirectoryRequest(server string, body CreateDirectoryJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateDirectoryRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateDirectoryRequestWithBody generates requests for CreateDirectory with any type of body
+func NewCreateDirectoryRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteDirectoryRequest generates requests for DeleteDirectory
+func NewDeleteDirectoryRequest(server string, directory string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDirectoryRequest generates requests for GetDirectory
+func NewGetDirectoryRequest(server string, directory string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateDirectoryRequest calls the generic UpdateDirectory builder with application/json body
+func NewUpdateDirectoryRequest(server string, directory string, body UpdateDirectoryJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateDirectoryRequestWithBody(server, directory, "application/json", bodyReader)
+}
+
+// NewUpdateDirectoryRequestWithBody generates requests for UpdateDirectory with any type of body
+func NewUpdateDirectoryRequestWithBody(server string, directory string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetDirectoryAuthorizationURLRequest generates requests for GetDirectoryAuthorizationURL
+func NewGetDirectoryAuthorizationURLRequest(server string, directory string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s/authorize", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetDirectoryCredentialsRequest calls the generic SetDirectoryCredentials builder with application/json body
+func NewSetDirectoryCredentialsRequest(server string, directory string, body SetDirectoryCredentialsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetDirectoryCredentialsRequestWithBody(server, directory, "application/json", bodyReader)
+}
+
+// NewSetDirectoryCredentialsRequestWithBody generates requests for SetDirectoryCredentials with any type of body
+func NewSetDirectoryCredentialsRequestWithBody(server string, directory string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s/authorize", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSyncDirectoryRequest generates requests for SyncDirectory
+func NewSyncDirectoryRequest(server string, directory string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s/sync", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListEnvsRequest generates requests for ListEnvs
 func NewListEnvsRequest(server string) (*http.Request, error) {
 	var err error
@@ -3532,327 +4192,6 @@ func NewUpdateEnvRequestWithBody(server string, env string, contentType string, 
 	return req, nil
 }
 
-// NewListDirectoriesRequest generates requests for ListDirectories
-func NewListDirectoriesRequest(server string, env string, params *ListDirectoriesParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Env != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "env", runtime.ParamLocationQuery, *params.Env); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewCreateDirectoryRequest calls the generic CreateDirectory builder with application/json body
-func NewCreateDirectoryRequest(server string, env string, body CreateDirectoryJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateDirectoryRequestWithBody(server, env, "application/json", bodyReader)
-}
-
-// NewCreateDirectoryRequestWithBody generates requests for CreateDirectory with any type of body
-func NewCreateDirectoryRequestWithBody(server string, env string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewDeleteDirectoryRequest generates requests for DeleteDirectory
-func NewDeleteDirectoryRequest(server string, env string, directory string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewGetDirectoryRequest generates requests for GetDirectory
-func NewGetDirectoryRequest(server string, env string, directory string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewGetDirectoryAuthorizationURLRequest generates requests for GetDirectoryAuthorizationURL
-func NewGetDirectoryAuthorizationURLRequest(server string, env string, directory string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories/%s/authorize", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewSetDirectoryCredentialsRequest calls the generic SetDirectoryCredentials builder with application/json body
-func NewSetDirectoryCredentialsRequest(server string, env string, directory string, body SetDirectoryCredentialsJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewSetDirectoryCredentialsRequestWithBody(server, env, directory, "application/json", bodyReader)
-}
-
-// NewSetDirectoryCredentialsRequestWithBody generates requests for SetDirectoryCredentials with any type of body
-func NewSetDirectoryCredentialsRequestWithBody(server string, env string, directory string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories/%s/authorize", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewSyncDirectoryRequest generates requests for SyncDirectory
-func NewSyncDirectoryRequest(server string, env string, directory string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/envs/%s/directories/%s/sync", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewDeleteLogoRequest generates requests for DeleteLogo
 func NewDeleteLogoRequest(server string, env string, params *DeleteLogoParams) (*http.Request, error) {
 	var err error
@@ -3963,6 +4302,100 @@ func NewUploadLogoRequestWithBody(server string, env string, params *UploadLogoP
 	return req, nil
 }
 
+// NewPresignRecoveryMicrositeURLRequest calls the generic PresignRecoveryMicrositeURL builder with application/json body
+func NewPresignRecoveryMicrositeURLRequest(server string, env string, body PresignRecoveryMicrositeURLJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPresignRecoveryMicrositeURLRequestWithBody(server, env, "application/json", bodyReader)
+}
+
+// NewPresignRecoveryMicrositeURLRequestWithBody generates requests for PresignRecoveryMicrositeURL with any type of body
+func NewPresignRecoveryMicrositeURLRequestWithBody(server string, env string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/recovery_microsite/presign", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRefreshWebhookSecretRequest calls the generic RefreshWebhookSecret builder with application/json body
+func NewRefreshWebhookSecretRequest(server string, env string, body RefreshWebhookSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRefreshWebhookSecretRequestWithBody(server, env, "application/json", bodyReader)
+}
+
+// NewRefreshWebhookSecretRequestWithBody generates requests for RefreshWebhookSecret with any type of body
+func NewRefreshWebhookSecretRequestWithBody(server string, env string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/refresh-webhook-secret", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListEnvRequestsRequest generates requests for ListEnvRequests
 func NewListEnvRequestsRequest(server string, env string, params *ListEnvRequestsParams) (*http.Request, error) {
 	var err error
@@ -4059,6 +4492,38 @@ func NewListEnvRequestsRequest(server string, env string, params *ListEnvRequest
 		if params.Sort != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, *params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StatusFilter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "statusFilter", runtime.ParamLocationQuery, *params.StatusFilter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UpdatedAt != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "updatedAt", runtime.ParamLocationQuery, *params.UpdatedAt); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -5792,6 +6257,11 @@ type ClientWithResponsesInterface interface {
 	// ListAccountsWithResponse request
 	ListAccountsWithResponse(ctx context.Context, params *ListAccountsParams, reqEditors ...RequestEditorFn) (*ListAccountsResp, error)
 
+	// BulkUpdateAccountsWithBodyWithResponse request with any body
+	BulkUpdateAccountsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUpdateAccountsResp, error)
+
+	BulkUpdateAccountsWithResponse(ctx context.Context, body BulkUpdateAccountsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkUpdateAccountsResp, error)
+
 	// GetAccountWithResponse request
 	GetAccountWithResponse(ctx context.Context, account string, reqEditors ...RequestEditorFn) (*GetAccountResp, error)
 
@@ -5828,6 +6298,36 @@ type ClientWithResponsesInterface interface {
 	// Oauth2PollWithResponse request
 	Oauth2PollWithResponse(ctx context.Context, requestID string, params *Oauth2PollParams, reqEditors ...RequestEditorFn) (*Oauth2PollResp, error)
 
+	// ListDirectoriesWithResponse request
+	ListDirectoriesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListDirectoriesResp, error)
+
+	// CreateDirectoryWithBodyWithResponse request with any body
+	CreateDirectoryWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error)
+
+	CreateDirectoryWithResponse(ctx context.Context, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error)
+
+	// DeleteDirectoryWithResponse request
+	DeleteDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*DeleteDirectoryResp, error)
+
+	// GetDirectoryWithResponse request
+	GetDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryResp, error)
+
+	// UpdateDirectoryWithBodyWithResponse request with any body
+	UpdateDirectoryWithBodyWithResponse(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDirectoryResp, error)
+
+	UpdateDirectoryWithResponse(ctx context.Context, directory string, body UpdateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDirectoryResp, error)
+
+	// GetDirectoryAuthorizationURLWithResponse request
+	GetDirectoryAuthorizationURLWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryAuthorizationURLResp, error)
+
+	// SetDirectoryCredentialsWithBodyWithResponse request with any body
+	SetDirectoryCredentialsWithBodyWithResponse(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error)
+
+	SetDirectoryCredentialsWithResponse(ctx context.Context, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error)
+
+	// SyncDirectoryWithResponse request
+	SyncDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*SyncDirectoryResp, error)
+
 	// ListEnvsWithResponse request
 	ListEnvsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListEnvsResp, error)
 
@@ -5847,36 +6347,21 @@ type ClientWithResponsesInterface interface {
 
 	UpdateEnvWithResponse(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateEnvResp, error)
 
-	// ListDirectoriesWithResponse request
-	ListDirectoriesWithResponse(ctx context.Context, env string, params *ListDirectoriesParams, reqEditors ...RequestEditorFn) (*ListDirectoriesResp, error)
-
-	// CreateDirectoryWithBodyWithResponse request with any body
-	CreateDirectoryWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error)
-
-	CreateDirectoryWithResponse(ctx context.Context, env string, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error)
-
-	// DeleteDirectoryWithResponse request
-	DeleteDirectoryWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*DeleteDirectoryResp, error)
-
-	// GetDirectoryWithResponse request
-	GetDirectoryWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryResp, error)
-
-	// GetDirectoryAuthorizationURLWithResponse request
-	GetDirectoryAuthorizationURLWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryAuthorizationURLResp, error)
-
-	// SetDirectoryCredentialsWithBodyWithResponse request with any body
-	SetDirectoryCredentialsWithBodyWithResponse(ctx context.Context, env string, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error)
-
-	SetDirectoryCredentialsWithResponse(ctx context.Context, env string, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error)
-
-	// SyncDirectoryWithResponse request
-	SyncDirectoryWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*SyncDirectoryResp, error)
-
 	// DeleteLogoWithResponse request
 	DeleteLogoWithResponse(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*DeleteLogoResp, error)
 
 	// UploadLogoWithBodyWithResponse request with any body
 	UploadLogoWithBodyWithResponse(ctx context.Context, env string, params *UploadLogoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadLogoResp, error)
+
+	// PresignRecoveryMicrositeURLWithBodyWithResponse request with any body
+	PresignRecoveryMicrositeURLWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error)
+
+	PresignRecoveryMicrositeURLWithResponse(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error)
+
+	// RefreshWebhookSecretWithBodyWithResponse request with any body
+	RefreshWebhookSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RefreshWebhookSecretResp, error)
+
+	RefreshWebhookSecretWithResponse(ctx context.Context, env string, body RefreshWebhookSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*RefreshWebhookSecretResp, error)
 
 	// ListEnvRequestsWithResponse request
 	ListEnvRequestsWithResponse(ctx context.Context, env string, params *ListEnvRequestsParams, reqEditors ...RequestEditorFn) (*ListEnvRequestsResp, error)
@@ -6023,6 +6508,29 @@ func (r ListAccountsResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListAccountsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BulkUpdateAccountsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AccountBulkUpdateResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkUpdateAccountsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkUpdateAccountsResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -6251,6 +6759,187 @@ func (r Oauth2PollResp) StatusCode() int {
 	return 0
 }
 
+type ListDirectoriesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetDirectoriesResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDirectoriesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDirectoriesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateDirectoryResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CreateDirectoryResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateDirectoryResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateDirectoryResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteDirectoryResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteDirectoryResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteDirectoryResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetDirectoryResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Directory
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDirectoryResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDirectoryResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateDirectoryResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON204      *Directory
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateDirectoryResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateDirectoryResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetDirectoryAuthorizationURLResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OAuth2AuthorizeResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDirectoryAuthorizationURLResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDirectoryAuthorizationURLResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetDirectoryCredentialsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r SetDirectoryCredentialsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetDirectoryCredentialsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SyncDirectoryResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r SyncDirectoryResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SyncDirectoryResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListEnvsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6364,164 +7053,6 @@ func (r UpdateEnvResp) StatusCode() int {
 	return 0
 }
 
-type ListDirectoriesResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *GetDirectoriesResponse
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r ListDirectoriesResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListDirectoriesResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CreateDirectoryResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *CreateDirectoryResponse
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateDirectoryResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateDirectoryResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type DeleteDirectoryResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r DeleteDirectoryResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r DeleteDirectoryResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetDirectoryResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *Directory
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r GetDirectoryResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetDirectoryResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetDirectoryAuthorizationURLResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *OAuth2AuthorizeResponse
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r GetDirectoryAuthorizationURLResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetDirectoryAuthorizationURLResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type SetDirectoryCredentialsResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r SetDirectoryCredentialsResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r SetDirectoryCredentialsResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type SyncDirectoryResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON400      *N400
-}
-
-// Status returns HTTPResponse.Status
-func (r SyncDirectoryResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r SyncDirectoryResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type DeleteLogoResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6560,6 +7091,52 @@ func (r UploadLogoResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UploadLogoResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PresignRecoveryMicrositeURLResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RecoveryMicrositePresignResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r PresignRecoveryMicrositeURLResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PresignRecoveryMicrositeURLResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RefreshWebhookSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RefreshWebhookSecretResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r RefreshWebhookSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RefreshWebhookSecretResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7211,6 +7788,23 @@ func (c *ClientWithResponses) ListAccountsWithResponse(ctx context.Context, para
 	return ParseListAccountsResp(rsp)
 }
 
+// BulkUpdateAccountsWithBodyWithResponse request with arbitrary body returning *BulkUpdateAccountsResp
+func (c *ClientWithResponses) BulkUpdateAccountsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUpdateAccountsResp, error) {
+	rsp, err := c.BulkUpdateAccountsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkUpdateAccountsResp(rsp)
+}
+
+func (c *ClientWithResponses) BulkUpdateAccountsWithResponse(ctx context.Context, body BulkUpdateAccountsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkUpdateAccountsResp, error) {
+	rsp, err := c.BulkUpdateAccounts(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkUpdateAccountsResp(rsp)
+}
+
 // GetAccountWithResponse request returning *GetAccountResp
 func (c *ClientWithResponses) GetAccountWithResponse(ctx context.Context, account string, reqEditors ...RequestEditorFn) (*GetAccountResp, error) {
 	rsp, err := c.GetAccount(ctx, account, reqEditors...)
@@ -7325,6 +7919,102 @@ func (c *ClientWithResponses) Oauth2PollWithResponse(ctx context.Context, reques
 	return ParseOauth2PollResp(rsp)
 }
 
+// ListDirectoriesWithResponse request returning *ListDirectoriesResp
+func (c *ClientWithResponses) ListDirectoriesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListDirectoriesResp, error) {
+	rsp, err := c.ListDirectories(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDirectoriesResp(rsp)
+}
+
+// CreateDirectoryWithBodyWithResponse request with arbitrary body returning *CreateDirectoryResp
+func (c *ClientWithResponses) CreateDirectoryWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error) {
+	rsp, err := c.CreateDirectoryWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateDirectoryResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateDirectoryWithResponse(ctx context.Context, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error) {
+	rsp, err := c.CreateDirectory(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateDirectoryResp(rsp)
+}
+
+// DeleteDirectoryWithResponse request returning *DeleteDirectoryResp
+func (c *ClientWithResponses) DeleteDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*DeleteDirectoryResp, error) {
+	rsp, err := c.DeleteDirectory(ctx, directory, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteDirectoryResp(rsp)
+}
+
+// GetDirectoryWithResponse request returning *GetDirectoryResp
+func (c *ClientWithResponses) GetDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryResp, error) {
+	rsp, err := c.GetDirectory(ctx, directory, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDirectoryResp(rsp)
+}
+
+// UpdateDirectoryWithBodyWithResponse request with arbitrary body returning *UpdateDirectoryResp
+func (c *ClientWithResponses) UpdateDirectoryWithBodyWithResponse(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDirectoryResp, error) {
+	rsp, err := c.UpdateDirectoryWithBody(ctx, directory, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateDirectoryResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateDirectoryWithResponse(ctx context.Context, directory string, body UpdateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDirectoryResp, error) {
+	rsp, err := c.UpdateDirectory(ctx, directory, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateDirectoryResp(rsp)
+}
+
+// GetDirectoryAuthorizationURLWithResponse request returning *GetDirectoryAuthorizationURLResp
+func (c *ClientWithResponses) GetDirectoryAuthorizationURLWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryAuthorizationURLResp, error) {
+	rsp, err := c.GetDirectoryAuthorizationURL(ctx, directory, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDirectoryAuthorizationURLResp(rsp)
+}
+
+// SetDirectoryCredentialsWithBodyWithResponse request with arbitrary body returning *SetDirectoryCredentialsResp
+func (c *ClientWithResponses) SetDirectoryCredentialsWithBodyWithResponse(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error) {
+	rsp, err := c.SetDirectoryCredentialsWithBody(ctx, directory, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetDirectoryCredentialsResp(rsp)
+}
+
+func (c *ClientWithResponses) SetDirectoryCredentialsWithResponse(ctx context.Context, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error) {
+	rsp, err := c.SetDirectoryCredentials(ctx, directory, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetDirectoryCredentialsResp(rsp)
+}
+
+// SyncDirectoryWithResponse request returning *SyncDirectoryResp
+func (c *ClientWithResponses) SyncDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*SyncDirectoryResp, error) {
+	rsp, err := c.SyncDirectory(ctx, directory, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSyncDirectoryResp(rsp)
+}
+
 // ListEnvsWithResponse request returning *ListEnvsResp
 func (c *ClientWithResponses) ListEnvsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListEnvsResp, error) {
 	rsp, err := c.ListEnvs(ctx, reqEditors...)
@@ -7386,85 +8076,6 @@ func (c *ClientWithResponses) UpdateEnvWithResponse(ctx context.Context, env str
 	return ParseUpdateEnvResp(rsp)
 }
 
-// ListDirectoriesWithResponse request returning *ListDirectoriesResp
-func (c *ClientWithResponses) ListDirectoriesWithResponse(ctx context.Context, env string, params *ListDirectoriesParams, reqEditors ...RequestEditorFn) (*ListDirectoriesResp, error) {
-	rsp, err := c.ListDirectories(ctx, env, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListDirectoriesResp(rsp)
-}
-
-// CreateDirectoryWithBodyWithResponse request with arbitrary body returning *CreateDirectoryResp
-func (c *ClientWithResponses) CreateDirectoryWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error) {
-	rsp, err := c.CreateDirectoryWithBody(ctx, env, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateDirectoryResp(rsp)
-}
-
-func (c *ClientWithResponses) CreateDirectoryWithResponse(ctx context.Context, env string, body CreateDirectoryJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDirectoryResp, error) {
-	rsp, err := c.CreateDirectory(ctx, env, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateDirectoryResp(rsp)
-}
-
-// DeleteDirectoryWithResponse request returning *DeleteDirectoryResp
-func (c *ClientWithResponses) DeleteDirectoryWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*DeleteDirectoryResp, error) {
-	rsp, err := c.DeleteDirectory(ctx, env, directory, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteDirectoryResp(rsp)
-}
-
-// GetDirectoryWithResponse request returning *GetDirectoryResp
-func (c *ClientWithResponses) GetDirectoryWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryResp, error) {
-	rsp, err := c.GetDirectory(ctx, env, directory, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetDirectoryResp(rsp)
-}
-
-// GetDirectoryAuthorizationURLWithResponse request returning *GetDirectoryAuthorizationURLResp
-func (c *ClientWithResponses) GetDirectoryAuthorizationURLWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*GetDirectoryAuthorizationURLResp, error) {
-	rsp, err := c.GetDirectoryAuthorizationURL(ctx, env, directory, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetDirectoryAuthorizationURLResp(rsp)
-}
-
-// SetDirectoryCredentialsWithBodyWithResponse request with arbitrary body returning *SetDirectoryCredentialsResp
-func (c *ClientWithResponses) SetDirectoryCredentialsWithBodyWithResponse(ctx context.Context, env string, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error) {
-	rsp, err := c.SetDirectoryCredentialsWithBody(ctx, env, directory, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSetDirectoryCredentialsResp(rsp)
-}
-
-func (c *ClientWithResponses) SetDirectoryCredentialsWithResponse(ctx context.Context, env string, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error) {
-	rsp, err := c.SetDirectoryCredentials(ctx, env, directory, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSetDirectoryCredentialsResp(rsp)
-}
-
-// SyncDirectoryWithResponse request returning *SyncDirectoryResp
-func (c *ClientWithResponses) SyncDirectoryWithResponse(ctx context.Context, env string, directory string, reqEditors ...RequestEditorFn) (*SyncDirectoryResp, error) {
-	rsp, err := c.SyncDirectory(ctx, env, directory, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSyncDirectoryResp(rsp)
-}
-
 // DeleteLogoWithResponse request returning *DeleteLogoResp
 func (c *ClientWithResponses) DeleteLogoWithResponse(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*DeleteLogoResp, error) {
 	rsp, err := c.DeleteLogo(ctx, env, params, reqEditors...)
@@ -7481,6 +8092,40 @@ func (c *ClientWithResponses) UploadLogoWithBodyWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseUploadLogoResp(rsp)
+}
+
+// PresignRecoveryMicrositeURLWithBodyWithResponse request with arbitrary body returning *PresignRecoveryMicrositeURLResp
+func (c *ClientWithResponses) PresignRecoveryMicrositeURLWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error) {
+	rsp, err := c.PresignRecoveryMicrositeURLWithBody(ctx, env, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePresignRecoveryMicrositeURLResp(rsp)
+}
+
+func (c *ClientWithResponses) PresignRecoveryMicrositeURLWithResponse(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error) {
+	rsp, err := c.PresignRecoveryMicrositeURL(ctx, env, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePresignRecoveryMicrositeURLResp(rsp)
+}
+
+// RefreshWebhookSecretWithBodyWithResponse request with arbitrary body returning *RefreshWebhookSecretResp
+func (c *ClientWithResponses) RefreshWebhookSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RefreshWebhookSecretResp, error) {
+	rsp, err := c.RefreshWebhookSecretWithBody(ctx, env, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRefreshWebhookSecretResp(rsp)
+}
+
+func (c *ClientWithResponses) RefreshWebhookSecretWithResponse(ctx context.Context, env string, body RefreshWebhookSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*RefreshWebhookSecretResp, error) {
+	rsp, err := c.RefreshWebhookSecret(ctx, env, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRefreshWebhookSecretResp(rsp)
 }
 
 // ListEnvRequestsWithResponse request returning *ListEnvRequestsResp
@@ -7881,6 +8526,39 @@ func ParseListAccountsResp(rsp *http.Response) (*ListAccountsResp, error) {
 	return response, nil
 }
 
+// ParseBulkUpdateAccountsResp parses an HTTP response from a BulkUpdateAccountsWithResponse call
+func ParseBulkUpdateAccountsResp(rsp *http.Response) (*BulkUpdateAccountsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkUpdateAccountsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AccountBulkUpdateResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetAccountResp parses an HTTP response from a GetAccountWithResponse call
 func ParseGetAccountResp(rsp *http.Response) (*GetAccountResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -8149,6 +8827,249 @@ func ParseOauth2PollResp(rsp *http.Response) (*Oauth2PollResp, error) {
 	return response, nil
 }
 
+// ParseListDirectoriesResp parses an HTTP response from a ListDirectoriesWithResponse call
+func ParseListDirectoriesResp(rsp *http.Response) (*ListDirectoriesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDirectoriesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetDirectoriesResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateDirectoryResp parses an HTTP response from a CreateDirectoryWithResponse call
+func ParseCreateDirectoryResp(rsp *http.Response) (*CreateDirectoryResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateDirectoryResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CreateDirectoryResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteDirectoryResp parses an HTTP response from a DeleteDirectoryWithResponse call
+func ParseDeleteDirectoryResp(rsp *http.Response) (*DeleteDirectoryResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteDirectoryResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDirectoryResp parses an HTTP response from a GetDirectoryWithResponse call
+func ParseGetDirectoryResp(rsp *http.Response) (*GetDirectoryResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDirectoryResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Directory
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateDirectoryResp parses an HTTP response from a UpdateDirectoryWithResponse call
+func ParseUpdateDirectoryResp(rsp *http.Response) (*UpdateDirectoryResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateDirectoryResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 204:
+		var dest Directory
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON204 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDirectoryAuthorizationURLResp parses an HTTP response from a GetDirectoryAuthorizationURLWithResponse call
+func ParseGetDirectoryAuthorizationURLResp(rsp *http.Response) (*GetDirectoryAuthorizationURLResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDirectoryAuthorizationURLResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OAuth2AuthorizeResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetDirectoryCredentialsResp parses an HTTP response from a SetDirectoryCredentialsWithResponse call
+func ParseSetDirectoryCredentialsResp(rsp *http.Response) (*SetDirectoryCredentialsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetDirectoryCredentialsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSyncDirectoryResp parses an HTTP response from a SyncDirectoryWithResponse call
+func ParseSyncDirectoryResp(rsp *http.Response) (*SyncDirectoryResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SyncDirectoryResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListEnvsResp parses an HTTP response from a ListEnvsWithResponse call
 func ParseListEnvsResp(rsp *http.Response) (*ListEnvsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -8300,216 +9221,6 @@ func ParseUpdateEnvResp(rsp *http.Response) (*UpdateEnvResp, error) {
 	return response, nil
 }
 
-// ParseListDirectoriesResp parses an HTTP response from a ListDirectoriesWithResponse call
-func ParseListDirectoriesResp(rsp *http.Response) (*ListDirectoriesResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListDirectoriesResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest GetDirectoriesResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCreateDirectoryResp parses an HTTP response from a CreateDirectoryWithResponse call
-func ParseCreateDirectoryResp(rsp *http.Response) (*CreateDirectoryResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateDirectoryResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest CreateDirectoryResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseDeleteDirectoryResp parses an HTTP response from a DeleteDirectoryWithResponse call
-func ParseDeleteDirectoryResp(rsp *http.Response) (*DeleteDirectoryResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteDirectoryResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetDirectoryResp parses an HTTP response from a GetDirectoryWithResponse call
-func ParseGetDirectoryResp(rsp *http.Response) (*GetDirectoryResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetDirectoryResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Directory
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetDirectoryAuthorizationURLResp parses an HTTP response from a GetDirectoryAuthorizationURLWithResponse call
-func ParseGetDirectoryAuthorizationURLResp(rsp *http.Response) (*GetDirectoryAuthorizationURLResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetDirectoryAuthorizationURLResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest OAuth2AuthorizeResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseSetDirectoryCredentialsResp parses an HTTP response from a SetDirectoryCredentialsWithResponse call
-func ParseSetDirectoryCredentialsResp(rsp *http.Response) (*SetDirectoryCredentialsResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &SetDirectoryCredentialsResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseSyncDirectoryResp parses an HTTP response from a SyncDirectoryWithResponse call
-func ParseSyncDirectoryResp(rsp *http.Response) (*SyncDirectoryResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &SyncDirectoryResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest N400
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseDeleteLogoResp parses an HTTP response from a DeleteLogoWithResponse call
 func ParseDeleteLogoResp(rsp *http.Response) (*DeleteLogoResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -8550,6 +9261,72 @@ func ParseUploadLogoResp(rsp *http.Response) (*UploadLogoResp, error) {
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePresignRecoveryMicrositeURLResp parses an HTTP response from a PresignRecoveryMicrositeURLWithResponse call
+func ParsePresignRecoveryMicrositeURLResp(rsp *http.Response) (*PresignRecoveryMicrositeURLResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PresignRecoveryMicrositeURLResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RecoveryMicrositePresignResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRefreshWebhookSecretResp parses an HTTP response from a RefreshWebhookSecretWithResponse call
+func ParseRefreshWebhookSecretResp(rsp *http.Response) (*RefreshWebhookSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RefreshWebhookSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RefreshWebhookSecretResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
