@@ -22,6 +22,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/nametaginc/cli/internal/api"
+	"github.com/nametaginc/cli/internal/pkg/jsonx"
 )
 
 func newSelfServiceCmd() *cobra.Command {
@@ -85,9 +86,9 @@ func newSelfServicePresignCmd() *cobra.Command {
 				fmt.Fprintf(cmd.ErrOrStderr(), "cannot read ttl: %s\n", err)
 				return err
 			} else if v > 0 {
-				req.Ttl = v
+				req.Ttl = jsonx.Duration(v)
 			} else {
-				req.Ttl = time.Hour
+				req.Ttl = jsonx.Duration(time.Hour)
 			}
 
 			resp, err := client.PresignRecoveryMicrositeURLWithResponse(cmd.Context(), envID,

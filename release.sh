@@ -25,6 +25,8 @@ echo "dir: $dir"
 
 git clone --bare git@github.com:nametaginc/cli "$dir/.git"
 cp -r "$source_root/cli/" "$dir"
+mkdir -p "$dir/internal/pkg/jsonx"
+cp -r "$source_root/pkg/jsonx/duration.go" "$dir/internal/pkg/jsonx/duration.go"
 cp "$source_root"/go.{mod,sum} "$dir"
 
 cd "$dir"
@@ -47,6 +49,7 @@ find . -type d -name recording -print0 | xargs -0 rm -rf
 
 # fix imports
 find . -name \*.go -type f -exec sed -i.bak 's|nametaginc/nt/cli|nametaginc/cli|g' {} \;
+find . -name \*.go -type f -exec sed -i.bak 's|nametaginc/nt/pkg|nametaginc/cli/internal/pkg|g' {} \;
 find . -name \*.bak -exec rm {} \;
 
 # fix go.mod
