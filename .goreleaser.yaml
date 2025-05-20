@@ -15,12 +15,34 @@ builds:
 
 dockers:
   - image_templates:
-      - "nametag/cli:latest"
-      - "nametag/cli:{{.Tag}}"
-      - "nametag/cli:v{{ .Major }}"
+      - "nametaginc/cli:{{.Tag}}-amd64"
     goos: linux
     goarch: amd64
     dockerfile: Dockerfile
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "nametaginc/cli:{{.Tag}}-arm64"
+    goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/arm64"
+docker_manifests:
+  - name_template: "nametaginc/cli:{{.Tag}}"
+    image_templates:
+      - "nametaginc/cli:{{.Tag}}-amd64"
+      - "nametaginc/cli:{{.Tag}}-arm64"
+  - name_template: "nametaginc/cli:v{{ .Major }}"
+    image_templates:
+      - "nametaginc/cli:{{.Tag}}-amd64"
+      - "nametaginc/cli:{{.Tag}}-arm64"
+  - name_template: "nametaginc/cli:latest"
+    image_templates:
+      - "nametaginc/cli:{{.Tag}}-amd64"
+      - "nametaginc/cli:{{.Tag}}-arm64"
 
 brews:
   - name: nametag

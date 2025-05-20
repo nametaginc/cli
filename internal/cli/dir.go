@@ -33,6 +33,7 @@ func newDirCmd() *cobra.Command {
 	}
 	cmd.AddCommand(newDirListCmd())
 	cmd.AddCommand(newDirGetCmd())
+	cmd.AddCommand(newDirAgentCmd())
 
 	return cmd
 }

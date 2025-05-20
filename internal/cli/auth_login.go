@@ -46,10 +46,15 @@ var browserOpenURL = browser.OpenURL
 var randReader = rand.Reader
 
 func newAuthLoginCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "login",
 		Short: "Log in to Nametag",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			noBrowser, err := cmd.Flags().GetBool("no-browser")
+			if err != nil {
+				return err
+			}
+
 			publicKey, privateKey, err := box.GenerateKey(randReader)
 			if err != nil {
 				return err
@@ -59,7 +64,9 @@ func newAuthLoginCmd() *cobra.Command {
 			url := server + "/cli/login/" + base64.RawURLEncoding.EncodeToString(publicKey[:])
 			fmt.Fprintf(cmd.OutOrStdout(), "If your browser does not open automatically, then navigate to the following URL to authenticate to Nametag\n")
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s\n", url)
-			_ = browserOpenURL(url)
+			if !noBrowser {
+				_ = browserOpenURL(url)
+			}
 
 			bo := backoff.Backoff{
 				Min: time.Second,
@@ -124,4 +131,6 @@ func newAuthLoginCmd() *cobra.Command {
 			}
 		},
 	}
+	cmd.Flags().Bool("no-browser", false, "Disable automatic browser opening")
+	return cmd
 }

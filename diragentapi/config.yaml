@@ -1,0 +1,6 @@
+package: diragentapi
+generate:
+  models: true
+output: api.gen.go
+output-options:
+  skip-prune: true

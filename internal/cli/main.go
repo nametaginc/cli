@@ -15,6 +15,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"text/template"
@@ -38,6 +39,7 @@ func init() {
 func Main() {
 	cmd := New()
 	if err := cmd.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
 }

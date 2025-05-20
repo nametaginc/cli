@@ -23,7 +23,8 @@ import (
 	"time"
 
 	"github.com/ghodss/yaml"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 
 	"github.com/nametaginc/cli/internal/api"
@@ -104,9 +105,9 @@ func getAuthToken(cmd *cobra.Command) (authToken string, err error) {
 	}
 
 	if authToken != "" {
-		var claims jwt.StandardClaims
+		var claims jwt.RegisteredClaims
 		_, _, err := new(jwt.Parser).ParseUnverified(authToken, &claims)
-		if err == nil && time.Now().After(time.Unix(claims.ExpiresAt, 0)) {
+		if err == nil && time.Now().After(lo.FromPtr(claims.ExpiresAt).Time) {
 			fmt.Fprintf(cmd.ErrOrStderr(), "Your authentication token has expired. Do you need to run `nametag auth login` again?\n")
 			os.Exit(1)
 		}

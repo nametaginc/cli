@@ -81,12 +81,48 @@ const (
 	BadRequestResponseStatusN400 BadRequestResponseStatus = 400
 )
 
+// Defines values for Claim.
+const (
+	Address       Claim = "address"
+	BirthDate     Claim = "birth_date"
+	FamilyName    Claim = "family_name"
+	GivenName     Claim = "given_name"
+	Govtid        Claim = "govtid"
+	GovtidExpired Claim = "govtid_expired"
+	IpLocation    Claim = "ip_location"
+	Name          Claim = "name"
+	PhoneNumber   Claim = "phone_number"
+	Picture       Claim = "picture"
+	PreferredName Claim = "preferred_name"
+)
+
 // Defines values for DirectoryKind.
 const (
 	DirectoryKindAzureAD  DirectoryKind = "azure-ad"
+	DirectoryKindCustom   DirectoryKind = "custom"
 	DirectoryKindDuo      DirectoryKind = "duo"
 	DirectoryKindOkta     DirectoryKind = "okta"
 	DirectoryKindOnelogin DirectoryKind = "onelogin"
+)
+
+// Defines values for EnvStatusFilterParams.
+const (
+	Active               EnvStatusFilterParams = "active"
+	Expired              EnvStatusFilterParams = "expired"
+	HideExpired          EnvStatusFilterParams = "hideExpired"
+	RejectedAll          EnvStatusFilterParams = "rejectedAll"
+	RejectedFraud        EnvStatusFilterParams = "rejectedFraud"
+	ScheduledForDeletion EnvStatusFilterParams = "scheduledForDeletion"
+)
+
+// Defines values for EnvUpdatedAtFilterParams.
+const (
+	All       EnvUpdatedAtFilterParams = "all"
+	Lastmonth EnvUpdatedAtFilterParams = "lastmonth"
+	Month     EnvUpdatedAtFilterParams = "month"
+	Today     EnvUpdatedAtFilterParams = "today"
+	Week      EnvUpdatedAtFilterParams = "week"
+	Year      EnvUpdatedAtFilterParams = "year"
 )
 
 // Defines values for GovtidType.
@@ -116,6 +152,22 @@ const (
 	NumericRequestStatusRevoked          NumericRequestStatus = 403
 )
 
+// Defines values for PushedAuthorizationRequestCodeChallengeMethod.
+const (
+	PushedAuthorizationRequestCodeChallengeMethodPlain PushedAuthorizationRequestCodeChallengeMethod = "plain"
+	PushedAuthorizationRequestCodeChallengeMethodS256  PushedAuthorizationRequestCodeChallengeMethod = "S256"
+)
+
+// Defines values for PushedAuthorizationRequestResponseMode.
+const (
+	PushedAuthorizationRequestResponseModeFragment PushedAuthorizationRequestResponseMode = "fragment"
+)
+
+// Defines values for PushedAuthorizationRequestResponseType.
+const (
+	PushedAuthorizationRequestResponseTypeCode PushedAuthorizationRequestResponseType = "code"
+)
+
 // Defines values for RecoveryMicrositeFlow.
 const (
 	Enroll  RecoveryMicrositeFlow = "enroll"
@@ -136,6 +188,7 @@ const (
 	RecoveryPolicyNameAndBirthDate RecoveryPolicy = "name_and_birth_date"
 	RecoveryPolicyNameMatch        RecoveryPolicy = "name_match"
 	RecoveryPolicyPhoto            RecoveryPolicy = "photo"
+	RecoveryPolicyWeakNameMatch    RecoveryPolicy = "weak_name_match"
 )
 
 // Defines values for RequestProgress.
@@ -174,7 +227,6 @@ const (
 
 // Defines values for Scope.
 const (
-	Login             Scope = "login"
 	NtAddress         Scope = "nt:address"
 	NtAgeOver18       Scope = "nt:age_over_18"
 	NtAgeOver21       Scope = "nt:age_over_21"
@@ -213,41 +265,12 @@ const (
 	WebhookEventTypeShare   WebhookEventType = "share"
 )
 
-// Defines values for ListAccountsParamsSort.
-const (
-	AccountBoundAt      ListAccountsParamsSort = "account_bound_at"
-	ExternalId          ListAccountsParamsSort = "external_id"
-	LastVerifiedAt      ListAccountsParamsSort = "last_verified_at"
-	MinusAccountBoundAt ListAccountsParamsSort = "-account_bound_at"
-	MinusExternalId     ListAccountsParamsSort = "-external_id"
-	MinusLastVerifiedAt ListAccountsParamsSort = "-last_verified_at"
-	MinusName           ListAccountsParamsSort = "-name"
-	Name                ListAccountsParamsSort = "name"
-)
-
 // Defines values for ListEnvRequestsParamsSort.
 const (
 	LastCreated      ListEnvRequestsParamsSort = "last_created"
 	LastUpdated      ListEnvRequestsParamsSort = "last_updated"
 	MinusLastCreated ListEnvRequestsParamsSort = "-last_created"
 	MinusLastUpdated ListEnvRequestsParamsSort = "-last_updated"
-)
-
-// Defines values for ListEnvRequestsParamsStatusFilter.
-const (
-	Active               ListEnvRequestsParamsStatusFilter = "active"
-	Expired              ListEnvRequestsParamsStatusFilter = "expired"
-	ScheduledForDeletion ListEnvRequestsParamsStatusFilter = "scheduledForDeletion"
-)
-
-// Defines values for ListEnvRequestsParamsUpdatedAt.
-const (
-	All       ListEnvRequestsParamsUpdatedAt = "all"
-	Lastmonth ListEnvRequestsParamsUpdatedAt = "lastmonth"
-	Month     ListEnvRequestsParamsUpdatedAt = "month"
-	Today     ListEnvRequestsParamsUpdatedAt = "today"
-	Week      ListEnvRequestsParamsUpdatedAt = "week"
-	Year      ListEnvRequestsParamsUpdatedAt = "year"
 )
 
 // Defines values for Oauth2AuthorizeParamsResponseType.
@@ -284,18 +307,18 @@ const (
 
 // Defines values for Oauth2AuthorizeWithExperienceParamsResponseType.
 const (
-	Oauth2AuthorizeWithExperienceParamsResponseTypeCode Oauth2AuthorizeWithExperienceParamsResponseType = "code"
+	Code Oauth2AuthorizeWithExperienceParamsResponseType = "code"
 )
 
 // Defines values for Oauth2AuthorizeWithExperienceParamsResponseMode.
 const (
-	Oauth2AuthorizeWithExperienceParamsResponseModeFragment Oauth2AuthorizeWithExperienceParamsResponseMode = "fragment"
+	Fragment Oauth2AuthorizeWithExperienceParamsResponseMode = "fragment"
 )
 
 // Defines values for Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod.
 const (
-	Oauth2AuthorizeWithExperienceParamsCodeChallengeMethodPlain Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod = "plain"
-	Oauth2AuthorizeWithExperienceParamsCodeChallengeMethodS256  Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod = "S256"
+	Plain Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod = "plain"
+	S256  Oauth2AuthorizeWithExperienceParamsCodeChallengeMethod = "S256"
 )
 
 // AccountBulkUpdateStatus A status code that describes whether the operation was successful
@@ -444,6 +467,9 @@ type AccountUpdatedAuditEvent struct {
 type AccountsList struct {
 	// Accounts The list of accounts
 	Accounts []Account `json:"accounts"`
+
+	// NextOffset A value for the offset query parameter for the next page of results
+	NextOffset *string `json:"next_offset,omitempty"`
 }
 
 // AuditEvent defines model for AuditEvent.
@@ -468,52 +494,59 @@ type AuditEvent struct {
 	OrgID string `json:"org"`
 
 	// EnvID The ID of the environment that this action refers to.
-	EnvID                       *string                                `json:"env,omitempty"`
-	Principal                   *Principal                             `json:"principal,omitempty"`
-	EnvCreated                  *EnvCreatedAuditEvent                  `json:"env_created,omitempty"`
-	EnvUpdated                  *EnvUpdatedAuditEvent                  `json:"env_updated,omitempty"`
-	EnvDeleted                  *EnvDeletedAuditEvent                  `json:"env_deleted,omitempty"`
-	EnvLogoUploaded             *EnvLogoUploadedAuditEvent             `json:"env_logo_uploaded,omitempty"`
-	EnvLogoDeleted              *EnvLogoDeletedAuditEvent              `json:"env_logo_deleted,omitempty"`
-	TemplateCreated             *TemplateCreatedAuditEvent             `json:"template_created,omitempty"`
-	TemplateUpdated             *TemplateUpdatedAuditEvent             `json:"template_updated,omitempty"`
-	TemplateDeleted             *TemplateDeletedAuditEvent             `json:"template_deleted,omitempty"`
-	EnvWebhookSecretUpdated     *EnvWebhookSecretUpdatedAuditEvent     `json:"env_webhook_secret_updated,omitempty"`
-	OrgUpdated                  *OrgUpdatedAuditEvent                  `json:"org_updated,omitempty"`
-	OrgMemberInvited            *OrgMemberInvitedAuditEvent            `json:"org_member_invited,omitempty"`
-	OrgMemberRemoved            *OrgMemberRemoveAuditEvent             `json:"org_member_removed,omitempty"`
-	OrgMemberUpdated            *OrgMemberUpdatedAuditEvent            `json:"org_member_updated,omitempty"`
-	ApikeyCreated               *APIKeyCreatedAuditEvent               `json:"apikey_created,omitempty"`
-	ApikeyUpdated               *APIKeyUpdatedAuditEvent               `json:"apikey_updated,omitempty"`
-	ApikeyDeleted               *APIKeyDeletedAuditEvent               `json:"apikey_deleted,omitempty"`
-	RequestCreated              *RequestCreatedAuditEvent              `json:"request_created,omitempty"`
-	RequestUpdated              *RequestUpdatedAuditEvent              `json:"request_updated,omitempty"`
-	RequestCanceled             *RequestCanceledAuditEvent             `json:"request_canceled,omitempty"`
-	AccountUpdated              *AccountUpdatedAuditEvent              `json:"account_updated,omitempty"`
-	AccountPhotoUploaded        *AccountPhotoUploadedAuditEvent        `json:"account_photo_uploaded,omitempty"`
-	DirectoryCreated            *DirectoryCreatedAuditEvent            `json:"directory_created,omitempty"`
-	DirectoryUpdated            *DirectoryUpdatedAuditEvent            `json:"directory_updated,omitempty"`
-	DirectoryDeleted            *DirectoryDeletedAuditEvent            `json:"directory_deleted,omitempty"`
-	DirectoryAuthorized         *DirectoryAuthorizedAuditEvent         `json:"directory_authorized,omitempty"`
-	DirectorySetCredentials     *DirectorySetCredentialsAuditEvent     `json:"directory_set_credentials,omitempty"`
-	ConsoleSignin               *ConsoleSigninAuditEvent               `json:"console_signin,omitempty"`
-	ConsoleSinginConfigureEmail *ConsoleSinginConfigureEmailAuditEvent `json:"console_singin_configure_email,omitempty"`
-	ConsoleSinginConfigureSaml  *ConsoleSinginConfigureSAMLAuditEvent  `json:"console_singin_configure_saml,omitempty"`
-	CliSignin                   *CLISigninAuditEvent                   `json:"cli_signin,omitempty"`
-	Oauth2Authorize             *OAuth2AuthorizeAuditEvent             `json:"oauth2_authorize,omitempty"`
-	Oauth2RequestCanceled       *OAuth2RequestCanceledAuditEvent       `json:"oauth2_request_canceled,omitempty"`
-	Oauth2Token                 *OAuth2TokenAuditEvent                 `json:"oauth2_token,omitempty"`
-	EntraEamAuthorize           *EntraEamAuthorizeAuditEvent           `json:"entra_eam_authorize,omitempty"`
-	EntraEamFinish              *EntraEamFinishAuditEvent              `json:"entra_eam_finish,omitempty"`
-	OktaEamAuthorize            *OktaEamAuthorizeAuditEvent            `json:"okta_eam_authorize,omitempty"`
-	OktaEamFinish               *OktaEamFinishAuditEvent               `json:"okta_eam_finish,omitempty"`
-	PeopleCompare               *PeopleCompareAuditEvent               `json:"people_compare,omitempty"`
-	SelfieCompare               *SelfieCompareAuditEvent               `json:"selfie_compare,omitempty"`
-	SharingRevoked              *SharingRevokedAuditEvent              `json:"sharing_revoked,omitempty"`
+	EnvID                          *string                                     `json:"env,omitempty"`
+	Principal                      *Principal                                  `json:"principal,omitempty"`
+	EnvCreated                     *EnvCreatedAuditEvent                       `json:"env_created,omitempty"`
+	EnvUpdated                     *EnvUpdatedAuditEvent                       `json:"env_updated,omitempty"`
+	EnvDeleted                     *EnvDeletedAuditEvent                       `json:"env_deleted,omitempty"`
+	EnvLogoUploaded                *EnvLogoUploadedAuditEvent                  `json:"env_logo_uploaded,omitempty"`
+	EnvLogoDeleted                 *EnvLogoDeletedAuditEvent                   `json:"env_logo_deleted,omitempty"`
+	TemplateCreated                *TemplateCreatedAuditEvent                  `json:"template_created,omitempty"`
+	TemplateUpdated                *TemplateUpdatedAuditEvent                  `json:"template_updated,omitempty"`
+	TemplateDeleted                *TemplateDeletedAuditEvent                  `json:"template_deleted,omitempty"`
+	EnvWebhookSecretUpdated        *EnvWebhookSecretUpdatedAuditEvent          `json:"env_webhook_secret_updated,omitempty"`
+	OrgUpdated                     *OrgUpdatedAuditEvent                       `json:"org_updated,omitempty"`
+	OrgMemberInvited               *OrgMemberInvitedAuditEvent                 `json:"org_member_invited,omitempty"`
+	OrgMemberRemoved               *OrgMemberRemoveAuditEvent                  `json:"org_member_removed,omitempty"`
+	OrgMemberUpdated               *OrgMemberUpdatedAuditEvent                 `json:"org_member_updated,omitempty"`
+	ApikeyCreated                  *APIKeyCreatedAuditEvent                    `json:"apikey_created,omitempty"`
+	ApikeyUpdated                  *APIKeyUpdatedAuditEvent                    `json:"apikey_updated,omitempty"`
+	ApikeyDeleted                  *APIKeyDeletedAuditEvent                    `json:"apikey_deleted,omitempty"`
+	RequestCreated                 *RequestCreatedAuditEvent                   `json:"request_created,omitempty"`
+	RequestUpdated                 *RequestUpdatedAuditEvent                   `json:"request_updated,omitempty"`
+	RequestCanceled                *RequestCanceledAuditEvent                  `json:"request_canceled,omitempty"`
+	AccountUpdated                 *AccountUpdatedAuditEvent                   `json:"account_updated,omitempty"`
+	AccountPhotoUploaded           *AccountPhotoUploadedAuditEvent             `json:"account_photo_uploaded,omitempty"`
+	DirectoryCreated               *DirectoryCreatedAuditEvent                 `json:"directory_created,omitempty"`
+	DirectoryUpdated               *DirectoryUpdatedAuditEvent                 `json:"directory_updated,omitempty"`
+	DirectoryDeleted               *DirectoryDeletedAuditEvent                 `json:"directory_deleted,omitempty"`
+	DirectoryAuthorized            *DirectoryAuthorizedAuditEvent              `json:"directory_authorized,omitempty"`
+	DirectorySetCredentials        *DirectorySetCredentialsAuditEvent          `json:"directory_set_credentials,omitempty"`
+	DirectoryLogoUploaded          *DirectoryLogoUploadedAuditEvent            `json:"directory_logo_uploaded,omitempty"`
+	DirectoryLogoDeleted           *DirectoryLogoDeletedAuditEvent             `json:"directory_logo_deleted,omitempty"`
+	ConsoleSignin                  *ConsoleSigninAuditEvent                    `json:"console_signin,omitempty"`
+	ConsoleSinginConfigureEmail    *ConsoleSinginConfigureEmailAuditEvent      `json:"console_singin_configure_email,omitempty"`
+	ConsoleSinginConfigureSaml     *ConsoleSinginConfigureSAMLAuditEvent       `json:"console_singin_configure_saml,omitempty"`
+	CliSignin                      *CLISigninAuditEvent                        `json:"cli_signin,omitempty"`
+	Oauth2PushedAuthorizationEvent *OAuth2PushedAuthorizationRequestAuditEvent `json:"oauth2_pushed_authorization_event,omitempty"`
+	Oauth2Authorize                *OAuth2AuthorizeAuditEvent                  `json:"oauth2_authorize,omitempty"`
+	Oauth2V2Authorize              *OAuth2V2AuthorizeAuditEvent                `json:"oauth2_v2_authorize,omitempty"`
+	Oauth2RequestCanceled          *OAuth2RequestCanceledAuditEvent            `json:"oauth2_request_canceled,omitempty"`
+	Oauth2Token                    *OAuth2TokenAuditEvent                      `json:"oauth2_token,omitempty"`
+	EntraEamAuthorize              *EntraEamAuthorizeAuditEvent                `json:"entra_eam_authorize,omitempty"`
+	EntraEamFinish                 *EntraEamFinishAuditEvent                   `json:"entra_eam_finish,omitempty"`
+	OktaEamAuthorize               *OktaEamAuthorizeAuditEvent                 `json:"okta_eam_authorize,omitempty"`
+	OktaEamFinish                  *OktaEamFinishAuditEvent                    `json:"okta_eam_finish,omitempty"`
+	PeopleCompare                  *PeopleCompareAuditEvent                    `json:"people_compare,omitempty"`
+	SelfieCompare                  *SelfieCompareAuditEvent                    `json:"selfie_compare,omitempty"`
+	SharingRevoked                 *SharingRevokedAuditEvent                   `json:"sharing_revoked,omitempty"`
 }
 
 // AuthorizeRequest defines model for AuthorizeRequest.
 type AuthorizeRequest struct {
+	// Claim Space-separated list of claims
+	Claim *[]Claim `json:"claim,omitempty"`
+
 	// ClientId The client ID
 	ClientId string `json:"client_id"`
 
@@ -574,6 +607,12 @@ type AuthorizeReturn string
 // AuthorizeStatus defines model for AuthorizeStatus.
 type AuthorizeStatus int
 
+// AuthorizeV2Request defines model for AuthorizeV2Request.
+type AuthorizeV2Request struct {
+	// RequestUri The request URI
+	RequestUri string `json:"request_uri"`
+}
+
 // BadRequestResponse defines model for BadRequestResponse.
 type BadRequestResponse struct {
 	// Status The status code for the request. Always 400, meaning the request was invalid
@@ -598,7 +637,10 @@ type BulkRequestItem struct {
 	Subject string `json:"subject"`
 
 	// Scopes Which scopes you are requesting for this person.
-	Scopes []Scope `json:"scopes"`
+	Scopes *[]Scope `json:"scopes,omitempty"`
+
+	// Claims Which claims you are requesting for this person.
+	Claims []Claim `json:"claims"`
 }
 
 // BulkResponse defines model for BulkResponse.
@@ -644,6 +686,9 @@ type CancelResponse struct {
 	RedirectURI string `json:"redirect_uri"`
 }
 
+// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+type Claim string
+
 // CompareSelfieResult defines model for CompareSelfieResult.
 type CompareSelfieResult struct {
 	// Match True if the `match_confidence` exceeds Nametag's recommended threshold for a match, false otherwise.
@@ -656,12 +701,15 @@ type CompareSelfieResult struct {
 // Comparison defines model for Comparison.
 type Comparison struct {
 	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
-	Scope Scope `json:"scope"`
+	Scope *Scope `json:"scope,omitempty"`
 
-	// Expected The expected value for this scope.
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	Claim Claim `json:"claim"`
+
+	// Expected The expected value for this claim.
 	Expected string `json:"expected"`
 
-	// Actual The actual value for this scope.
+	// Actual The actual value for this claim.
 	Actual string `json:"actual"`
 
 	// Match True if the `match_confidence` exceeds Nametag's recommended threshold for a match, false otherwise.
@@ -742,6 +790,8 @@ type CreateDirectoryRequest struct {
 
 // CreateDirectoryResponse defines model for CreateDirectoryResponse.
 type CreateDirectoryResponse struct {
+	AgentToken *string `json:"agent_token,omitempty"`
+
 	// ID The unique identifier for the directory.
 	ID string `json:"id"`
 
@@ -770,9 +820,12 @@ type CreateRequestRequest struct {
 	// If you specify `template`, you must not specify `scopes`.
 	Scopes []Scope `json:"scopes,omitempty"`
 
+	// Claims A list of the information (claims) that the request is asking for.
+	Claims []Claim `json:"claims,omitempty"`
+
 	// Template The name of a template that customizes how the request is presented to the user.
 	//
-	// Because a template contains it's own scope definitions, you must not specify `scopes` when you specify `template`.
+	// Because a template contains it's own claim definitions, you can provide either `claims` or `templates`, providing both results in an amalgamation of the two.
 	Template string `json:"template,omitempty"`
 
 	// ExpiresAt The last time this request will be valid. After this time, the request is expired and the user will no longer be able to complete it. This cannot be used with `ttl`.
@@ -799,6 +852,9 @@ type CreateRequestResponse struct {
 
 	// Scopes A list of the information (scopes) that the request is asking for.
 	Scopes []Scope `json:"scopes"`
+
+	// Claims A list of the information (claims) that the request is asking for.
+	Claims []Claim `json:"claims"`
 
 	// Template The name of a template that customizes how the request is presented to the user.
 	Template string `json:"template,omitempty"`
@@ -849,6 +905,12 @@ type CreateTemplateRequest struct {
 
 	// ScopesExpireIn How long the data sharing authorization should last, in seconds.
 	ScopesExpireIn *int `json:"scopes_expire_in,omitempty"`
+
+	// ClaimDefinitions A list of claims that are requested when requests are created with this template.
+	ClaimDefinitions []TemplateClaimDefinition `json:"claim_definitions,omitempty"`
+
+	// ClaimsExpireIn How long the data sharing authorization should last, in seconds.
+	ClaimsExpireIn *int `json:"claims_expire_in,omitempty"`
 
 	// Enabled If true, then this template is enabled for requests. The default template must be enabled.
 	Enabled *bool `json:"enabled,omitempty"`
@@ -935,6 +997,30 @@ type Directory struct {
 
 	// DirectorySecret the directory secret used by external clients for integration scenarios
 	DirectorySecret []byte `json:"directory_secret,omitempty"`
+
+	// CanGetMFABypassCode true if the directory supports generating an MFA bypass code
+	CanGetMFABypassCode *bool `json:"can_get_mfa_bypass_code,omitempty"`
+
+	// CanGetPasswordLink true if the directory supports issuing a pre-authenticated password reset link
+	CanGetPasswordLink *bool `json:"can_get_password_link,omitempty"`
+
+	// CanGetTemporaryAccessPass true if the directory supports issuing a temporary access pass
+	CanGetTemporaryAccessPass *bool `json:"can_get_temporary_access_pass,omitempty"`
+
+	// CanGetTemporaryPassword true if the directory supports issuing a temporary password
+	CanGetTemporaryPassword *bool `json:"can_get_temporary_password,omitempty"`
+
+	// CanRemoveAllMFA true if the directory supports removing all MFA devices
+	CanRemoveAllMFA *bool `json:"can_remove_all_mfa,omitempty"`
+
+	// CanUnlock true if the directory supports generating unlocking a locked account
+	CanUnlock *bool `json:"can_unlock,omitempty"`
+
+	// CanUpdateAccountsList true if the directory supports progressive update of the list of accounts
+	CanUpdateAccountsList *bool `json:"can_update_accounts_list,omitempty"`
+
+	// LogoURL A URL of the logo image for this directory.
+	LogoURL *string `json:"logo_url,omitempty"`
 }
 
 // DirectoryAuthorizedAuditEvent defines model for DirectoryAuthorizedAuditEvent.
@@ -964,6 +1050,16 @@ type DirectoryGroup struct {
 
 // DirectoryKind The type of the directory connection.
 type DirectoryKind string
+
+// DirectoryLogoDeletedAuditEvent defines model for DirectoryLogoDeletedAuditEvent.
+type DirectoryLogoDeletedAuditEvent struct {
+	Directory string `json:"directory"`
+}
+
+// DirectoryLogoUploadedAuditEvent defines model for DirectoryLogoUploadedAuditEvent.
+type DirectoryLogoUploadedAuditEvent struct {
+	Directory string `json:"directory"`
+}
 
 // DirectorySetCredentialsAuditEvent defines model for DirectorySetCredentialsAuditEvent.
 type DirectorySetCredentialsAuditEvent struct {
@@ -1082,6 +1178,9 @@ type EnvLogoUploadedAuditEvent struct {
 	Kind string `json:"kind"`
 }
 
+// EnvStatusFilterParams defines model for EnvStatusFilterParams.
+type EnvStatusFilterParams string
+
 // EnvStorage defines model for EnvStorage.
 type EnvStorage struct {
 	// S3BucketUS The S3 bucket for data stored in the United States. Must be in the us-east-2 AWS region.
@@ -1130,6 +1229,9 @@ type EnvUpdateRequest struct {
 	Storage       *EnvStorage              `json:"storage,omitempty"`
 }
 
+// EnvUpdatedAtFilterParams defines model for EnvUpdatedAtFilterParams.
+type EnvUpdatedAtFilterParams string
+
 // EnvUpdatedAuditEvent defines model for EnvUpdatedAuditEvent.
 type EnvUpdatedAuditEvent struct {
 	Request EnvUpdateRequest `json:"request"`
@@ -1143,9 +1245,12 @@ type EnvWebhookSecretUpdatedAuditEvent struct {
 // Expectation defines model for Expectation.
 type Expectation struct {
 	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
-	Scope Scope `json:"scope"`
+	Scope *Scope `json:"scope,omitempty"`
 
-	// Value The value you expect the person to have for this scope.
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	Claim Claim `json:"claim"`
+
+	// Value The value you expect the person to have for this claim.
 	Value string `json:"value"`
 }
 
@@ -1155,6 +1260,27 @@ type GetDirectoriesResponse struct {
 	Directories []Directory `json:"directories"`
 }
 
+// GetMicrometricsResponse defines model for GetMicrometricsResponse.
+type GetMicrometricsResponse struct {
+	// SelfServiceCount Number of self-service requests
+	SelfServiceCount int64 `json:"self_service_count"`
+
+	// VerificationCount Total number of verification requests
+	VerificationCount int64 `json:"verification_count"`
+
+	// FraudCount Number of fraud requests
+	FraudCount int64 `json:"fraud_count"`
+
+	// HumansVerifiedCount Number of humans verified
+	HumansVerifiedCount int64 `json:"humans_verified_count"`
+
+	// ApiRequestsCount Number of API requests
+	ApiRequestsCount int64 `json:"api_requests_count"`
+
+	// CopilotCount Number of Copilot requests
+	CopilotCount int64 `json:"copilot_count"`
+}
+
 // GetRequestsResponse defines model for GetRequestsResponse.
 type GetRequestsResponse struct {
 	Requests         []Request `json:"requests"`
@@ -1162,8 +1288,11 @@ type GetRequestsResponse struct {
 	TotalResultCount int64     `json:"total_result_count"`
 }
 
-// GovtidDetailsValue defines model for GovtidDetailsValue.
-type GovtidDetailsValue struct {
+// GovtidType defines model for GovtidType.
+type GovtidType string
+
+// GovtidValue defines model for GovtidValue.
+type GovtidValue struct {
 	Type GovtidType `json:"type"`
 
 	// Issuer The issuer of the identity document, an  [ISO 3166-1 alpha 3 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) optionally followed by  a jurisdiction code, e.g. `USA.CA` or `CAN.ON`
@@ -1175,9 +1304,6 @@ type GovtidDetailsValue struct {
 	// Expiration The date when the identity document expires
 	Expiration *openapi_types.Date `json:"expiration,omitempty"`
 }
-
-// GovtidType defines model for GovtidType.
-type GovtidType string
 
 // GroupRecoveryPolicy defines model for GroupRecoveryPolicy.
 type GroupRecoveryPolicy struct {
@@ -1269,6 +1395,12 @@ type OAuth2AuthorizeResponse struct {
 	RedirectURL string `json:"redirect_url"`
 }
 
+// OAuth2PushedAuthorizationRequestAuditEvent defines model for OAuth2PushedAuthorizationRequestAuditEvent.
+type OAuth2PushedAuthorizationRequestAuditEvent struct {
+	Request  PushedAuthorizationRequest  `json:"request"`
+	Response PushedAuthorizationResponse `json:"response"`
+}
+
 // OAuth2RequestCanceledAuditEvent defines model for OAuth2RequestCanceledAuditEvent.
 type OAuth2RequestCanceledAuditEvent struct {
 	Request string `json:"request"`
@@ -1278,6 +1410,12 @@ type OAuth2RequestCanceledAuditEvent struct {
 type OAuth2TokenAuditEvent struct {
 	Request  TokenRequest  `json:"request"`
 	Response TokenResponse `json:"response"`
+}
+
+// OAuth2V2AuthorizeAuditEvent defines model for OAuth2V2AuthorizeAuditEvent.
+type OAuth2V2AuthorizeAuditEvent struct {
+	Request  AuthorizeV2Request `json:"request"`
+	Response AuthorizeResponse  `json:"response"`
 }
 
 // OktaEamAuthorizeAuditEvent defines model for OktaEamAuthorizeAuditEvent.
@@ -1323,12 +1461,13 @@ type OktaEamFinishRequest struct {
 
 // OktaEamFinishResponse defines model for OktaEamFinishResponse.
 type OktaEamFinishResponse struct {
-	BindingFailed *bool   `json:"binding_failed,omitempty"`
-	Code          *string `json:"code,omitempty"`
-	Error         *string `json:"error,omitempty"`
-	IDToken       *string `json:"id_token,omitempty"`
-	Oauth2State   *string `json:"oauth2_state,omitempty"`
-	RedirectUri   *string `json:"redirect_uri,omitempty"`
+	BindingFailed  *bool   `json:"binding_failed,omitempty"`
+	Code           *string `json:"code,omitempty"`
+	Error          *string `json:"error,omitempty"`
+	IDToken        *string `json:"id_token,omitempty"`
+	Oauth2State    *string `json:"oauth2_state,omitempty"`
+	RedirectUri    *string `json:"redirect_uri,omitempty"`
+	RequestTimeout *bool   `json:"request_timeout,omitempty"`
 }
 
 // Org defines model for Org.
@@ -1455,9 +1594,12 @@ type PropertyResponse struct {
 	Expires string `json:"expires,omitempty"`
 
 	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
-	Scope Scope `json:"scope"`
+	Scope *Scope `json:"scope,omitempty"`
 
-	// Value The value of the property. The type of this field varies depending on the scope. See [this table](#scopes).
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	Claim Claim `json:"claim"`
+
+	// Value The value of the property. The type of this field varies depending on the claim. See [this table](#scopes).
 	Value interface{} `json:"value,omitempty"`
 
 	// Status A value that tells you the disposition of the property. The value `200` means the data was shared.  The value `403` means the data has not been shared, the person has revoked your access, or `410` meaning  the request has expired.
@@ -1476,7 +1618,65 @@ type PropertyResponseRequest struct {
 	Status int `json:"status"`
 
 	// Scopes The scopes requested
-	Scopes []Scope `json:"scopes"`
+	Scopes *[]Scope `json:"scopes,omitempty"`
+
+	// Claims The claims requested
+	Claims []Claim `json:"claims"`
+}
+
+// PushedAuthorizationRequest defines model for PushedAuthorizationRequest.
+type PushedAuthorizationRequest struct {
+	// Claim Space-separated list of claims
+	Claim *[]Claim `json:"claim,omitempty"`
+
+	// ClientId The client ID
+	ClientId string `json:"client_id"`
+
+	// ClientSecret The client secret
+	ClientSecret string `json:"client_secret"`
+
+	// CodeChallenge The code challenge
+	CodeChallenge *string `json:"code_challenge,omitempty"`
+
+	// CodeChallengeMethod The code challenge method
+	CodeChallengeMethod *PushedAuthorizationRequestCodeChallengeMethod `json:"code_challenge_method,omitempty"`
+
+	// EmailHint The email hint
+	EmailHint *openapi_types.Email `json:"email_hint,omitempty"`
+
+	// RedirectUri The redirect URI
+	RedirectUri string `json:"redirect_uri"`
+
+	// ResponseMode The response mode
+	ResponseMode *PushedAuthorizationRequestResponseMode `json:"response_mode,omitempty"`
+
+	// ResponseType The response type
+	ResponseType *PushedAuthorizationRequestResponseType `json:"response_type,omitempty"`
+	Return       *AuthorizeReturn                        `json:"return,omitempty"`
+
+	// Scope Space-separated list of scopes
+	Scope *[]Scope `json:"scope,omitempty"`
+
+	// State The state
+	State string `json:"state"`
+
+	// Template The template to use
+	Template *string `json:"template,omitempty"`
+}
+
+// PushedAuthorizationRequestCodeChallengeMethod The code challenge method
+type PushedAuthorizationRequestCodeChallengeMethod string
+
+// PushedAuthorizationRequestResponseMode The response mode
+type PushedAuthorizationRequestResponseMode string
+
+// PushedAuthorizationRequestResponseType The response type
+type PushedAuthorizationRequestResponseType string
+
+// PushedAuthorizationResponse defines model for PushedAuthorizationResponse.
+type PushedAuthorizationResponse struct {
+	RequestURI string `json:"request_uri"`
+	ExpiresIn  int    `json:"expires_in"`
 }
 
 // RecoveryMicrositeFlow defines model for RecoveryMicrositeFlow.
@@ -1531,6 +1731,14 @@ type RefreshWebhookSecretResponse struct {
 	WebhookSharedSecret string `json:"webhook_shared_secret"`
 }
 
+// RegenerateDirectoryAgentTokenResponse defines model for RegenerateDirectoryAgentTokenResponse.
+type RegenerateDirectoryAgentTokenResponse struct {
+	AgentToken string `json:"agent_token"`
+
+	// ID The unique identifier for the directory.
+	ID string `json:"id"`
+}
+
 // Request defines model for Request.
 type Request struct {
 	// ID A unique identifier for this request
@@ -1561,6 +1769,7 @@ type Request struct {
 	// Label The label for the request; can be empty
 	Label    string          `json:"label"`
 	Scopes   []Scope         `json:"scopes"`
+	Claims   []Claim         `json:"claims"`
 	Status   RequestStatus   `json:"status"`
 	Progress RequestProgress `json:"progress"`
 
@@ -1582,14 +1791,14 @@ type Request struct {
 	// IsKnownUser If the user is known as an account
 	IsKnownUser *bool `json:"is_known_user,omitempty"`
 
-	// MarkedForDeletionAfter Indicates whether the person associated with this request has asked for their data to be deleted and the earliest time that will occur at.
-	MarkedForDeletionAfter *time.Time `json:"marked_for_deletion_after,omitempty"`
-
 	// Photo The photo associate with this person
 	Photo *string `json:"photo,omitempty"`
 
 	// ExternalIds External IDs for accounts if the user is known
 	ExternalIds *[]string `json:"external_ids,omitempty"`
+
+	// MarkedForDeletionAfter Indicates whether the person associated with this request has asked for their data to be deleted and the earliest time that will occur at.
+	MarkedForDeletionAfter *time.Time `json:"marked_for_deletion_after,omitempty"`
 }
 
 // RequestBrowser defines model for RequestBrowser.
@@ -1597,7 +1806,7 @@ type RequestBrowser struct {
 	// UserAgent The browser's user agent
 	UserAgent string `json:"user_agent"`
 
-	// RemoteAddress The IP address of the browser  (This field is `null` unless the `nt:location:ip` scope is specified in the request)
+	// RemoteAddress The IP address of the browser  (This field is `null` unless the `location:ip` claim is specified in the request)
 	RemoteAddress         *string   `json:"remote_address,omitempty"`
 	RemoteAddressLocation *Location `json:"remote_address_location,omitempty"`
 }
@@ -1636,7 +1845,7 @@ type RequestMobileDevice struct {
 	// InstantApp `true` if the request was completed in the Android instant app, otherwise `false`
 	InstantApp bool `json:"instant_app"`
 
-	// RemoteAddress The IP address of the mobile device (This field is `null` unless the `nt:location:ip` scope is specified in the request)
+	// RemoteAddress The IP address of the mobile device (This field is `null` unless the `location:ip` claim is specified in the request)
 	RemoteAddress         *string   `json:"remote_address,omitempty"`
 	RemoteAddressLocation *Location `json:"remote_address_location,omitempty"`
 }
@@ -1658,13 +1867,13 @@ type RequestProperties struct {
 	// LegalLastName The family name (last name) from their identity document
 	LegalLastName *string `json:"legal_last_name,omitempty"`
 
-	// Name The person's preferred name
+	// Name The person's name from their identity document
 	Name *string `json:"name,omitempty"`
 
-	// FirstName The person's preferred given (first) name
+	// FirstName The person's given (first) name from their identity document
 	FirstName *string `json:"first_name,omitempty"`
 
-	// LastName The person's preferred family (last) name
+	// LastName The person's family (last) name from their identity document
 	LastName *string `json:"last_name,omitempty"`
 
 	// BirthDate The person's date of birth
@@ -1686,8 +1895,11 @@ type RequestProperties struct {
 	ProfilePicture *string `json:"profile_picture,omitempty"`
 
 	// Address Verified postal address
-	Address       *string             `json:"address,omitempty"`
-	GovtidDetails *GovtidDetailsValue `json:"govtid_details,omitempty"`
+	Address *string      `json:"address,omitempty"`
+	Govtid  *GovtidValue `json:"govtid,omitempty"`
+
+	// GovtidExpired `true` if we have a govtid expiration date, and it is past that date. `false` if we either cant get expiration date or it is not expired.
+	GovtidExpired *bool `json:"govtid_Expired,omitempty"`
 }
 
 // RequestStatus defines model for RequestStatus.
@@ -1713,8 +1925,9 @@ type SelfieCompareAuditEvent struct {
 
 // SharingRevokedAuditEvent defines model for SharingRevokedAuditEvent.
 type SharingRevokedAuditEvent struct {
-	Scopes  []Scope `json:"scopes"`
-	Subject string  `json:"subject"`
+	Claims  []Claim  `json:"claims"`
+	Scopes  *[]Scope `json:"scopes,omitempty"`
+	Subject string   `json:"subject"`
 }
 
 // SubjectComparisonRequest defines model for SubjectComparisonRequest.
@@ -1761,6 +1974,12 @@ type Template struct {
 	// ScopesExpireIn How long the data sharing authorization should last, in seconds.
 	ScopesExpireIn int `json:"scopes_expire_in"`
 
+	// ClaimDefinitions A list of claims that are requested when requests are created with this template.
+	ClaimDefinitions []TemplateClaimDefinition `json:"claim_definitions"`
+
+	// ClaimsExpireIn How long the data sharing authorization should last, in seconds.
+	ClaimsExpireIn int `json:"claims_expire_in"`
+
 	// Enabled If true, then this template is enabled for requests. The default template must be enabled.
 	Enabled bool `json:"enabled"`
 
@@ -1769,6 +1988,12 @@ type Template struct {
 
 	// QRCustomText The Custom QR code text for this template.
 	QRCustomText string `json:"qr_custom_text"`
+}
+
+// TemplateClaimDefinition defines model for TemplateClaimDefinition.
+type TemplateClaimDefinition struct {
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	Claim Claim `json:"claim"`
 }
 
 // TemplateCreatedAuditEvent defines model for TemplateCreatedAuditEvent.
@@ -1816,6 +2041,7 @@ type TokenResponse struct {
 	RefreshToken string                 `json:"refresh_token"`
 	IDToken      string                 `json:"id_token"`
 	Scope        string                 `json:"scope"`
+	Claims       string                 `json:"claims"`
 	ExpiresIn    int                    `json:"expires_in"`
 	TokenType    TokenResponseTokenType `json:"token_type"`
 	Subject      string                 `json:"subject"`
@@ -1894,6 +2120,12 @@ type UpdateTemplateRequest struct {
 
 	// ScopesExpireIn How long the data sharing authorization should last, in seconds.
 	ScopesExpireIn *int `json:"scopes_expire_in,omitempty"`
+
+	// ClaimDefinitions A list of scopes that are requested when requests are created with this template.
+	ClaimDefinitions []TemplateClaimDefinition `json:"claim_definitions,omitempty"`
+
+	// ClaimsExpireIn How long the data sharing authorization should last, in seconds.
+	ClaimsExpireIn *int `json:"claims_expire_in,omitempty"`
 
 	// Enabled If true, then this template is enabled for requests. The default template must be enabled.
 	Enabled *bool `json:"enabled,omitempty"`
@@ -1991,13 +2223,7 @@ type ListAccountsParams struct {
 
 	// Q Search query
 	Q *string `form:"q,omitempty" json:"q,omitempty"`
-
-	// Sort Sort by this field, or prefix with "-" for descending order
-	Sort *ListAccountsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
 }
-
-// ListAccountsParamsSort defines parameters for ListAccounts.
-type ListAccountsParamsSort string
 
 // ListAuditEventsParams defines parameters for ListAuditEvents.
 type ListAuditEventsParams struct {
@@ -2026,6 +2252,11 @@ type Oauth2PollParams struct {
 	CookieSession *string `form:"session,omitempty" json:"session,omitempty"`
 }
 
+// UploadDirectoryLogoMultipartBody defines parameters for UploadDirectoryLogo.
+type UploadDirectoryLogoMultipartBody struct {
+	Logo *openapi_types.File `json:"logo,omitempty"`
+}
+
 // DeleteLogoParams defines parameters for DeleteLogo.
 type DeleteLogoParams struct {
 	// Kind The kind of logo to remove
@@ -2043,25 +2274,26 @@ type UploadLogoParams struct {
 	Kind *LogoKind `form:"kind,omitempty" json:"kind,omitempty"`
 }
 
+// GetEnvMicrometricsParams defines parameters for GetEnvMicrometrics.
+type GetEnvMicrometricsParams struct {
+	Requestor    *string                   `form:"requestor,omitempty" json:"requestor,omitempty"`
+	StatusFilter *EnvStatusFilterParams    `form:"statusFilter,omitempty" json:"statusFilter,omitempty"`
+	UpdatedAt    *EnvUpdatedAtFilterParams `form:"updatedAt,omitempty" json:"updatedAt,omitempty"`
+}
+
 // ListEnvRequestsParams defines parameters for ListEnvRequests.
 type ListEnvRequestsParams struct {
-	Q            *string                            `form:"q,omitempty" json:"q,omitempty"`
-	Requestor    *string                            `form:"requestor,omitempty" json:"requestor,omitempty"`
-	Count        *int                               `form:"count,omitempty" json:"count,omitempty"`
-	Offset       *string                            `form:"offset,omitempty" json:"offset,omitempty"`
-	Sort         *ListEnvRequestsParamsSort         `form:"sort,omitempty" json:"sort,omitempty"`
-	StatusFilter *ListEnvRequestsParamsStatusFilter `form:"statusFilter,omitempty" json:"statusFilter,omitempty"`
-	UpdatedAt    *ListEnvRequestsParamsUpdatedAt    `form:"updatedAt,omitempty" json:"updatedAt,omitempty"`
+	Q            *string                    `form:"q,omitempty" json:"q,omitempty"`
+	Requestor    *string                    `form:"requestor,omitempty" json:"requestor,omitempty"`
+	Count        *int                       `form:"count,omitempty" json:"count,omitempty"`
+	Offset       *string                    `form:"offset,omitempty" json:"offset,omitempty"`
+	Sort         *ListEnvRequestsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+	StatusFilter *EnvStatusFilterParams     `form:"statusFilter,omitempty" json:"statusFilter,omitempty"`
+	UpdatedAt    *EnvUpdatedAtFilterParams  `form:"updatedAt,omitempty" json:"updatedAt,omitempty"`
 }
 
 // ListEnvRequestsParamsSort defines parameters for ListEnvRequests.
 type ListEnvRequestsParamsSort string
-
-// ListEnvRequestsParamsStatusFilter defines parameters for ListEnvRequests.
-type ListEnvRequestsParamsStatusFilter string
-
-// ListEnvRequestsParamsUpdatedAt defines parameters for ListEnvRequests.
-type ListEnvRequestsParamsUpdatedAt string
 
 // Oauth2AuthorizeParams defines parameters for Oauth2Authorize.
 type Oauth2AuthorizeParams struct {
@@ -2250,6 +2482,9 @@ type UpdateDirectoryJSONRequestBody = UpdateDirectoryRequest
 
 // SetDirectoryCredentialsJSONRequestBody defines body for SetDirectoryCredentials for application/json ContentType.
 type SetDirectoryCredentialsJSONRequestBody = Credentials
+
+// UploadDirectoryLogoMultipartRequestBody defines body for UploadDirectoryLogo for multipart/form-data ContentType.
+type UploadDirectoryLogoMultipartRequestBody UploadDirectoryLogoMultipartBody
 
 // CreateEnvJSONRequestBody defines body for CreateEnv for application/json ContentType.
 type CreateEnvJSONRequestBody = CreateEnvRequest
@@ -2446,6 +2681,15 @@ type ClientInterface interface {
 
 	SetDirectoryCredentials(ctx context.Context, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteDirectoryLogo request
+	DeleteDirectoryLogo(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UploadDirectoryLogoWithBody request with any body
+	UploadDirectoryLogoWithBody(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegenerateDirectoryAgentToken request
+	RegenerateDirectoryAgentToken(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SyncDirectory request
 	SyncDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2473,6 +2717,9 @@ type ClientInterface interface {
 
 	// UploadLogoWithBody request with any body
 	UploadLogoWithBody(ctx context.Context, env string, params *UploadLogoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetEnvMicrometrics request
+	GetEnvMicrometrics(ctx context.Context, env string, params *GetEnvMicrometricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PresignRecoveryMicrositeURLWithBody request with any body
 	PresignRecoveryMicrositeURLWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2925,6 +3172,42 @@ func (c *Client) SetDirectoryCredentials(ctx context.Context, directory string, 
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeleteDirectoryLogo(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteDirectoryLogoRequest(c.Server, directory)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadDirectoryLogoWithBody(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadDirectoryLogoRequestWithBody(c.Server, directory, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RegenerateDirectoryAgentToken(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegenerateDirectoryAgentTokenRequest(c.Server, directory)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) SyncDirectory(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSyncDirectoryRequest(c.Server, directory)
 	if err != nil {
@@ -3035,6 +3318,18 @@ func (c *Client) DeleteLogo(ctx context.Context, env string, params *DeleteLogoP
 
 func (c *Client) UploadLogoWithBody(ctx context.Context, env string, params *UploadLogoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadLogoRequestWithBody(c.Server, env, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetEnvMicrometrics(ctx context.Context, env string, params *GetEnvMicrometricsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetEnvMicrometricsRequest(c.Server, env, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3586,7 +3881,7 @@ func NewBulkUploadAccountPhotosRequestWithBody(server string, params *BulkUpload
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
-	req, err := http.NewRequest("POST", queryURL.String(), body)
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -3701,22 +3996,6 @@ func NewListAccountsRequest(server string, params *ListAccountsParams) (*http.Re
 		if params.Q != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "q", runtime.ParamLocationQuery, *params.Q); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Sort != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, *params.Sort); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4554,6 +4833,110 @@ func NewSetDirectoryCredentialsRequestWithBody(server string, directory string, 
 	return req, nil
 }
 
+// NewDeleteDirectoryLogoRequest generates requests for DeleteDirectoryLogo
+func NewDeleteDirectoryLogoRequest(server string, directory string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s/logo", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUploadDirectoryLogoRequestWithBody generates requests for UploadDirectoryLogo with any type of body
+func NewUploadDirectoryLogoRequestWithBody(server string, directory string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s/logo", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRegenerateDirectoryAgentTokenRequest generates requests for RegenerateDirectoryAgentToken
+func NewRegenerateDirectoryAgentTokenRequest(server string, directory string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "directory", runtime.ParamLocationPath, directory)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/directories/%s/regenerate-directory-agent-token", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewSyncDirectoryRequest generates requests for SyncDirectory
 func NewSyncDirectoryRequest(server string, directory string) (*http.Request, error) {
 	var err error
@@ -4876,6 +5259,94 @@ func NewUploadLogoRequestWithBody(server string, env string, params *UploadLogoP
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetEnvMicrometricsRequest generates requests for GetEnvMicrometrics
+func NewGetEnvMicrometricsRequest(server string, env string, params *GetEnvMicrometricsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/micrometrics", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Requestor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "requestor", runtime.ParamLocationQuery, *params.Requestor); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StatusFilter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "statusFilter", runtime.ParamLocationQuery, *params.StatusFilter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UpdatedAt != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "updatedAt", runtime.ParamLocationQuery, *params.UpdatedAt); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -6906,6 +7377,15 @@ type ClientWithResponsesInterface interface {
 
 	SetDirectoryCredentialsWithResponse(ctx context.Context, directory string, body SetDirectoryCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetDirectoryCredentialsResp, error)
 
+	// DeleteDirectoryLogoWithResponse request
+	DeleteDirectoryLogoWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*DeleteDirectoryLogoResp, error)
+
+	// UploadDirectoryLogoWithBodyWithResponse request with any body
+	UploadDirectoryLogoWithBodyWithResponse(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadDirectoryLogoResp, error)
+
+	// RegenerateDirectoryAgentTokenWithResponse request
+	RegenerateDirectoryAgentTokenWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*RegenerateDirectoryAgentTokenResp, error)
+
 	// SyncDirectoryWithResponse request
 	SyncDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*SyncDirectoryResp, error)
 
@@ -6933,6 +7413,9 @@ type ClientWithResponsesInterface interface {
 
 	// UploadLogoWithBodyWithResponse request with any body
 	UploadLogoWithBodyWithResponse(ctx context.Context, env string, params *UploadLogoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadLogoResp, error)
+
+	// GetEnvMicrometricsWithResponse request
+	GetEnvMicrometricsWithResponse(ctx context.Context, env string, params *GetEnvMicrometricsParams, reqEditors ...RequestEditorFn) (*GetEnvMicrometricsResp, error)
 
 	// PresignRecoveryMicrositeURLWithBodyWithResponse request with any body
 	PresignRecoveryMicrositeURLWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error)
@@ -7389,7 +7872,7 @@ func (r ListDirectoriesResp) StatusCode() int {
 type CreateDirectoryResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *CreateDirectoryResponse
+	JSON200      *CreateDirectoryResponse
 	JSON400      *N400
 }
 
@@ -7516,6 +7999,73 @@ func (r SetDirectoryCredentialsResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SetDirectoryCredentialsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteDirectoryLogoResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteDirectoryLogoResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteDirectoryLogoResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UploadDirectoryLogoResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadDirectoryLogoResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadDirectoryLogoResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RegenerateDirectoryAgentTokenResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RegenerateDirectoryAgentTokenResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r RegenerateDirectoryAgentTokenResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegenerateDirectoryAgentTokenResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7695,6 +8245,29 @@ func (r UploadLogoResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UploadLogoResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetEnvMicrometricsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetMicrometricsResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetEnvMicrometricsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetEnvMicrometricsResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8619,6 +9192,33 @@ func (c *ClientWithResponses) SetDirectoryCredentialsWithResponse(ctx context.Co
 	return ParseSetDirectoryCredentialsResp(rsp)
 }
 
+// DeleteDirectoryLogoWithResponse request returning *DeleteDirectoryLogoResp
+func (c *ClientWithResponses) DeleteDirectoryLogoWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*DeleteDirectoryLogoResp, error) {
+	rsp, err := c.DeleteDirectoryLogo(ctx, directory, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteDirectoryLogoResp(rsp)
+}
+
+// UploadDirectoryLogoWithBodyWithResponse request with arbitrary body returning *UploadDirectoryLogoResp
+func (c *ClientWithResponses) UploadDirectoryLogoWithBodyWithResponse(ctx context.Context, directory string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadDirectoryLogoResp, error) {
+	rsp, err := c.UploadDirectoryLogoWithBody(ctx, directory, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadDirectoryLogoResp(rsp)
+}
+
+// RegenerateDirectoryAgentTokenWithResponse request returning *RegenerateDirectoryAgentTokenResp
+func (c *ClientWithResponses) RegenerateDirectoryAgentTokenWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*RegenerateDirectoryAgentTokenResp, error) {
+	rsp, err := c.RegenerateDirectoryAgentToken(ctx, directory, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegenerateDirectoryAgentTokenResp(rsp)
+}
+
 // SyncDirectoryWithResponse request returning *SyncDirectoryResp
 func (c *ClientWithResponses) SyncDirectoryWithResponse(ctx context.Context, directory string, reqEditors ...RequestEditorFn) (*SyncDirectoryResp, error) {
 	rsp, err := c.SyncDirectory(ctx, directory, reqEditors...)
@@ -8705,6 +9305,15 @@ func (c *ClientWithResponses) UploadLogoWithBodyWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseUploadLogoResp(rsp)
+}
+
+// GetEnvMicrometricsWithResponse request returning *GetEnvMicrometricsResp
+func (c *ClientWithResponses) GetEnvMicrometricsWithResponse(ctx context.Context, env string, params *GetEnvMicrometricsParams, reqEditors ...RequestEditorFn) (*GetEnvMicrometricsResp, error) {
+	rsp, err := c.GetEnvMicrometrics(ctx, env, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetEnvMicrometricsResp(rsp)
 }
 
 // PresignRecoveryMicrositeURLWithBodyWithResponse request with arbitrary body returning *PresignRecoveryMicrositeURLResp
@@ -9520,12 +10129,12 @@ func ParseCreateDirectoryResp(rsp *http.Response) (*CreateDirectoryResp, error) 
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest CreateDirectoryResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON201 = &dest
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400
@@ -9678,6 +10287,91 @@ func ParseSetDirectoryCredentialsResp(rsp *http.Response) (*SetDirectoryCredenti
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteDirectoryLogoResp parses an HTTP response from a DeleteDirectoryLogoWithResponse call
+func ParseDeleteDirectoryLogoResp(rsp *http.Response) (*DeleteDirectoryLogoResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteDirectoryLogoResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadDirectoryLogoResp parses an HTTP response from a UploadDirectoryLogoWithResponse call
+func ParseUploadDirectoryLogoResp(rsp *http.Response) (*UploadDirectoryLogoResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadDirectoryLogoResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegenerateDirectoryAgentTokenResp parses an HTTP response from a RegenerateDirectoryAgentTokenWithResponse call
+func ParseRegenerateDirectoryAgentTokenResp(rsp *http.Response) (*RegenerateDirectoryAgentTokenResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegenerateDirectoryAgentTokenResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RegenerateDirectoryAgentTokenResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -9907,6 +10601,39 @@ func ParseUploadLogoResp(rsp *http.Response) (*UploadLogoResp, error) {
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetEnvMicrometricsResp parses an HTTP response from a GetEnvMicrometricsWithResponse call
+func ParseGetEnvMicrometricsResp(rsp *http.Response) (*GetEnvMicrometricsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetEnvMicrometricsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetMicrometricsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

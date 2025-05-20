@@ -1,0 +1,497 @@
+openapi: "3.1.0"
+components:
+  schemas:
+    DirAgentRequest:
+      type: object
+      properties:
+        configure:
+          $ref: "#/components/schemas/DirAgentConfigureRequest"
+          x-order: 1
+          description: >
+            This field is set when the request is to obtain configuration information 
+            about the directory agent. The server sends this request to determine 
+            the capabilities of the directory agent.
+        list_accounts:
+          $ref: "#/components/schemas/DirAgentListAccountsRequest"
+          x-order: 2
+          description: >
+            This field is set when the server needs to obtain a list of accounts. The
+            request contains parameters to filter and limit the accounts returned.
+        get_account:
+          $ref: "#/components/schemas/DirAgentGetAccountRequest"
+          x-order: 3
+          description: >
+            This field is set when the server needs to get information about a
+            specific account.
+        list_groups:
+          $ref: "#/components/schemas/DirAgentListGroupsRequest"
+          x-order: 4
+          description: >
+            This field is set when the server needs to get a list of all possible groups.
+            The request contains parameters to filter and limit the groups returned.
+        perform_operation:
+          $ref: "#/components/schemas/DirAgentPerformOperationRequest"
+          x-order: 5
+          description: >
+            This field is set when the server needs to perform a recovery operation 
+            on an account, or with `DryRun` set when the server wants to test the 
+            ability to perform the operation without actually performing it.
+        ping:
+          type: boolean
+          x-order: 6
+          description: >
+            The server will periodically send a request with this field set to `true`
+            in order to test the connection to the directory agent. The agent 
+            should respond with an empty `DirAgentResponse`.
+    DirAgentResponse:
+      type: object
+      properties:
+        configure:
+          $ref: "#/components/schemas/DirAgentConfigureResponse"
+          x-order: 1
+          description: >
+            This field should be set by the agent when the request has 
+            *configure* set to return the results of the request. If an 
+            error occurs, the agent should **not** set this field but should
+            set *error* instead.
+        list_accounts:
+          $ref: "#/components/schemas/DirAgentListAccountsResponse"
+          x-order: 2
+          description: >
+            This field should be set by the agent when the request has 
+            *list_accounts* set to return the results of the request. If an 
+            error occurs, the agent should **not** set this field but should
+            set *error* instead.
+        get_account:
+          $ref: "#/components/schemas/DirAgentGetAccountResponse"
+          x-order: 3
+          description: >
+            This field should be set by the agent when the request has 
+            *get_account* set to return the results of the request. If an 
+            error occurs, the agent should **not** set this field but should
+            set *error* instead.
+        list_groups:
+          $ref: "#/components/schemas/DirAgentListGroupsResponse"
+          x-order: 4
+          description: >
+            This field should be set by the agent when the request has 
+            *list_groups* set to return the results of the request. If an 
+            error occurs, the agent should **not** set this field but should
+            set *error* instead.
+        perform_operation:
+          $ref: "#/components/schemas/DirAgentPerformOperationResponse"
+          x-order: 5
+          description: >
+            This field should be set by the agent when the request has 
+            *perform_operation* set to return the results of the request. If an 
+            error occurs, the agent should **not** set this field but should
+            set *error* instead.
+        error:
+          $ref: "#/components/schemas/DirAgentErrorResponse"
+          x-order: 6
+          description: >
+            This field should be set by the agent when the request has 
+            failed. The *code* fields tells the server the general reason
+            for the error.
+    DirAgentErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          $ref: "#/components/schemas/DirAgentErrorCode"
+          description: >
+            An error code that describes the general reason for the error.
+        message:
+          type: string
+          description: >
+            A human-readable message that describes the error in more detail.
+    DirAgentErrorCode:
+      type: string
+      enum:
+        - "service_authentication_failed"
+        - "permission_denied"
+        - "account_not_found"
+        - "configuration_error"
+        - "unsupported_account_state"
+        - "internal_error"
+      x-enum-descriptions:
+        - "The agent was unable to authenticate to the directory service. The administrator should be prompted to reconfigure authentication."
+        - "In response to *perform_operation*, the agent has determined that the operation should not be allowed due to its own policy."
+        - "The account specified in the request was not found."
+        - "The agent is not configured correctly. The administrator should be prompted to reconfigure the agent."
+        - "In response to *perform_operation*, the agent has determined that the account is not in the proper state, e.g. attempting to unlock an account which is not locked."
+        - "The agent encountered an error in processing the request that does not fit into one of the other categories."
+
+    DirAgentConfigureRequest:
+      type: object
+      properties: {}
+
+    DirAgentConfigureResponse:
+      type: object
+      required:
+        - traits
+        - immutable_id
+      properties:
+        traits:
+          $ref: "#/components/schemas/DirAgentTraits"
+          description: >
+            Describes the capabilities of the directory agent.
+        immutable_id:
+          type: string
+          x-go-name: ImmutableID
+          description: >
+            Uniquely identifies the agent.
+    DirAgentTraits:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          x-order: 1
+          description: >
+            The display name of the directory agent. This is the name that will
+            be displayed to administrators and end-users in the user interface,
+            for example "Okta" or "ExampleCorp".
+        can_get_temporary_password:
+          type: boolean
+          x-order: 2
+          description: >
+            Indicates whether the agent can create a temporary password for an 
+            account, allowing the user to log in for a limited time.
+        can_get_password_link:
+          type: boolean
+          x-order: 3
+          description: >
+            Indicates whether the agent can generate a pre-authenticated link that 
+            leads the user to a site (typically provided by the directory service) 
+            that the user can use enter a new password.
+        can_remove_all_mfa:
+          type: boolean
+          x-order: 4
+          x-go-name: CanRemoveAllMFA
+          description: >
+            Indicates whether the agent can remove all MFA factors from an account
+            so the user can re-enroll their MFA device.
+        can_get_mfa_bypass_code:
+          type: boolean
+          x-go-name: CanGetMFABypassCode
+          x-order: 5
+          description: >
+            Indicates whether the agent can generate a bypass code that the user can
+            use to sign in in place of their MFA device. Typically after using a
+            bypass code the user will be able to enroll a replacement MFA device.
+        can_unlock:
+          type: boolean
+          x-order: 6
+          description: >
+            Indicates whether the agent can unlock an account that has been locked
+            due to too many failed login attempts.
+        can_get_temporary_access_pass:
+          type: boolean
+          x-order: 7
+          description: >
+            Indicates whether the agent can generate a temporary code that the user will use to log in temporarily without revoking their existing password or resetting any MFA devices.
+        can_update_accounts_list:
+          type: boolean
+          x-order: 8
+          description: >
+            Indicates whether the directory service supports tracking the last
+            modification time of the account list. If supported, the server may
+            set *updated_after* in *list_accounts* to indicate the agent should
+            report only accounts that have been updated since that time.
+    DirAgentListAccountsRequest:
+      type: object
+      properties:
+        updated_after:
+          type: string
+          format: date-time
+          x-order: 1
+          description: >
+            Only return accounts that have been updated after this time.
+        cursor:
+          type: string
+          x-order: 2
+          description: >
+            If present, the server is requesting a continuation of a previous
+            list of accounts. The value will be the one most recently returned
+            in the *next_cursor* field. The format of this value is determined
+            by the agent. The server treats this value as opaque and passes it
+            back to the agent in the next request. To start at the beginning of
+            the list, the server will omit this field.
+    DirAgentListAccountsResponse:
+      type: object
+      required:
+        - accounts
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/DirAgentAccount"
+          x-order: 1
+          description: >
+            The accounts that the agent has discovered.
+        next_cursor:
+          type: string
+          x-order: 2
+          description: >
+            If there are more results to return, the agent should set this field
+            to the value that should be passed back to the server in the next
+            request. If there are no more results, the agent should omit this field.
+    DirAgentAccount:
+      type: object
+      required:
+        - immutable_id
+        - ids
+        - name
+      properties:
+        immutable_id:
+          type: string
+          x-go-name: ImmutableID
+          x-order: 1
+          description: >
+            A unique identifier for the account that will not change over time. In
+            many directory services this is an UUID or similar opaque identifier.
+        ids:
+          type: array
+          items:
+            type: string
+          x-order: 2
+          x-go-name: IDs
+          description: >
+            A list of account identifiers, such as email addresses or usernames. These
+            identifiers are used to select accounts for various operations. Many 
+            directory services have multiple identifiers for an account, such as 
+            alternate email addresses and aliases. Each identifier that might be 
+            reasonably used to identify an account should be placed here.
+        name:
+          type: string
+          x-order: 3
+          description: >
+            The name of the person that holds the account. This is the value that 
+            Nametag uses to match against the person's verified government ID.
+            This is the name that will be displayed to administrators and end-users 
+            in the user interface.
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/DirAgentGroup"
+          x-order: 4
+          description: >
+            A list of groups that this account belongs to.
+        birth_date:
+          type: string
+          x-order: 5
+          description: >
+            If the directory service has a birth date for the account, it should be
+            included here. This is used to match against the person's verified
+            government ID.
+            The birth date can take various forms, including a RFC 3339 date string
+            (YYYY-MM-DD), or a specially constructed hash.
+        updated_at:
+          type: string
+          format: date-time
+          x-order: 6
+          description: >
+            The time when this account, or its group membership, was last modified. 
+            This field is required if *can_update_accounts_list* is set to `true` in
+            the agent's *traits*. The server will track the greatest *updated_after* 
+            returned by an iteration and provide that value back to subsequent 
+            iterations. The agent should return only accounts that have been updated
+            since that time.
+    DirAgentGroup:
+      type: object
+      required:
+        - immutable_id
+        - name
+        - kind
+      properties:
+        immutable_id:
+          type: string
+          x-order: 1
+          x-go-name: ImmutableID
+          description: >
+            An identifier for the group that will not change over time. In many
+            directory services this is an UUID or similar opaque identifier.
+            If the directory service doesn't distinguish between group identifiers
+            and names, use the same value here as for name.
+        name:
+          type: string
+          x-order: 2
+          description: >
+            The group's display name.
+        kind:
+          type: string
+          x-order: 3
+          description: >
+            Some directory services have different kinds ways of grouping users, 
+            each of which can be considered a group for Nametag's purposes. For
+            example, you might have "security groups", "roles", "administrative 
+            units", etc. This field should be set to the kind of group that this
+            is. The semantics of this field are up to the agent. Nametag treats it
+            as opaque.
+    DirAgentGetAccountRequest:
+      type: object
+      required:
+        - ref
+      properties:
+        ref:
+          $ref: "#/components/schemas/DirAgentAccountRef"
+          description: >
+            Specifies which account to fetch information about.
+    DirAgentAccountRef:
+      type: object
+      properties:
+        immutable_id:
+          type: string
+          x-go-name: ImmutableID
+          x-order: 1
+          description: >
+            The immutable identifier of the account to fetch information about.
+        id:
+          type: string
+          x-go-name: ID
+          x-order: 2
+          description: >
+            One of the identifiers of the account to fetch information about. This
+            is typically an email address or username.
+    DirAgentGetAccountResponse:
+      type: object
+      required:
+        - accounts
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/DirAgentAccount"
+          description: >
+            Information about the accounts that match the specified reference.
+            If you specified an *immutable_id* in the request, the response will
+            contain at most one account. If you specified an *id* in the request,
+            because the same *id* can be present on multiple accounts, the response
+            may contain multiple accounts.
+            Unlike the *list_accounts* method, the accounts in this list should
+            contain *groups* information, even if it requires the agent to perform
+            additional work to determine group membership.
+            If no accounts match, this list should be empty.
+    DirAgentListGroupsRequest:
+      type: object
+      properties:
+        name_prefix:
+          type: string
+          x-order: 1
+          description: >
+            The agent should return only groups whose name starts with this prefix.
+        max_count:
+          type: integer
+          x-go-type: int64
+          x-order: 2
+          description: >
+            The maximum number of groups to return. If the agent has more groups
+            than this, it should return the first *max_count* groups in lexicographic
+            order by name.
+            Note: this is not the maximum number of groups per page, this is simply
+            a signal that the server will discard any groups beyond this number.
+        cursor:
+          type: string
+          x-order: 3
+          description: >
+            If present, the server is requesting a continuation of a previous
+            list of groups. The value will be the one most recently returned
+            in the *next_cursor* field. The format of this value is determined
+            by the agent. The server treats this value as opaque and passes it
+            back to the agent in the next request. To start at the beginning of
+            the list, the server will omit this field.
+    DirAgentListGroupsResponse:
+      type: object
+      required:
+        - groups
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/DirAgentGroup"
+          x-order: 1
+          description: >
+            The groups that the agent has discovered.
+        next_cursor:
+          type: string
+          x-order: 2
+          description: >
+            If there are more results to return, the agent should set this field
+            to the value that should be passed back to the server in the next
+            request. If there are no more results, the agent should omit this field.
+
+    DirAgentPerformOperationRequest:
+      type: object
+      required:
+        - operation
+        - account_immutable_id
+      properties:
+        operation:
+          $ref: "#/components/schemas/DirAgentOperation"
+          x-order: 1
+          description: >
+            The operation to perform on the account.
+        account_immutable_id:
+          type: string
+          x-go-name: AccountImmutableID
+          x-order: 2
+          description: >
+            The immutable identifier of the account to perform the operation on.
+        dry_run:
+          type: boolean
+          x-order: 3
+          description: >
+            If set to `true`, the agent should not actually perform the operation,
+            but should test if the operation is likely to succeed, to the best of 
+            its capability. If the operation is not possible, the agent should
+            set *error* in the response with an appropriate error code.
+    DirAgentOperation:
+      type: string
+      enum:
+        - get_temporary_password
+        - get_password_link
+        - remove_all_mfa
+        - get_mfa_bypass_code
+        - unlock
+        - get_temporary_access_pass
+      x-enum-varnames:
+        - GetTemporaryPassword
+        - GetPasswordLink
+        - RemoveAllMFA
+        - GetMFABypassCode
+        - Unlock
+        - GetTemporaryAccessPass
+      x-enum-descriptions:
+        - "Generate a temporary password for the account."
+        - "Generate a pre-authenticated link that leads the user to a site where they can enter a new password."
+        - "Remove all MFA factors from the account to permit a user to re-enroll in MFA."
+        - "Generate a bypass code that the user can use to sign in in place of their MFA device."
+        - "Unlock the account that has been locked due to too many failed login attempts."
+        - "Generate a temporary access pass for the account."
+    DirAgentPerformOperationResponse:
+      type: object
+      properties:
+        temporary_password:
+          type: string
+          x-order: 1
+          description: >
+            If the operation was *get_temporary_password*, this field should contain
+            the temporary password that the user can use to log in and set a new 
+            password.
+        password_link:
+          type: string
+          x-order: 2
+          description: >
+            If the operation was *get_password_link*, this field should contain
+            a pre-authenticated link that the user can use to set a new password.
+        mfa_bypass_code:
+          type: string
+          x-order: 3
+          description: >
+            If the operation was *get_mfa_bypass_code*, this field should contain
+            the bypass code that the user can use to sign in in place of their MFA
+            device.

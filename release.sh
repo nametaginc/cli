@@ -47,6 +47,9 @@ find . -name \*_test.go -type f -exec rm {} \;
 find . -type d -name testdata -print0 | xargs -0 rm -rf
 find . -type d -name recording -print0 | xargs -0 rm -rf
 
+# no need to share the docker secret
+rm docker.io-password.secret
+
 # fix imports
 find . -name \*.go -type f -exec sed -i.bak 's|nametaginc/nt/cli|nametaginc/cli|g' {} \;
 find . -name \*.go -type f -exec sed -i.bak 's|nametaginc/nt/pkg|nametaginc/cli/internal/pkg|g' {} \;
@@ -64,7 +67,7 @@ mv go.mod~ go.mod
 go mod tidy
 
 # make sure we can actually build before we commit or push anything
-go run github.com/goreleaser/goreleaser/v2@latest --snapshot --clean
+go tool goreleaser --snapshot --clean
 
 version=$(cat internal/cli/VERSION)
 echo "version: $version"
@@ -83,6 +86,6 @@ git push --tags
 )
 
 # make a release
-(
-	GITHUB_TOKEN=$(gh auth token) go run github.com/goreleaser/goreleaser/v2@latest release --clean
-)
+ntsso secret decrypt "$(cat "$source_root/cli/docker.io-password.secret")" |
+	docker login --username nametaginc --password-stdin
+GITHUB_TOKEN=$(gh auth token) go tool goreleaser release --clean
