@@ -75,7 +75,7 @@ echo "version: $version"
 # commit & push
 git add -A
 git commit -m "release version $version from upstream"
-git push origin main
+# git push origin main
 git tag "v$version"
 git push --tags
 
