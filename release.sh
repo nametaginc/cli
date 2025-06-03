@@ -97,6 +97,8 @@ echo "here"
 # make sure we can actually build before we commit or push anything
 go tool goreleaser --snapshot --clean
 
+echo "got past validation"
+
 version=$(cat internal/cli/VERSION)
 echo "version: $version"
 
