@@ -40,13 +40,13 @@ commands on stdin and sending responses to stdout. For example:
     NAMETAG_AGENT_TOKEN="abcd" nametag directory agent --command "NAMETAG_AGENT_TOKEN="abcd" \
 	OKTA_TOKEN="1234567890" \
 	OKTA_URL="https://example.okta.com" \
-    nametag directory agnet okta"
+    nametag directory agent okta"
 For convenience, you can also invoke this command directly, which will cause it to perform
 both the worker and the agent roles. For example, the following is equivalent to the above:
 	NAMETAG_AGENT_TOKEN="abcd" \
 	OKTA_TOKEN="1234567890" \
 	OKTA_URL="https://example.okta.com" \
-    nametag directory agnet okta
+    nametag directory agent okta
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			url, err := cmd.Flags().GetString("okta-url")

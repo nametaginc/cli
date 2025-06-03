@@ -1345,6 +1345,12 @@ type ListOrgMembersResponse struct {
 	Members []OrgMember `json:"members"`
 }
 
+// ListSlackIntegrationsResponse defines model for ListSlackIntegrationsResponse.
+type ListSlackIntegrationsResponse struct {
+	// Integrations A list of Slack integrations for this environment
+	Integrations []SlackIntegration `json:"integrations"`
+}
+
 // ListWebhooksResponse defines model for ListWebhooksResponse.
 type ListWebhooksResponse struct {
 	Webhooks []Webhook `json:"webhooks"`
@@ -1503,6 +1509,9 @@ type OrgMember struct {
 
 	// RequestsCount The number of request the member has sent.
 	RequestsCount *int `json:"requests_count,omitempty"`
+
+	// Principal The principal of this org member
+	Principal string `json:"principal"`
 }
 
 // OrgMemberInvitedAuditEvent defines model for OrgMemberInvitedAuditEvent.
@@ -1566,10 +1575,13 @@ type Principal struct {
 	// OrgMember The ID of the OrgMember for the console user performing the action
 	OrgMember *string `json:"org_member,omitempty"`
 
+	// OrgMemberEmail The email address associated with the OrgMember
+	OrgMemberEmail *string `json:"org_member_email,omitempty"`
+
 	// APIKeyID The ID of the APIKey for the actor performing the action.
 	APIKeyID *string `json:"api_key,omitempty"`
 
-	// Impersonator Present if the request was made by a Nametag administrator on behalf of the  user. The value is the email address of the Nametag administrator performing the action.
+	// Impersonator Present if the request was made by a Nametag administrator on behalf of the  user. The value is the email address of the Nametag administrator performing  the action.
 	Impersonator *string `json:"impersonator,omitempty"`
 
 	// Subject If the request was authenticated using an ID token, then this is the subject of the ID token.
@@ -1928,6 +1940,27 @@ type SharingRevokedAuditEvent struct {
 	Claims  []Claim  `json:"claims"`
 	Scopes  *[]Scope `json:"scopes,omitempty"`
 	Subject string   `json:"subject"`
+}
+
+// SlackIntegration defines model for SlackIntegration.
+type SlackIntegration struct {
+	// ID The unique identifier for the Slack integration
+	ID string `json:"id"`
+
+	// Name The name of the Slack workspace associated with this integration.
+	Name string `json:"name"`
+
+	// Icon The URL for the icon of the Slack workspace associated with this integration.
+	Icon string `json:"icon"`
+
+	// Connected Whether or not this integration is connected to Nametag.  If this is `false`, there may be issues with the auth token that Nametag has that can be solved by reconnecting this workspace.
+	Connected bool `json:"connected"`
+}
+
+// SlackRequestDetailsResponse defines model for SlackRequestDetailsResponse.
+type SlackRequestDetailsResponse struct {
+	OrgMember OrgMember `json:"orgMember"`
+	Request   Request   `json:"request"`
 }
 
 // SubjectComparisonRequest defines model for SubjectComparisonRequest.
@@ -2737,6 +2770,12 @@ type ClientInterface interface {
 	// GetEnvRequest request
 	GetEnvRequest(ctx context.Context, env string, requestID string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListSlackIntegrations request
+	ListSlackIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSlackIntegration request
+	DeleteSlackIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateTemplateWithBody request with any body
 	CreateTemplateWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2752,6 +2791,9 @@ type ClientInterface interface {
 
 	// ListWebhooks request
 	ListWebhooks(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSlackRequestDetails request
+	GetSlackRequestDetails(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetOrg request
 	GetOrg(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3412,6 +3454,30 @@ func (c *Client) GetEnvRequest(ctx context.Context, env string, requestID string
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListSlackIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSlackIntegrationsRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSlackIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSlackIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateTemplateWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateTemplateRequestWithBody(c.Server, env, contentType, body)
 	if err != nil {
@@ -3474,6 +3540,18 @@ func (c *Client) UpdateTemplate(ctx context.Context, env string, template string
 
 func (c *Client) ListWebhooks(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListWebhooksRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSlackRequestDetails(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSlackRequestDetailsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -5638,6 +5716,81 @@ func NewGetEnvRequestRequest(server string, env string, requestID string) (*http
 	return req, nil
 }
 
+// NewListSlackIntegrationsRequest generates requests for ListSlackIntegrations
+func NewListSlackIntegrationsRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/slack", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteSlackIntegrationRequest generates requests for DeleteSlackIntegration
+func NewDeleteSlackIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "integration", runtime.ParamLocationPath, integration)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/slack/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateTemplateRequest calls the generic CreateTemplate builder with application/json body
 func NewCreateTemplateRequest(server string, env string, body CreateTemplateJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -5797,6 +5950,33 @@ func NewListWebhooksRequest(server string, env string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/api/envs/%s/webhooks", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSlackRequestDetailsRequest generates requests for GetSlackRequestDetails
+func NewGetSlackRequestDetailsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/integrations/slack/details")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -7433,6 +7613,12 @@ type ClientWithResponsesInterface interface {
 	// GetEnvRequestWithResponse request
 	GetEnvRequestWithResponse(ctx context.Context, env string, requestID string, reqEditors ...RequestEditorFn) (*GetEnvRequestResp, error)
 
+	// ListSlackIntegrationsWithResponse request
+	ListSlackIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListSlackIntegrationsResp, error)
+
+	// DeleteSlackIntegrationWithResponse request
+	DeleteSlackIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteSlackIntegrationResp, error)
+
 	// CreateTemplateWithBodyWithResponse request with any body
 	CreateTemplateWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTemplateResp, error)
 
@@ -7448,6 +7634,9 @@ type ClientWithResponsesInterface interface {
 
 	// ListWebhooksWithResponse request
 	ListWebhooksWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWebhooksResp, error)
+
+	// GetSlackRequestDetailsWithResponse request
+	GetSlackRequestDetailsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSlackRequestDetailsResp, error)
 
 	// GetOrgWithResponse request
 	GetOrgWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrgResp, error)
@@ -8366,6 +8555,51 @@ func (r GetEnvRequestResp) StatusCode() int {
 	return 0
 }
 
+type ListSlackIntegrationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ListSlackIntegrationsResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSlackIntegrationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSlackIntegrationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSlackIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSlackIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSlackIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateTemplateResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8450,6 +8684,29 @@ func (r ListWebhooksResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListWebhooksResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSlackRequestDetailsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SlackRequestDetailsResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSlackRequestDetailsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSlackRequestDetailsResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9368,6 +9625,24 @@ func (c *ClientWithResponses) GetEnvRequestWithResponse(ctx context.Context, env
 	return ParseGetEnvRequestResp(rsp)
 }
 
+// ListSlackIntegrationsWithResponse request returning *ListSlackIntegrationsResp
+func (c *ClientWithResponses) ListSlackIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListSlackIntegrationsResp, error) {
+	rsp, err := c.ListSlackIntegrations(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSlackIntegrationsResp(rsp)
+}
+
+// DeleteSlackIntegrationWithResponse request returning *DeleteSlackIntegrationResp
+func (c *ClientWithResponses) DeleteSlackIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteSlackIntegrationResp, error) {
+	rsp, err := c.DeleteSlackIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSlackIntegrationResp(rsp)
+}
+
 // CreateTemplateWithBodyWithResponse request with arbitrary body returning *CreateTemplateResp
 func (c *ClientWithResponses) CreateTemplateWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTemplateResp, error) {
 	rsp, err := c.CreateTemplateWithBody(ctx, env, contentType, body, reqEditors...)
@@ -9418,6 +9693,15 @@ func (c *ClientWithResponses) ListWebhooksWithResponse(ctx context.Context, env 
 		return nil, err
 	}
 	return ParseListWebhooksResp(rsp)
+}
+
+// GetSlackRequestDetailsWithResponse request returning *GetSlackRequestDetailsResp
+func (c *ClientWithResponses) GetSlackRequestDetailsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSlackRequestDetailsResp, error) {
+	rsp, err := c.GetSlackRequestDetails(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSlackRequestDetailsResp(rsp)
 }
 
 // GetOrgWithResponse request returning *GetOrgResp
@@ -10778,6 +11062,65 @@ func ParseGetEnvRequestResp(rsp *http.Response) (*GetEnvRequestResp, error) {
 	return response, nil
 }
 
+// ParseListSlackIntegrationsResp parses an HTTP response from a ListSlackIntegrationsWithResponse call
+func ParseListSlackIntegrationsResp(rsp *http.Response) (*ListSlackIntegrationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSlackIntegrationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListSlackIntegrationsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSlackIntegrationResp parses an HTTP response from a DeleteSlackIntegrationWithResponse call
+func ParseDeleteSlackIntegrationResp(rsp *http.Response) (*DeleteSlackIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSlackIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateTemplateResp parses an HTTP response from a CreateTemplateWithResponse call
 func ParseCreateTemplateResp(rsp *http.Response) (*CreateTemplateResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10879,6 +11222,39 @@ func ParseListWebhooksResp(rsp *http.Response) (*ListWebhooksResp, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ListWebhooksResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSlackRequestDetailsResp parses an HTTP response from a GetSlackRequestDetailsWithResponse call
+func ParseGetSlackRequestDetailsResp(rsp *http.Response) (*GetSlackRequestDetailsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSlackRequestDetailsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackRequestDetailsResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

@@ -19,6 +19,31 @@ set -e -o pipefail
 # TODO: It would be a lot better if we could have more meaningful commit messages etc.
 #   but that is a problem for another day. Sorry.
 
+# Checks push permissions for the required repositories
+GITHUB_TOKEN=$(gh auth token)
+if [ -z "$GITHUB_TOKEN" ]; then
+	echo "GITHUB_TOKEN is not set"
+	exit 1
+fi
+
+REPOS=("nametaginc/cli" "nametaginc/homebrew-tap")
+
+for repo in "${REPOS[@]}"; do
+	echo "Checking push permission for $repo..."
+	response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+		"https://api.github.com/repos/$repo")
+
+	# Check push permission
+	has_push=$(echo "$response" | jq -r '.permissions.push')
+
+	if [ "$has_push" == "true" ]; then
+		echo "  ✅ User has push access to $repo"
+	else
+		echo "  ❌ User does not have push access to $repo"
+		exit 1
+	fi
+done
+
 source_root=$(git rev-parse --show-toplevel)
 dir=$(mktemp -d)
 echo "dir: $dir"
@@ -64,7 +89,10 @@ cat go.mod |
 	grep -v -e 'github.com/bas-d/appattest' |
 	cat >go.mod~
 mv go.mod~ go.mod
+echo "here"
 go mod tidy
+
+echo "here"
 
 # make sure we can actually build before we commit or push anything
 go tool goreleaser --snapshot --clean

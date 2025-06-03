@@ -89,6 +89,7 @@ For example:
 
 	cmd.AddCommand(newDirAgentRegisterCmd())
 	cmd.AddCommand(newDirAgentOktaCmd())
+	cmd.AddCommand(newDirAgentADCmd())
 	cmd.AddCommand(newDirAgentRegenerateTokenCmd())
 	return cmd
 }
