@@ -89,15 +89,10 @@ cat go.mod |
 	grep -v -e 'github.com/bas-d/appattest' |
 	cat >go.mod~
 mv go.mod~ go.mod
-echo "here"
 go mod tidy
-
-echo "here"
 
 # make sure we can actually build before we commit or push anything
 go tool goreleaser --snapshot --clean
-
-echo "got past validation"
 
 version=$(cat internal/cli/VERSION)
 echo "version: $version"
