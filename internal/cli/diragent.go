@@ -33,27 +33,27 @@ func newDirAgentCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "agent",
 		Short: "Run a directory agent",
-		Long: `Run a directory agent. 
-A directory agent performs operations on behalf of Nametag such as listing accounts, 
-resetting passwords, resetting MFA, and unlocking accounts. Running a directory 
-agent allows you use custom directories with Nametag, shield your directory credentials 
+		Long: `Run a directory agent.
+A directory agent performs operations on behalf of Nametag such as listing accounts,
+resetting passwords, resetting MFA, and unlocking accounts. Running a directory
+agent allows you use custom directories with Nametag, shield your directory credentials
 from Nametag, or customize the behavior of already-supported directories.
-To authenticate, you must specify an agent token. To get a token, use 
+To authenticate, you must specify an agent token. To get a token, use
 'nametag directory agent register'.
-This command connects to Nametag and relays requests and responses between the server 
+This command connects to Nametag and relays requests and responses between the server
 and an agent worker process that it manages.  The worker is specified by the --command flag.
-Nametag comes with several built-in workers, such as Okta and Entra, which are implemented 
+Nametag comes with several built-in workers, such as Okta and Entra, which are implemented
 as subcommands of this command.
     nametag directory agent --agent-token <token> --command "nametag directory agent okta --okta-url https://example.okta.com --okta-token 1234567890"
-For convenience, the built-in workers can be invoked directly. For example, the following 
+For convenience, the built-in workers can be invoked directly. For example, the following
 command is equivalent to the one above:
 	NAMETAG_AGENT_TOKEN="abcd" \
 	OKTA_TOKEN="1234567890" \
 	OKTA_URL="https://example.okta.com" \
     nametag directory agnet okta
-An agent worker can be anything that reads JSON requests from stdin and writes JSON responses 
-to stdout. The command you specify is invoked via your system shell. The environment variable 
-NAMETAG_AGENT_WORKER is set to "true" when the agent is invoked as a worker process. 
+An agent worker can be anything that reads JSON requests from stdin and writes JSON responses
+to stdout. The command you specify is invoked via your system shell. The environment variable
+NAMETAG_AGENT_WORKER is set to "true" when the agent is invoked as a worker process.
 For example:
     NAMETAG_AGENT_TOKEN="abcd" nametag directory agent --command "my-custom-worker"
 `,
@@ -90,6 +90,7 @@ For example:
 	cmd.AddCommand(newDirAgentRegisterCmd())
 	cmd.AddCommand(newDirAgentOktaCmd())
 	cmd.AddCommand(newDirAgentADCmd())
+	cmd.AddCommand(newDirAgentBeyondIdentityCmd())
 	cmd.AddCommand(newDirAgentRegenerateTokenCmd())
 	return cmd
 }
