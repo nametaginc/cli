@@ -2,8 +2,55 @@ package v1
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/url"
+
+	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
 
-func (c *V1Client) GetIdentity(ctx context.Context, id string) error {
-	return nil
+// Identity is the response from the Beyond Identity API.
+type Identity struct {
+	ID          string `json:"id"`
+	DisplayName string `json:"display_name"`
+	Traits      struct {
+		Username     string `json:"username"`
+	} `json:"traits"`
+}
+
+// GetIdentity returns the identity with the given ID.
+// https://docs.beyondidentity.com/api/v1#tag/Identities/operation/GetIdentity.
+func (c *V1Client) GetIdentity(ctx context.Context, id string) (*byidclient.Identity, error) {
+	identityURL, err := url.JoinPath(c.baseURL.String(), "identities", id)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, identityURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	var raw Identity
+
+	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
+		return nil, err
+	}
+
+	return &byidclient.Identity{
+		ID:           raw.ID,
+		DisplayName:  raw.DisplayName,
+		Username:     raw.Traits.Username,
+	}, nil
 }

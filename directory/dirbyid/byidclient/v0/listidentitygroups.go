@@ -6,6 +6,6 @@ import (
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
 
-func (c *V0Client) ListGroups(ctx context.Context, pageToken *string) (*byidclient.ListGroupsResponse, error) {
+func (c *V0Client) ListIdentityGroups(ctx context.Context, id string) (*byidclient.ListGroupsResponse, error) {
 	return nil, nil
 }

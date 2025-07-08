@@ -16,9 +16,11 @@ package dirbyid
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/nametaginc/cli/diragentapi"
+	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
 
 // GetAccount fetches accounts given one of its external IDs.
@@ -27,15 +29,62 @@ import (
 // accounts could be returned. The caller must handle this case, which is probably an
 // error.
 func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAccountRequest) (*diragentapi.DirAgentGetAccountResponse, error) {
-
 	log.Printf("get_account called")
+
+	var identities []*byidclient.Identity
+	// If the immutable ID is provided, use it to get the identity.
+	if req.Ref.ImmutableID != nil {
+		identity, err := p.client.GetIdentity(ctx, *req.Ref.ImmutableID)
+		if err != nil {
+			return nil, err
+		}
+		identities = append(identities, identity)
+	} else {
+		// If the ref ID is provided, use it to get all identities that match.
+		// This *should* be a single identity, since we're seeding the directory with a username, a unique value.
+		var query string
+		if p.Version == "v0" {
+			query = fmt.Sprintf("username eq %q", *req.Ref.ID)
+		} else {
+			query = fmt.Sprintf("traits.username eq %q", *req.Ref.ID)
+		}
+
+		var pageToken *string
+		for {
+			resp, err := p.client.ListIdentities(ctx, &query, pageToken)
+			if err != nil {
+				return nil, err
+			}
+
+			identities = append(identities, resp.Identities...)
+
+			if resp.NextPageToken == nil {
+				break
+			}
+			pageToken = resp.NextPageToken
+		}
+	}
+
+	var accounts []diragentapi.DirAgentAccount
+	for _, identity := range identities {
+		account := toDirAgentAccount(*identity)
+
+		groupsResponse, err := p.client.ListIdentityGroups(ctx, *req.Ref.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		groups := make([]diragentapi.DirAgentGroup, 0, len(groupsResponse.Groups))
+		for _, group := range groupsResponse.Groups {
+			groups = append(groups, toDirAgentGroup(*group))
+		}
+
+		account.Groups = &groups
+
+		accounts = append(accounts, account)
+	}
+
 	return &diragentapi.DirAgentGetAccountResponse{
-		Accounts: []diragentapi.DirAgentAccount{
-			{
-				ImmutableID: "123",
-				IDs:         []string{"123"},
-				Name:        "John Doe",
-			},
-		},
+		Accounts: accounts,
 	}, nil
 }

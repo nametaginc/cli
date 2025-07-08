@@ -18,6 +18,7 @@ package dirbyid
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/nametaginc/cli/diragentapi"
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
@@ -27,7 +28,8 @@ import (
 )
 
 type Provider struct {
-	URL          string
+	Version      string
+	APIBaseURL   *url.URL
 	ClientID     string
 	ClientSecret string
 	TenantID     *string
@@ -64,9 +66,9 @@ func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfig
 func (p *Provider) initClient() error {
 	var err error
 	if p.TenantID != nil && p.RealmID != nil {
-		p.client, err = v1.NewV1Client(p.ClientID, p.ClientSecret, p.URL, *p.TenantID, *p.RealmID)
+		p.client, err = v1.NewV1Client(p.APIBaseURL, p.ClientID, p.ClientSecret, *p.TenantID, *p.RealmID)
 	} else {
-		p.client, err = v0.NewV0Client(p.ClientID, p.ClientSecret, p.URL)
+		p.client, err = v0.NewV0Client(p.APIBaseURL, p.ClientID, p.ClientSecret)
 	}
 	if err != nil {
 		return err

@@ -25,13 +25,19 @@ import (
 // through multiple pages of results.
 func (p *Provider) ListAccounts(ctx context.Context, req diragentapi.DirAgentListAccountsRequest) (*diragentapi.DirAgentListAccountsResponse, error) {
 	log.Printf("list_accounts called")
+
+	identities, err := p.client.ListIdentities(ctx, nil, req.Cursor)
+	if err != nil {
+		return nil, err
+	}
+
+	accounts := make([]diragentapi.DirAgentAccount, 0, len(identities.Identities))
+	for _, identity := range identities.Identities {
+		accounts = append(accounts, toDirAgentAccount(*identity))
+	}
+
 	return &diragentapi.DirAgentListAccountsResponse{
-		Accounts: []diragentapi.DirAgentAccount{
-			{
-				ImmutableID: "1234567890",
-				IDs:         []string{"harry.guo@beyondidentity.com"},
-				Name:        "Harry Guo",
-			},
-		},
+		Accounts:   accounts,
+		NextCursor: identities.NextPageToken,
 	}, nil
 }

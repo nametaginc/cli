@@ -16,6 +16,7 @@ package cli
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 
 	"github.com/kballard/go-shellquote"
@@ -36,7 +37,7 @@ of already-supported directories.
 
 If you are using v0 API, you must specify a Beyond Identity URL, a client ID, and a client secret.
 If you are using v1 API, you must specify a Beyond Identity URL, a client ID, a client secret,
-a tenant ID, and a realm ID.
+a tenant ID, a realm ID, and an application ID.
 
 When invoked as a subcommand of 'nametag directory agent', the command runs as a worker, receiving
 commands on stdin and sending responses to stdout.
@@ -55,6 +56,7 @@ v1 API:
 	BYID_URL="https://api-us.beyondidentity.com/v1"\
 	TENANT_ID="tenant-id" \
 	REALM_ID="realm-id" \
+	APPLICATION_ID="application-id" \
 	BYID_CLIENT_ID="client-id" \
 	BYID_CLIENT_SECRET="client-secret" \
     nametag directory agent byid"
@@ -74,21 +76,22 @@ v1 API:
 	BYID_URL="https://api-us.beyondidentity.com/v1" \
 	TENANT_ID="tenant-id" \
 	REALM_ID="realm-id" \
+	APPLICATION_ID="application-id" \
 	BYID_CLIENT_ID="client-id" \
 	BYID_CLIENT_SECRET="client-secret" \
     nametag directory agent byid"
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			url, err := cmd.Flags().GetString("byid-url")
+			byidURL, err := cmd.Flags().GetString("byid-url")
 			if err != nil {
 				return err
 			}
-			if url == "" {
+			if byidURL == "" {
 				return fmt.Errorf("flag url or environment variable $BYID_URL is required")
 			}
 
-			if url != "https://api-us.beyondidentity.com/v1" && url != "https://api.byndid.com/v2" {
-				return fmt.Errorf("invalid url %s, must be https://api-us.beyondidentity.com/v1 or https://api.byndid.com/v2", url)
+			if byidURL != "https://api-us.beyondidentity.com/v1" && byidURL != "https://api.byndid.com/v2" {
+				return fmt.Errorf("invalid url %s, must be https://api-us.beyondidentity.com/v1 or https://api.byndid.com/v2", byidURL)
 			}
 
 			clientID, err := cmd.Flags().GetString("byid-client-id")
@@ -103,9 +106,11 @@ v1 API:
 				return fmt.Errorf("both byid-client-id and byid-client-secret are required")
 			}
 
+			version := "v0"
 			// v1 API only
 			var tenantID, realmID string
-			if url == "https://api-us.beyondidentity.com/v1" {
+			if byidURL == "https://api-us.beyondidentity.com/v1" {
+				version = "v1"
 				tenantID, err := cmd.Flags().GetString("tenant-id")
 				if err != nil {
 					return err
@@ -114,8 +119,12 @@ v1 API:
 				if err != nil {
 					return err
 				}
-				if tenantID == "" || realmID == "" {
-					return fmt.Errorf("both tenant-id and realm-id are required for v1 API")
+				applicationID, err := cmd.Flags().GetString("application-id")
+				if err != nil {
+					return err
+				}
+				if tenantID == "" || realmID == "" || applicationID == "" {
+					return fmt.Errorf("tenant-id, realm-id, and application-id are required for v1 API")
 				}
 			}
 
@@ -139,8 +148,14 @@ v1 API:
 				return svc.Run(cmd.Context())
 			}
 
+			apiBaseURL, err := url.Parse(byidURL)
+			if err != nil {
+				return err
+			}
+
 			provider := dirbyid.Provider{
-				URL:          url,
+				Version:      version,
+				APIBaseURL:   apiBaseURL,
 				ClientID:     clientID,
 				ClientSecret: clientSecret,
 				TenantID:     &tenantID,
@@ -150,10 +165,11 @@ v1 API:
 		},
 	}
 	cmd.Flags().String("agent-token", os.Getenv("NAMETAG_AGENT_TOKEN"), "Nametag directory agent authentication token ($NAMETAG_AGENT_TOKEN)")
-	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity URL ($BYID_URL)")
+	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL)")
 	cmd.Flags().String("byid-client-id", os.Getenv("BYID_CLIENT_ID"), "Your Beyond Identity Client ID ($BYID_CLIENT_ID)")
 	cmd.Flags().String("byid-client-secret", os.Getenv("BYID_CLIENT_SECRET"), "Your Beyond Identity Client Secret ($BYID_CLIENT_SECRET)")
 	cmd.Flags().String("tenant-id", os.Getenv("TENANT_ID"), "Your Beyond Identity Tenant ID ($TENANT_ID)")
 	cmd.Flags().String("realm-id", os.Getenv("REALM_ID"), "Your Beyond Identity Realm ID ($REALM_ID)")
+	cmd.Flags().String("application-id", os.Getenv("APPLICATION_ID"), "Your Beyond Identity Management Application ID ($APPLICATION_ID)")
 	return cmd
 }

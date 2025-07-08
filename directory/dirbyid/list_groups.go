@@ -24,18 +24,19 @@ import (
 // ListGroups returns the directory groups that match the given name prefix.
 func (p *Provider) ListGroups(ctx context.Context, req diragentapi.DirAgentListGroupsRequest) (*diragentapi.DirAgentListGroupsResponse, error) {
 	log.Printf("list_groups called")
+
+	groupsResponse, err := p.client.ListGroups(ctx, req.Cursor)
+	if err != nil {
+		return nil, err
+	}
+
+	groups := make([]diragentapi.DirAgentGroup, 0, len(groupsResponse.Groups))
+	for _, group := range groupsResponse.Groups {
+		groups = append(groups, toDirAgentGroup(*group))
+	}
+
 	return &diragentapi.DirAgentListGroupsResponse{
-		Groups: []diragentapi.DirAgentGroup{
-			{
-				ImmutableID: "group1",
-				Name:        "All Users",
-				Kind:        "group",
-			},
-			{
-				ImmutableID: "group2",
-				Name:        "Admins",
-				Kind:        "rbac",
-			},
-		},
+		Groups:     groups,
+		NextCursor: groupsResponse.NextPageToken,
 	}, nil
 }
