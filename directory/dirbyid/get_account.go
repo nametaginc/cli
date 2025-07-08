@@ -27,6 +27,7 @@ import (
 // accounts could be returned. The caller must handle this case, which is probably an
 // error.
 func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAccountRequest) (*diragentapi.DirAgentGetAccountResponse, error) {
+
 	log.Printf("get_account called")
 	return &diragentapi.DirAgentGetAccountResponse{
 		Accounts: []diragentapi.DirAgentAccount{

@@ -20,6 +20,9 @@ import (
 	"fmt"
 
 	"github.com/nametaginc/cli/diragentapi"
+	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
+	v0 "github.com/nametaginc/cli/directory/dirbyid/byidclient/v0"
+	v1 "github.com/nametaginc/cli/directory/dirbyid/byidclient/v1"
 	"github.com/samber/lo"
 )
 
@@ -27,17 +30,46 @@ type Provider struct {
 	URL          string
 	ClientID     string
 	ClientSecret string
+	TenantID     *string
+	RealmID      *string
+
+	// Internal client for Beyond Identity API.
+	// Agnostic of the v0 or v1 API.
+	client byidclient.Client
 }
 
 func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfigureRequest) (*diragentapi.DirAgentConfigureResponse, error) {
+	err := p.initClient()
+	if err != nil {
+		return nil, err
+	}
+
 	return &diragentapi.DirAgentConfigureResponse{
 		Traits: diragentapi.DirAgentTraits{
-			Name:                  "Beyond Identity",
-			CanGetPasswordLink:    lo.ToPtr(true),
-			CanRemoveAllMFA:       lo.ToPtr(true),
-			CanUnlock:             lo.ToPtr(true),
-			CanUpdateAccountsList: lo.ToPtr(true),
+			Name:                    "Beyond Identity",
+			CanGetTemporaryPassword: lo.ToPtr(false),
+			CanGetPasswordLink:      lo.ToPtr(false),
+			CanRemoveAllMFA:         lo.ToPtr(false),
+			CanUnlock:               lo.ToPtr(false),
+			CanUpdateAccountsList:   lo.ToPtr(false),
 		},
-		ImmutableID: fmt.Sprintf("urn:agent:%s", p.URL),
+		ImmutableID: fmt.Sprintf("urn:agent:%s", p.ClientID),
 	}, nil
+}
+
+// initClient initializes the client for the Beyond Identity API.
+//
+// If the TenantID and RealmID are provided, it uses the v1 API.
+// Otherwise, it uses the v0 API.
+func (p *Provider) initClient() error {
+	var err error
+	if p.TenantID != nil && p.RealmID != nil {
+		p.client, err = v1.NewV1Client(p.ClientID, p.ClientSecret, p.URL, *p.TenantID, *p.RealmID)
+	} else {
+		p.client, err = v0.NewV0Client(p.ClientID, p.ClientSecret, p.URL)
+	}
+	if err != nil {
+		return err
+	}
+	return nil
 }
