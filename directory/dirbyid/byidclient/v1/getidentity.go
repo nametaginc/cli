@@ -14,15 +14,19 @@ import (
 type Identity struct {
 	ID          string `json:"id"`
 	DisplayName string `json:"display_name"`
-	Traits      struct {
-		Username     string `json:"username"`
-	} `json:"traits"`
+	Traits      Traits `json:"traits"`
+}
+
+// Traits is the traits of the identity.
+type Traits struct {
+	Username string `json:"username"`
 }
 
 // GetIdentity returns the identity with the given ID.
+// https://api-us.beyondidentity.com/v1/tenants/{tenant_id}/realms/{realm_id}/identities/{identity_id}
 // https://docs.beyondidentity.com/api/v1#tag/Identities/operation/GetIdentity.
 func (c *V1Client) GetIdentity(ctx context.Context, id string) (*byidclient.Identity, error) {
-	identityURL, err := url.JoinPath(c.baseURL.String(), "identities", id)
+	identityURL, err := url.JoinPath(c.baseURL.String(), "v1", "tenants", c.tenantID, "realms", c.realmID, "identities", id)
 	if err != nil {
 		return nil, err
 	}
@@ -49,8 +53,8 @@ func (c *V1Client) GetIdentity(ctx context.Context, id string) (*byidclient.Iden
 	}
 
 	return &byidclient.Identity{
-		ID:           raw.ID,
-		DisplayName:  raw.DisplayName,
-		Username:     raw.Traits.Username,
+		ID:          raw.ID,
+		DisplayName: raw.DisplayName,
+		Username:    raw.Traits.Username,
 	}, nil
 }

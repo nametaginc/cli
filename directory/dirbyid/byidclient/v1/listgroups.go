@@ -24,6 +24,7 @@ type Group struct {
 }
 
 // ListGroups returns the groups with the given page token.
+// https://api-us.beyondidentity.com/v1/tenants/{tenant_id}/realms/{realm_id}/groups
 // https://docs.beyondidentity.com/api/v1#tag/Groups/operation/ListGroups.
 func (c *V1Client) ListGroups(ctx context.Context, pageToken *string) (*byidclient.ListGroupsResponse, error) {
 	query := url.Values{}
@@ -32,7 +33,7 @@ func (c *V1Client) ListGroups(ctx context.Context, pageToken *string) (*byidclie
 	}
 
 	listURL := *c.baseURL
-	listURL.Path = path.Join(listURL.Path, "groups")
+	listURL.Path = path.Join("v1", "tenants", c.tenantID, "realms", c.realmID, "groups")
 	listURL.RawQuery = query.Encode()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, listURL.String(), nil)

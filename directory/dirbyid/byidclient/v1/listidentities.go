@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path"
 
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
@@ -18,6 +19,7 @@ type ListIdentitiesResponse struct {
 }
 
 // ListIdentities returns the identities with the given page token.
+// https://api-us.beyondidentity.com/v1/tenants/{tenant_id}/realms/{realm_id}/identities
 // https://docs.beyondidentity.com/api/v1#tag/Identities/operation/ListIdentities.
 func (c *V1Client) ListIdentities(ctx context.Context, filter, pageToken *string) (*byidclient.ListIdentitiesResponse, error) {
 	q := url.Values{}
@@ -28,15 +30,11 @@ func (c *V1Client) ListIdentities(ctx context.Context, filter, pageToken *string
 		q.Add("page_token", *pageToken)
 	}
 
-	baseURLStr := c.baseURL.String()
-	joinedURL, err := url.JoinPath(baseURLStr, "identities")
-	if err != nil {
-		return nil, err
-	}
+	listURL := *c.baseURL
+	listURL.Path = path.Join("v1", "tenants", c.tenantID, "realms", c.realmID, "identities")
+	listURL.RawQuery = q.Encode()
 
-	fullURL := joinedURL + "?" + q.Encode()
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, listURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}

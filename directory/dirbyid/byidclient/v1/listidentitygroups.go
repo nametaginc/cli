@@ -16,9 +16,11 @@ type ListIdentityGroupsResponse struct {
 	NextPageToken *string  `json:"next_page_token"`
 }
 
+// ListIdentityGroups returns the groups for the given identity.
+// https://api-us.beyondidentity.com/v1/tenants/{tenant_id}/realms/{realm_id}/identities/{identity_id}:listGroups
+// https://docs.beyondidentity.com/api/v1#tag/Identities/operation/ListIdentityGroups.
 func (c *V1Client) ListIdentityGroups(ctx context.Context, id string) (*byidclient.ListGroupsResponse, error) {
-	baseURLStr := c.baseURL.String()
-	joinedURL, err := url.JoinPath(baseURLStr, "identities", id, ":listGroups")
+	joinedURL, err := url.JoinPath(c.baseURL.String(), "v1", "tenants", c.tenantID, "realms", c.realmID, "identities", id, ":listGroups")
 	if err != nil {
 		return nil, err
 	}

@@ -31,6 +31,7 @@ import (
 func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAccountRequest) (*diragentapi.DirAgentGetAccountResponse, error) {
 	log.Printf("get_account called")
 
+	// Fetch the identities that match the request.
 	var identities []*byidclient.Identity
 	// If the immutable ID is provided, use it to get the identity.
 	if req.Ref.ImmutableID != nil {
@@ -42,6 +43,7 @@ func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAc
 	} else {
 		// If the ref ID is provided, use it to get all identities that match.
 		// This *should* be a single identity, since we're seeding the directory with a username, a unique value.
+		// TODO: check with the Nametag team if this is a correct usage of this API.
 		var query string
 		if p.Version == "v0" {
 			query = fmt.Sprintf("username eq %q", *req.Ref.ID)
@@ -65,6 +67,7 @@ func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAc
 		}
 	}
 
+	// Fetch the groups for each identity.
 	var accounts []diragentapi.DirAgentAccount
 	for _, identity := range identities {
 		account := toDirAgentAccount(*identity)

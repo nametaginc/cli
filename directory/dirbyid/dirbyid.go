@@ -28,12 +28,13 @@ import (
 )
 
 type Provider struct {
-	Version      string
-	APIBaseURL   *url.URL
-	ClientID     string
-	ClientSecret string
-	TenantID     *string
-	RealmID      *string
+	Version       string
+	APIBaseURL    *url.URL
+	ClientID      string
+	ClientSecret  string
+	TenantID      *string
+	RealmID       *string
+	ApplicationID *string
 
 	// Internal client for Beyond Identity API.
 	// Agnostic of the v0 or v1 API.
@@ -66,7 +67,7 @@ func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfig
 func (p *Provider) initClient() error {
 	var err error
 	if p.TenantID != nil && p.RealmID != nil {
-		p.client, err = v1.NewV1Client(p.APIBaseURL, p.ClientID, p.ClientSecret, *p.TenantID, *p.RealmID)
+		p.client, err = v1.NewV1Client(p.APIBaseURL, p.ClientID, p.ClientSecret, *p.TenantID, *p.RealmID, *p.ApplicationID)
 	} else {
 		p.client, err = v0.NewV0Client(p.APIBaseURL, p.ClientID, p.ClientSecret)
 	}

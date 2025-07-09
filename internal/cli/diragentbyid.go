@@ -46,14 +46,14 @@ For example:
 
 v0 API:
     NAMETAG_AGENT_TOKEN="nametag-agent-token" nametag directory agent --command "NAMETAG_AGENT_TOKEN="nametag-agent-token" \
-	BYID_URL="https://api.byndid.com/v2"\
+	BYID_URL="https://api.byndid.com"\
 	BYID_CLIENT_ID="client-id" \
 	BYID_CLIENT_SECRET="client-secret" \
     nametag directory agent byid"
 
 v1 API:
     NAMETAG_AGENT_TOKEN="nametag-agent-token" nametag directory agent --command "NAMETAG_AGENT_TOKEN="nametag-agent-token" \
-	BYID_URL="https://api-us.beyondidentity.com/v1"\
+	BYID_URL="https://api-us.beyondidentity.com"\
 	TENANT_ID="tenant-id" \
 	REALM_ID="realm-id" \
 	APPLICATION_ID="application-id" \
@@ -66,14 +66,14 @@ both the worker and the agent roles. For example, the following is equivalent to
 
 v0 API:
 	NAMETAG_AGENT_TOKEN="nametag-agent-token" \
-	BYID_URL="https://api.byndid.com/v2" \
+	BYID_URL="https://api.byndid.com" \
 	BYID_CLIENT_ID="client-id" \
 	BYID_CLIENT_SECRET="client-secret" \
     nametag directory agent byid"
 
 v1 API:
 	NAMETAG_AGENT_TOKEN="nametag-agent-token" \
-	BYID_URL="https://api-us.beyondidentity.com/v1" \
+	BYID_URL="https://api-us.beyondidentity.com" \
 	TENANT_ID="tenant-id" \
 	REALM_ID="realm-id" \
 	APPLICATION_ID="application-id" \
@@ -90,8 +90,8 @@ v1 API:
 				return fmt.Errorf("flag url or environment variable $BYID_URL is required")
 			}
 
-			if byidURL != "https://api-us.beyondidentity.com/v1" && byidURL != "https://api.byndid.com/v2" {
-				return fmt.Errorf("invalid url %s, must be https://api-us.beyondidentity.com/v1 or https://api.byndid.com/v2", byidURL)
+			if byidURL != "https://api-us.beyondidentity.com" && byidURL != "https://api.byndid.com" {
+				return fmt.Errorf("invalid url %s, must be https://api-us.beyondidentity.com or https://api.byndid.com", byidURL)
 			}
 
 			clientID, err := cmd.Flags().GetString("byid-client-id")
@@ -108,8 +108,8 @@ v1 API:
 
 			version := "v0"
 			// v1 API only
-			var tenantID, realmID string
-			if byidURL == "https://api-us.beyondidentity.com/v1" {
+			var tenantID, realmID, applicationID string
+			if byidURL == "https://api-us.beyondidentity.com" {
 				version = "v1"
 				tenantID, err := cmd.Flags().GetString("tenant-id")
 				if err != nil {
@@ -154,18 +154,19 @@ v1 API:
 			}
 
 			provider := dirbyid.Provider{
-				Version:      version,
-				APIBaseURL:   apiBaseURL,
-				ClientID:     clientID,
-				ClientSecret: clientSecret,
-				TenantID:     &tenantID,
-				RealmID:      &realmID,
+				Version:       version,
+				APIBaseURL:    apiBaseURL,
+				ClientID:      clientID,
+				ClientSecret:  clientSecret,
+				TenantID:      &tenantID,
+				RealmID:       &realmID,
+				ApplicationID: &applicationID,
 			}
 			return diragent.RunWorker(cmd.Context(), &provider)
 		},
 	}
 	cmd.Flags().String("agent-token", os.Getenv("NAMETAG_AGENT_TOKEN"), "Nametag directory agent authentication token ($NAMETAG_AGENT_TOKEN)")
-	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL)")
+	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL). For v0 API, use https://api.byndid.com. For v1 API, use https://api-us.beyondidentity.com")
 	cmd.Flags().String("byid-client-id", os.Getenv("BYID_CLIENT_ID"), "Your Beyond Identity Client ID ($BYID_CLIENT_ID)")
 	cmd.Flags().String("byid-client-secret", os.Getenv("BYID_CLIENT_SECRET"), "Your Beyond Identity Client Secret ($BYID_CLIENT_SECRET)")
 	cmd.Flags().String("tenant-id", os.Getenv("TENANT_ID"), "Your Beyond Identity Tenant ID ($TENANT_ID)")
