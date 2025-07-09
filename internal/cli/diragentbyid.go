@@ -54,9 +54,9 @@ v0 API:
 v1 API:
     NAMETAG_AGENT_TOKEN="nametag-agent-token" nametag directory agent --command "NAMETAG_AGENT_TOKEN="nametag-agent-token" \
 	BYID_URL="https://api-us.beyondidentity.com"\
-	TENANT_ID="tenant-id" \
-	REALM_ID="realm-id" \
-	APPLICATION_ID="application-id" \
+	BYID_TENANT_ID="tenant-id" \
+	BYID_REALM_ID="realm-id" \
+	BYID_APPLICATION_ID="application-id" \
 	BYID_CLIENT_ID="client-id" \
 	BYID_CLIENT_SECRET="client-secret" \
     nametag directory agent byid"
@@ -74,9 +74,9 @@ v0 API:
 v1 API:
 	NAMETAG_AGENT_TOKEN="nametag-agent-token" \
 	BYID_URL="https://api-us.beyondidentity.com" \
-	TENANT_ID="tenant-id" \
-	REALM_ID="realm-id" \
-	APPLICATION_ID="application-id" \
+	BYID_TENANT_ID="tenant-id" \
+	BYID_REALM_ID="realm-id" \
+	BYID_APPLICATION_ID="application-id" \
 	BYID_CLIENT_ID="client-id" \
 	BYID_CLIENT_SECRET="client-secret" \
     nametag directory agent byid"
@@ -111,20 +111,20 @@ v1 API:
 			var tenantID, realmID, applicationID string
 			if byidURL == "https://api-us.beyondidentity.com" {
 				version = "v1"
-				tenantID, err := cmd.Flags().GetString("tenant-id")
+				tenantID, err = cmd.Flags().GetString("byid-tenant-id")
 				if err != nil {
 					return err
 				}
-				realmID, err := cmd.Flags().GetString("byid-realm-id")
+				realmID, err = cmd.Flags().GetString("byid-realm-id")
 				if err != nil {
 					return err
 				}
-				applicationID, err := cmd.Flags().GetString("application-id")
+				applicationID, err = cmd.Flags().GetString("byid-application-id")
 				if err != nil {
 					return err
 				}
 				if tenantID == "" || realmID == "" || applicationID == "" {
-					return fmt.Errorf("tenant-id, realm-id, and application-id are required for v1 API")
+					return fmt.Errorf("byid-tenant-id, byid-realm-id, and byid-application-id are required for v1 API")
 				}
 			}
 
@@ -169,8 +169,8 @@ v1 API:
 	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL). For v0 API, use https://api.byndid.com. For v1 API, use https://api-us.beyondidentity.com")
 	cmd.Flags().String("byid-client-id", os.Getenv("BYID_CLIENT_ID"), "Your Beyond Identity Client ID ($BYID_CLIENT_ID)")
 	cmd.Flags().String("byid-client-secret", os.Getenv("BYID_CLIENT_SECRET"), "Your Beyond Identity Client Secret ($BYID_CLIENT_SECRET)")
-	cmd.Flags().String("tenant-id", os.Getenv("TENANT_ID"), "Your Beyond Identity Tenant ID ($TENANT_ID)")
-	cmd.Flags().String("realm-id", os.Getenv("REALM_ID"), "Your Beyond Identity Realm ID ($REALM_ID)")
-	cmd.Flags().String("application-id", os.Getenv("APPLICATION_ID"), "Your Beyond Identity Management Application ID ($APPLICATION_ID)")
+	cmd.Flags().String("byid-tenant-id", os.Getenv("BYID_TENANT_ID"), "Your Beyond Identity Tenant ID ($BYID_TENANT_ID)")
+	cmd.Flags().String("byid-realm-id", os.Getenv("BYID_REALM_ID"), "Your Beyond Identity Realm ID ($BYID_REALM_ID)")
+	cmd.Flags().String("byid-application-id", os.Getenv("BYID_APPLICATION_ID"), "Your Beyond Identity Management Application ID ($BYID_APPLICATION_ID)")
 	return cmd
 }

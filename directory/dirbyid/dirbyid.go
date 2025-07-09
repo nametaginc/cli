@@ -18,6 +18,7 @@ package dirbyid
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/url"
 
 	"github.com/nametaginc/cli/diragentapi"
@@ -42,6 +43,7 @@ type Provider struct {
 }
 
 func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfigureRequest) (*diragentapi.DirAgentConfigureResponse, error) {
+	log.Printf("%s", "Provide  "+*p.TenantID)
 	err := p.initClient()
 	if err != nil {
 		return nil, err

@@ -31,6 +31,9 @@ import (
 func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAccountRequest) (*diragentapi.DirAgentGetAccountResponse, error) {
 	log.Printf("get_account called")
 
+	log.Printf("req.ImmutableID: %+v", *req.Ref.ImmutableID)
+	log.Printf("req.ID: %+v", *req.Ref.ID)
+
 	// Fetch the identities that match the request.
 	var identities []*byidclient.Identity
 	// If the immutable ID is provided, use it to get the identity.
@@ -72,7 +75,7 @@ func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAc
 	for _, identity := range identities {
 		account := toDirAgentAccount(*identity)
 
-		groupsResponse, err := p.client.ListIdentityGroups(ctx, *req.Ref.ID)
+		groupsResponse, err := p.client.ListIdentityGroups(ctx, identity.ID)
 		if err != nil {
 			return nil, err
 		}
