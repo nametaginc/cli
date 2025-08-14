@@ -33,9 +33,9 @@ type Provider struct {
 	APIBaseURL    *url.URL
 	ClientID      string
 	ClientSecret  string
-	TenantID      *string
-	RealmID       *string
-	ApplicationID *string
+	TenantID      string
+	RealmID       string
+	ApplicationID string
 
 	// Internal client for Beyond Identity API.
 	// Agnostic of the v0 or v1 API.
@@ -43,7 +43,6 @@ type Provider struct {
 }
 
 func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfigureRequest) (*diragentapi.DirAgentConfigureResponse, error) {
-	log.Printf("%s", "Provide  "+*p.TenantID)
 	err := p.initClient()
 	if err != nil {
 		return nil, err
@@ -68,9 +67,11 @@ func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfig
 // Otherwise, it uses the v0 API.
 func (p *Provider) initClient() error {
 	var err error
-	if p.TenantID != nil && p.RealmID != nil {
-		p.client, err = v1.NewV1Client(p.APIBaseURL, p.ClientID, p.ClientSecret, *p.TenantID, *p.RealmID, *p.ApplicationID)
+	if p.TenantID != "" && p.RealmID != "" && p.ApplicationID != "" {
+		log.Printf("Using v1 API")
+		p.client, err = v1.NewV1Client(p.APIBaseURL, p.ClientID, p.ClientSecret, p.TenantID, p.RealmID, p.ApplicationID)
 	} else {
+		log.Printf("Using v0 API")
 		p.client, err = v0.NewV0Client(p.APIBaseURL, p.ClientID, p.ClientSecret)
 	}
 	if err != nil {

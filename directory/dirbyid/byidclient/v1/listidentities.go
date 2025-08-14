@@ -57,9 +57,10 @@ func (c *V1Client) ListIdentities(ctx context.Context, filter, pageToken *string
 	identities := make([]*byidclient.Identity, len(raw.Identities))
 	for i, identity := range raw.Identities {
 		identities[i] = &byidclient.Identity{
-			ID:          identity.ID,
-			DisplayName: identity.DisplayName,
-			Username:    identity.Traits.Username,
+			ID:           identity.ID,
+			DisplayName:  identity.DisplayName,
+			Username:     identity.Traits.Username,
+			EmailAddress: identity.Traits.PrimaryEmailAddress,
 		}
 	}
 	return &byidclient.ListIdentitiesResponse{

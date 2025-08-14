@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path"
 
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
@@ -19,13 +20,17 @@ type ListIdentityGroupsResponse struct {
 // ListIdentityGroups returns the groups for the given identity.
 // https://api-us.beyondidentity.com/v1/tenants/{tenant_id}/realms/{realm_id}/identities/{identity_id}:listGroups
 // https://docs.beyondidentity.com/api/v1#tag/Identities/operation/ListIdentityGroups.
-func (c *V1Client) ListIdentityGroups(ctx context.Context, id string) (*byidclient.ListGroupsResponse, error) {
-	joinedURL, err := url.JoinPath(c.baseURL.String(), "v1", "tenants", c.tenantID, "realms", c.realmID, "identities", id+":listGroups")
-	if err != nil {
-		return nil, err
+func (c *V1Client) ListIdentityGroups(ctx context.Context, id string, pageToken *string) (*byidclient.ListGroupsResponse, error) {
+	q := url.Values{}
+	if pageToken != nil {
+		q.Add("page_token", *pageToken)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, joinedURL, nil)
+	listURL := *c.baseURL
+	listURL.Path = path.Join("v1", "tenants", c.tenantID, "realms", c.realmID, "identities", id+":listGroups")
+	listURL.RawQuery = q.Encode()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, listURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +55,7 @@ func (c *V1Client) ListIdentityGroups(ctx context.Context, id string) (*byidclie
 		groups[i] = &byidclient.Group{
 			ID:          group.ID,
 			DisplayName: group.DisplayName,
+			Type:        "group",
 		}
 	}
 	return &byidclient.ListGroupsResponse{

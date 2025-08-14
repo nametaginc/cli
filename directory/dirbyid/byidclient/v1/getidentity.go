@@ -19,7 +19,8 @@ type Identity struct {
 
 // Traits is the traits of the identity.
 type Traits struct {
-	Username string `json:"username"`
+	Username            string `json:"username"`
+	PrimaryEmailAddress string `json:"primary_email_address"`
 }
 
 // GetIdentity returns the identity with the given ID.
@@ -53,8 +54,9 @@ func (c *V1Client) GetIdentity(ctx context.Context, id string) (*byidclient.Iden
 	}
 
 	return &byidclient.Identity{
-		ID:          raw.ID,
-		DisplayName: raw.DisplayName,
-		Username:    raw.Traits.Username,
+		ID:           raw.ID,
+		DisplayName:  raw.DisplayName,
+		Username:     raw.Traits.Username,
+		EmailAddress: raw.Traits.PrimaryEmailAddress,
 	}, nil
 }

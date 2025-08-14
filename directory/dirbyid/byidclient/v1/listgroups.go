@@ -61,6 +61,7 @@ func (c *V1Client) ListGroups(ctx context.Context, pageToken *string) (*byidclie
 		groups[i] = &byidclient.Group{
 			ID:          group.ID,
 			DisplayName: group.DisplayName,
+			Type:        "group",
 		}
 	}
 

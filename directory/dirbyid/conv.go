@@ -8,7 +8,7 @@ import (
 func toDirAgentAccount(identity byidclient.Identity) diragentapi.DirAgentAccount {
 	return diragentapi.DirAgentAccount{
 		ImmutableID: identity.ID,
-		IDs:         []string{identity.Username}, // TODO: What happens if we put email address here too?
+		IDs:         []string{identity.Username, identity.EmailAddress},
 		Name:        identity.DisplayName,
 	}
 }

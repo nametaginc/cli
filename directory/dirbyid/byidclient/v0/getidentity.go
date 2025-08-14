@@ -11,9 +11,10 @@ import (
 )
 
 type Identity struct {
-	ID          string `json:"id"`
-	DisplayName string `json:"display_name"`
-	Username    string `json:"username"`
+	ID           string `json:"id"`
+	DisplayName  string `json:"display_name"`
+	Username     string `json:"username"`
+	EmailAddress string `json:"email_address"`
 }
 
 // GetIdentity returns the identity with the given ID.
@@ -46,8 +47,9 @@ func (c *V0Client) GetIdentity(ctx context.Context, id string) (*byidclient.Iden
 	}
 
 	return &byidclient.Identity{
-		ID:          raw.ID,
-		DisplayName: raw.DisplayName,
-		Username:    raw.Username,
+		ID:           raw.ID,
+		DisplayName:  raw.DisplayName,
+		Username:     raw.Username,
+		EmailAddress: raw.EmailAddress,
 	}, nil
 }

@@ -46,7 +46,6 @@ func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAc
 	} else {
 		// If the ref ID is provided, use it to get all identities that match.
 		// This *should* be a single identity, since we're seeding the directory with a username, a unique value.
-		// TODO: check with the Nametag team if this is a correct usage of this API.
 		var query string
 		if p.Version == "v0" {
 			query = fmt.Sprintf("username eq %q", *req.Ref.ID)
@@ -75,19 +74,30 @@ func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAc
 	for _, identity := range identities {
 		account := toDirAgentAccount(*identity)
 
-		groupsResponse, err := p.client.ListIdentityGroups(ctx, identity.ID)
-		if err != nil {
-			return nil, err
+		var pageToken *string
+		for {
+			groupsResponse, err := p.client.ListIdentityGroups(ctx, identity.ID, pageToken)
+			if err != nil {
+				return nil, err
+			}
+
+			groups := make([]diragentapi.DirAgentGroup, 0, len(groupsResponse.Groups))
+			for _, group := range groupsResponse.Groups {
+				groups = append(groups, toDirAgentGroup(*group))
+			}
+
+			account.Groups = &groups
+
+			accounts = append(accounts, account)
+
+			// If there are no more groups, break.
+			if groupsResponse.NextPageToken == nil {
+				break
+			}
+
+			// If there are more groups, fetch the next page.
+			pageToken = groupsResponse.NextPageToken
 		}
-
-		groups := make([]diragentapi.DirAgentGroup, 0, len(groupsResponse.Groups))
-		for _, group := range groupsResponse.Groups {
-			groups = append(groups, toDirAgentGroup(*group))
-		}
-
-		account.Groups = &groups
-
-		accounts = append(accounts, account)
 	}
 
 	return &diragentapi.DirAgentGetAccountResponse{

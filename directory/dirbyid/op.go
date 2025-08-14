@@ -24,7 +24,7 @@ import (
 // PerformOperation performs the specified recovery operation
 func (p *Provider) PerformOperation(ctx context.Context, req diragentapi.DirAgentPerformOperationRequest) (*diragentapi.DirAgentPerformOperationResponse, error) {
 	switch req.Operation {
-	// TODO: implement operations
+	// Beyond Identity does not support any operations. We purely rely on the directory agent for ONLY directory synchronization.
 	default:
 		return nil, fmt.Errorf("unsupported operation %s", req.Operation)
 	}

@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"slices"
+	"strings"
 
 	"github.com/kballard/go-shellquote"
 	"github.com/spf13/cobra"
@@ -25,6 +27,21 @@ import (
 	"github.com/nametaginc/cli/directory/dirbyid"
 	"github.com/nametaginc/cli/internal/diragent"
 )
+
+var v0AllowedURLs = []string{
+	"https://api.byndid.com",         // Prod US
+	"https://api-eu.byndid.com",      // Prod EU
+	"https://api.staging.byndid.net", // Staging US
+	"https://api.rolling.byndid.run", // Rolling US
+}
+
+var v1AllowedURLs = []string{
+	"https://api-us.beyondidentity.com",      // Prod US
+	"https://api-eu.beyondidentity.com",      // Prod EU
+	"https://api.us1.beyondidentity-gov.com", // Prod Gov US
+	"https://api-us.beyondidentity.xyz",      // Staging US
+	"https://api-us.beyondidentity.run",      // Rolling US
+}
 
 func newDirAgentBeyondIdentityCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -90,8 +107,8 @@ v1 API:
 				return fmt.Errorf("flag url or environment variable $BYID_URL is required")
 			}
 
-			if byidURL != "https://api-us.beyondidentity.com" && byidURL != "https://api.byndid.com" {
-				return fmt.Errorf("invalid url %s, must be https://api-us.beyondidentity.com or https://api.byndid.com", byidURL)
+			if !slices.Contains(v0AllowedURLs, byidURL) && !slices.Contains(v1AllowedURLs, byidURL) {
+				return fmt.Errorf("invalid url %s, must be one of %s or %s", byidURL, strings.Join(v0AllowedURLs, ", "), strings.Join(v1AllowedURLs, ", "))
 			}
 
 			clientID, err := cmd.Flags().GetString("byid-client-id")
@@ -109,7 +126,7 @@ v1 API:
 			version := "v0"
 			// v1 API only
 			var tenantID, realmID, applicationID string
-			if byidURL == "https://api-us.beyondidentity.com" {
+			if slices.Contains(v1AllowedURLs, byidURL) {
 				version = "v1"
 				tenantID, err = cmd.Flags().GetString("byid-tenant-id")
 				if err != nil {
@@ -158,15 +175,15 @@ v1 API:
 				APIBaseURL:    apiBaseURL,
 				ClientID:      clientID,
 				ClientSecret:  clientSecret,
-				TenantID:      &tenantID,
-				RealmID:       &realmID,
-				ApplicationID: &applicationID,
+				TenantID:      tenantID,
+				RealmID:       realmID,
+				ApplicationID: applicationID,
 			}
 			return diragent.RunWorker(cmd.Context(), &provider)
 		},
 	}
 	cmd.Flags().String("agent-token", os.Getenv("NAMETAG_AGENT_TOKEN"), "Nametag directory agent authentication token ($NAMETAG_AGENT_TOKEN)")
-	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL). For v0 API, use https://api.byndid.com. For v1 API, use https://api-us.beyondidentity.com")
+	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL). For v0 API, use https://api{-eu}.byndid.com. For v1 API, use https://api{-us|-eu}.beyondidentity.com")
 	cmd.Flags().String("byid-client-id", os.Getenv("BYID_CLIENT_ID"), "Your Beyond Identity Client ID ($BYID_CLIENT_ID)")
 	cmd.Flags().String("byid-client-secret", os.Getenv("BYID_CLIENT_SECRET"), "Your Beyond Identity Client Secret ($BYID_CLIENT_SECRET)")
 	cmd.Flags().String("byid-tenant-id", os.Getenv("BYID_TENANT_ID"), "Your Beyond Identity Tenant ID ($BYID_TENANT_ID)")

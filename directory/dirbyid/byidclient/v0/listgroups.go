@@ -32,6 +32,7 @@ func (c *V0Client) ListGroups(ctx context.Context, pageToken *string) (*byidclie
 	if pageToken != nil {
 		q.Add("skip", *pageToken)
 	}
+	q.Add("page_size", "100")
 
 	listURL := *c.baseURL
 	listURL.Path = path.Join("v2", "groups")

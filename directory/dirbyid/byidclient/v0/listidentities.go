@@ -29,6 +29,7 @@ func (c *V0Client) ListIdentities(ctx context.Context, filter, pageToken *string
 	if pageToken != nil {
 		q.Add("skip", *pageToken)
 	}
+	q.Add("page_size", "100")
 
 	listURL := *c.baseURL
 	listURL.Path = path.Join("v2", "users")
@@ -57,9 +58,10 @@ func (c *V0Client) ListIdentities(ctx context.Context, filter, pageToken *string
 	identities := make([]*byidclient.Identity, len(raw.Identities))
 	for i, identity := range raw.Identities {
 		identities[i] = &byidclient.Identity{
-			ID:          identity.ID,
-			DisplayName: identity.DisplayName,
-			Username:    identity.Username,
+			ID:           identity.ID,
+			DisplayName:  identity.DisplayName,
+			Username:     identity.Username,
+			EmailAddress: identity.EmailAddress,
 		}
 	}
 
