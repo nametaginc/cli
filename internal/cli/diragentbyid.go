@@ -183,11 +183,11 @@ v1 API:
 		},
 	}
 	cmd.Flags().String("agent-token", os.Getenv("NAMETAG_AGENT_TOKEN"), "Nametag directory agent authentication token ($NAMETAG_AGENT_TOKEN)")
-	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity APIURL ($BYID_URL). For v0 API, use https://api{-eu}.byndid.com. For v1 API, use https://api{-us|-eu}.beyondidentity.com")
+	cmd.Flags().String("byid-url", os.Getenv("BYID_URL"), "Your Beyond Identity API URL ($BYID_URL). For v0 API, use https://api{-eu}.byndid.com. For v1 API, use https://api{-us|-eu}.beyondidentity.com")
 	cmd.Flags().String("byid-client-id", os.Getenv("BYID_CLIENT_ID"), "Your Beyond Identity Client ID ($BYID_CLIENT_ID)")
 	cmd.Flags().String("byid-client-secret", os.Getenv("BYID_CLIENT_SECRET"), "Your Beyond Identity Client Secret ($BYID_CLIENT_SECRET)")
 	cmd.Flags().String("byid-tenant-id", os.Getenv("BYID_TENANT_ID"), "Your Beyond Identity Tenant ID ($BYID_TENANT_ID)")
 	cmd.Flags().String("byid-realm-id", os.Getenv("BYID_REALM_ID"), "Your Beyond Identity Realm ID ($BYID_REALM_ID)")
-	cmd.Flags().String("byid-application-id", os.Getenv("BYID_APPLICATION_ID"), "Your Beyond Identity Management Application ID ($BYID_APPLICATION_ID)")
+	cmd.Flags().String("byid-application-id", os.Getenv("BYID_APPLICATION_ID"), "Your Beyond Identity Nametag Application ID ($BYID_APPLICATION_ID)")
 	return cmd
 }
