@@ -6,15 +6,17 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
 
 type Identity struct {
-	ID           string `json:"id"`
-	DisplayName  string `json:"display_name"`
-	Username     string `json:"username"`
-	EmailAddress string `json:"email_address"`
+	ID           string     `json:"id"`
+	DisplayName  string     `json:"display_name"`
+	Username     string     `json:"username"`
+	EmailAddress string     `json:"email_address"`
+	UpdateTime   *time.Time `json:"update_time"`
 }
 
 // GetIdentity returns the identity with the given ID.
@@ -51,5 +53,6 @@ func (c *V0Client) GetIdentity(ctx context.Context, id string) (*byidclient.Iden
 		DisplayName:  raw.DisplayName,
 		Username:     raw.Username,
 		EmailAddress: raw.EmailAddress,
+		UpdateTime:   raw.UpdateTime,
 	}, nil
 }

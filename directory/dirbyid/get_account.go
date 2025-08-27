@@ -17,7 +17,6 @@ package dirbyid
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/nametaginc/cli/diragentapi"
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
@@ -29,11 +28,6 @@ import (
 // accounts could be returned. The caller must handle this case, which is probably an
 // error.
 func (p *Provider) GetAccount(ctx context.Context, req diragentapi.DirAgentGetAccountRequest) (*diragentapi.DirAgentGetAccountResponse, error) {
-	log.Printf("get_account called")
-
-	log.Printf("req.ImmutableID: %+v", *req.Ref.ImmutableID)
-	log.Printf("req.ID: %+v", *req.Ref.ID)
-
 	// Fetch the identities that match the request.
 	var identities []*byidclient.Identity
 	// If the immutable ID is provided, use it to get the identity.

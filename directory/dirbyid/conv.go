@@ -10,6 +10,7 @@ func toDirAgentAccount(identity byidclient.Identity) diragentapi.DirAgentAccount
 		ImmutableID: identity.ID,
 		IDs:         []string{identity.Username, identity.EmailAddress},
 		Name:        identity.DisplayName,
+		UpdatedAt:   identity.UpdateTime,
 	}
 }
 

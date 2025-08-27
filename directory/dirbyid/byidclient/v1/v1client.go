@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -31,8 +30,6 @@ func NewV1Client(apiBaseURL *url.URL, clientID, clientSecret, tenantID, realmID,
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("tokenURL: %s", tokenURL)
 
 	cfg := &clientcredentials.Config{
 		ClientID:     clientID,

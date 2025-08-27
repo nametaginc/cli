@@ -2,6 +2,7 @@ package byidclient
 
 import (
 	"context"
+	"time"
 )
 
 // Client is the interface for the Beyond Identity API.
@@ -18,6 +19,7 @@ type Identity struct {
 	DisplayName  string
 	Username     string
 	EmailAddress string
+	UpdateTime   *time.Time
 }
 
 type ListIdentitiesResponse struct {

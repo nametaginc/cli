@@ -16,7 +16,6 @@ package dirbyid
 
 import (
 	"context"
-	"log"
 
 	"github.com/nametaginc/cli/diragentapi"
 )
@@ -24,8 +23,6 @@ import (
 // ListAccounts returns a partial list of accounts. Callers should use Cursor to page
 // through multiple pages of results.
 func (p *Provider) ListAccounts(ctx context.Context, req diragentapi.DirAgentListAccountsRequest) (*diragentapi.DirAgentListAccountsResponse, error) {
-	log.Printf("list_accounts called")
-
 	identities, err := p.client.ListIdentities(ctx, nil, req.Cursor)
 	if err != nil {
 		return nil, err

@@ -16,15 +16,12 @@ package dirbyid
 
 import (
 	"context"
-	"log"
 
 	"github.com/nametaginc/cli/diragentapi"
 )
 
 // ListGroups returns the directory groups that match the given name prefix.
 func (p *Provider) ListGroups(ctx context.Context, req diragentapi.DirAgentListGroupsRequest) (*diragentapi.DirAgentListGroupsResponse, error) {
-	log.Printf("list_groups called")
-
 	groupsResponse, err := p.client.ListGroups(ctx, req.Cursor)
 	if err != nil {
 		return nil, err

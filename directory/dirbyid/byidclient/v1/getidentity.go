@@ -6,15 +6,17 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/nametaginc/cli/directory/dirbyid/byidclient"
 )
 
 // Identity is the response from the Beyond Identity API.
 type Identity struct {
-	ID          string `json:"id"`
-	DisplayName string `json:"display_name"`
-	Traits      Traits `json:"traits"`
+	ID          string     `json:"id"`
+	DisplayName string     `json:"display_name"`
+	Traits      Traits     `json:"traits"`
+	UpdateTime  *time.Time `json:"update_time"`
 }
 
 // Traits is the traits of the identity.
@@ -58,5 +60,6 @@ func (c *V1Client) GetIdentity(ctx context.Context, id string) (*byidclient.Iden
 		DisplayName:  raw.DisplayName,
 		Username:     raw.Traits.Username,
 		EmailAddress: raw.Traits.PrimaryEmailAddress,
+		UpdateTime:   raw.UpdateTime,
 	}, nil
 }
