@@ -68,10 +68,10 @@ func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfig
 func (p *Provider) initClient() error {
 	var err error
 	if p.TenantID != "" && p.RealmID != "" && p.ApplicationID != "" {
-		log.Printf("Using v1 API")
+		log.Printf("Using Beyond Identity v1 API")
 		p.client, err = v1.NewV1Client(p.APIBaseURL, p.ClientID, p.ClientSecret, p.TenantID, p.RealmID, p.ApplicationID)
 	} else {
-		log.Printf("Using v0 API")
+		log.Printf("Using Beyond Identity v0 API")
 		p.client, err = v0.NewV0Client(p.APIBaseURL, p.ClientID, p.ClientSecret)
 	}
 	if err != nil {

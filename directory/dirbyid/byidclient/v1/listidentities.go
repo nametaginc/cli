@@ -61,6 +61,7 @@ func (c *V1Client) ListIdentities(ctx context.Context, filter, pageToken *string
 			DisplayName:  identity.DisplayName,
 			Username:     identity.Traits.Username,
 			EmailAddress: identity.Traits.PrimaryEmailAddress,
+			UpdateTime:   identity.UpdateTime,
 		}
 	}
 	return &byidclient.ListIdentitiesResponse{

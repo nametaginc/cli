@@ -62,6 +62,7 @@ func (c *V0Client) ListIdentities(ctx context.Context, filter, pageToken *string
 			DisplayName:  identity.DisplayName,
 			Username:     identity.Username,
 			EmailAddress: identity.EmailAddress,
+			UpdateTime:   identity.UpdateTime,
 		}
 	}
 
