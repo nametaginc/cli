@@ -18,6 +18,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/nametaginc/cli/internal/config"
 )
 
 const defaultServer = "https://nametag.co"
@@ -27,7 +29,7 @@ func getServer(cmd *cobra.Command) string {
 		return s
 	}
 
-	config, err := readConfig(cmd)
+	config, err := config.ReadConfig(cmd)
 	if err == nil && config.Server != "" {
 		return config.Server
 	}

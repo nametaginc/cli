@@ -29,6 +29,8 @@ import (
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/nacl/box"
+
+	"github.com/nametaginc/cli/internal/config"
 )
 
 func newAuthCmd() *cobra.Command {
@@ -109,12 +111,12 @@ func newAuthLoginCmd() *cobra.Command {
 					return err
 				}
 
-				configPath, err := configPath(cmd)
+				configPath, err := config.GetPath(cmd)
 				if err != nil {
 					return err
 				}
 
-				config := Config{
+				config := config.Config{
 					Version: "1",
 					Server:  lo.If(server == defaultServer, "").Else(server),
 					Token:   string(plaintextToken),

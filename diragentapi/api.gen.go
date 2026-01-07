@@ -213,4 +213,7 @@ type DirAgentTraits struct {
 
 	// CanUpdateAccountsList Indicates whether the directory service supports tracking the last modification time of the account list. If supported, the server may set *updated_after* in *list_accounts* to indicate the agent should report only accounts that have been updated since that time.
 	CanUpdateAccountsList *bool `json:"can_update_accounts_list,omitempty"`
+
+	// Authenticate Indicates whether the agent supports authenticating an account.
+	Authenticate *bool `json:"can_authenticate,omitempty"`
 }

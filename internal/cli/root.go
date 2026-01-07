@@ -22,6 +22,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+
+	"github.com/nametaginc/cli/internal/config"
 )
 
 //go:embed "VERSION"
@@ -42,7 +44,7 @@ func New() *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			cachedConfig = nil // for testing
+			config.ClearCachedConfig() // for testing
 
 			Log.SetOutput(cmd.OutOrStdout())
 			return nil
@@ -59,6 +61,8 @@ func New() *cobra.Command {
 	cmd.AddCommand(newDirCmd())
 	cmd.AddCommand(newEnvCmd())
 	cmd.AddCommand(newSelfServiceCmd())
+	cmd.AddCommand(newSecretsCmd())
+	cmd.AddCommand(newAuditCmd())
 
 	return cmd
 }

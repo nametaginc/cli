@@ -44,6 +44,55 @@ const (
 	AccountBulkUpdateItemStatusOK         AccountBulkUpdateStatus = 204
 )
 
+// Defines values for AuditEventKind.
+const (
+	AuditEventKindAPIKeyCreated                    AuditEventKind = "apikey_created"
+	AuditEventKindAPIKeyDeleted                    AuditEventKind = "apikey_deleted"
+	AuditEventKindAPIKeyUpdated                    AuditEventKind = "apikey_updated"
+	AuditEventKindAccountPhotoUploaded             AuditEventKind = "account_photo_uploaded"
+	AuditEventKindAccountUpdated                   AuditEventKind = "account_updated"
+	AuditEventKindCLISignin                        AuditEventKind = "cli_signin"
+	AuditEventKindConsoleSignin                    AuditEventKind = "console_signin"
+	AuditEventKindConsoleSinginConfigureEmail      AuditEventKind = "console_singin_configure_email"
+	AuditEventKindConsoleSinginConfigureSAML       AuditEventKind = "console_singin_configure_saml"
+	AuditEventKindDirectoryAuthorized              AuditEventKind = "directory_authorized"
+	AuditEventKindDirectoryCreated                 AuditEventKind = "directory_created"
+	AuditEventKindDirectoryDeleted                 AuditEventKind = "directory_deleted"
+	AuditEventKindDirectoryLogoDeleted             AuditEventKind = "directory_logo_deleted"
+	AuditEventKindDirectoryLogoUploaded            AuditEventKind = "directory_logo_uploaded"
+	AuditEventKindDirectorySetCredentials          AuditEventKind = "directory_set_credentials"
+	AuditEventKindDirectoryUpdated                 AuditEventKind = "directory_updated"
+	AuditEventKindEntraEamAuthorize                AuditEventKind = "entra_eam_authorize"
+	AuditEventKindEntraEamFinish                   AuditEventKind = "entra_eam_finish"
+	AuditEventKindEnvCreated                       AuditEventKind = "env_created"
+	AuditEventKindEnvDeleted                       AuditEventKind = "env_deleted"
+	AuditEventKindEnvLogoDeleted                   AuditEventKind = "env_logo_deleted"
+	AuditEventKindEnvLogoUploaded                  AuditEventKind = "env_logo_uploaded"
+	AuditEventKindEnvUpdated                       AuditEventKind = "env_updated"
+	AuditEventKindEnvWebhookSecretUpdated          AuditEventKind = "env_webhook_secret_updated"
+	AuditEventKindExtensionInvoked                 AuditEventKind = "extension_invoked"
+	AuditEventKindOAuth2Authorize                  AuditEventKind = "oauth2_authorize"
+	AuditEventKindOAuth2PushedAuthorizationRequest AuditEventKind = "oauth2_pushed_authorization_request"
+	AuditEventKindOAuth2RequestCanceled            AuditEventKind = "oauth2_request_canceled"
+	AuditEventKindOAuth2Token                      AuditEventKind = "oauth2_token"
+	AuditEventKindOAuth2V2Authorize                AuditEventKind = "oauth2_v2_authorize"
+	AuditEventKindOktaEamAuthorize                 AuditEventKind = "okta_eam_authorize"
+	AuditEventKindOktaEamFinish                    AuditEventKind = "okta_eam_finish"
+	AuditEventKindOrgMemberInvited                 AuditEventKind = "org_member_invited"
+	AuditEventKindOrgMemberRemoved                 AuditEventKind = "org_member_removed"
+	AuditEventKindOrgMemberUpdated                 AuditEventKind = "org_member_updated"
+	AuditEventKindOrgUpdated                       AuditEventKind = "org_updated"
+	AuditEventKindPeopleCompare                    AuditEventKind = "people_compare"
+	AuditEventKindRequestCanceled                  AuditEventKind = "request_canceled"
+	AuditEventKindRequestCreated                   AuditEventKind = "request_created"
+	AuditEventKindRequestUpdated                   AuditEventKind = "request_updated"
+	AuditEventKindSelfieCompare                    AuditEventKind = "selfie_compare"
+	AuditEventKindSharingRevoked                   AuditEventKind = "sharing_revoked"
+	AuditEventKindTemplateCreated                  AuditEventKind = "template_created"
+	AuditEventKindTemplateDeleted                  AuditEventKind = "template_deleted"
+	AuditEventKindTemplateUpdated                  AuditEventKind = "template_updated"
+)
+
 // Defines values for AuthorizeRequestCodeChallengeMethod.
 const (
 	AuthorizeRequestCodeChallengeMethodPlain AuthorizeRequestCodeChallengeMethod = "plain"
@@ -83,26 +132,30 @@ const (
 
 // Defines values for Claim.
 const (
-	Address       Claim = "address"
-	BirthDate     Claim = "birth_date"
-	FamilyName    Claim = "family_name"
-	GivenName     Claim = "given_name"
-	Govtid        Claim = "govtid"
-	GovtidExpired Claim = "govtid_expired"
-	IpLocation    Claim = "ip_location"
-	Name          Claim = "name"
-	PhoneNumber   Claim = "phone_number"
-	Picture       Claim = "picture"
-	PreferredName Claim = "preferred_name"
+	ClaimAccount       Claim = "account"
+	ClaimAddress       Claim = "address"
+	ClaimBirthDate     Claim = "birth_date"
+	ClaimEmail         Claim = "email"
+	ClaimFamilyName    Claim = "family_name"
+	ClaimGivenName     Claim = "given_name"
+	ClaimGovtid        Claim = "govtid"
+	ClaimGovtidExpired Claim = "govtid_expired"
+	ClaimGpsLocation   Claim = "gps_location"
+	ClaimIpLocation    Claim = "ip_location"
+	ClaimName          Claim = "name"
+	ClaimPhoneNumber   Claim = "phone_number"
+	ClaimPicture       Claim = "picture"
+	ClaimPreferredName Claim = "preferred_name"
 )
 
 // Defines values for DirectoryKind.
 const (
-	DirectoryKindAzureAD  DirectoryKind = "azure-ad"
-	DirectoryKindCustom   DirectoryKind = "custom"
-	DirectoryKindDuo      DirectoryKind = "duo"
-	DirectoryKindOkta     DirectoryKind = "okta"
-	DirectoryKindOnelogin DirectoryKind = "onelogin"
+	DirectoryKindAzureAD        DirectoryKind = "azure-ad"
+	DirectoryKindBeyondIdentity DirectoryKind = "beyond-identity"
+	DirectoryKindCustom         DirectoryKind = "custom"
+	DirectoryKindDuo            DirectoryKind = "duo"
+	DirectoryKindOkta           DirectoryKind = "okta"
+	DirectoryKindOnelogin       DirectoryKind = "onelogin"
 )
 
 // Defines values for EnvStatusFilterParams.
@@ -170,8 +223,9 @@ const (
 
 // Defines values for RecoveryMicrositeFlow.
 const (
-	Enroll  RecoveryMicrositeFlow = "enroll"
-	Recover RecoveryMicrositeFlow = "recover"
+	MicrositeFlowBadge           RecoveryMicrositeFlow = "badge"
+	RecoveryMicrositeFlowEnroll  RecoveryMicrositeFlow = "enroll"
+	RecoveryMicrositeFlowRecover RecoveryMicrositeFlow = "recover"
 )
 
 // Defines values for RecoveryMicrositeOperation.
@@ -216,6 +270,12 @@ const (
 	RequestStatusShared           RequestStatus = "shared"
 )
 
+// Defines values for RequestVerificationSource.
+const (
+	RequestVerificationSourceExpressReverification RequestVerificationSource = "express_reverification"
+	RequestVerificationSourceFullIDV               RequestVerificationSource = "full_idv"
+)
+
 // Defines values for Role.
 const (
 	RoleAdmin       Role = "admin"
@@ -239,6 +299,7 @@ const (
 	NtLegalFirstName  Scope = "nt:legal_first_name"
 	NtLegalLastName   Scope = "nt:legal_last_name"
 	NtLegalName       Scope = "nt:legal_name"
+	NtLocationGps     Scope = "nt:location:gps"
 	NtLocationIp      Scope = "nt:location:ip"
 	NtName            Scope = "nt:name"
 	NtPhone           Scope = "nt:phone"
@@ -258,11 +319,13 @@ const (
 
 // Defines values for WebhookEventType.
 const (
-	WebhookEventTypeAudit   WebhookEventType = "audit"
-	WebhookEventTypeRecover WebhookEventType = "recover"
-	WebhookEventTypeReject  WebhookEventType = "reject"
-	WebhookEventTypeRequest WebhookEventType = "request"
-	WebhookEventTypeShare   WebhookEventType = "share"
+	WebhookEventTypeAudit                WebhookEventType = "audit"
+	WebhookEventTypeDirectoryProviderErr WebhookEventType = "directory_provider_err"
+	WebhookEventTypePicture              WebhookEventType = "picture"
+	WebhookEventTypeRecover              WebhookEventType = "recover"
+	WebhookEventTypeReject               WebhookEventType = "reject"
+	WebhookEventTypeRequest              WebhookEventType = "request"
+	WebhookEventTypeShare                WebhookEventType = "share"
 )
 
 // Defines values for ListEnvRequestsParamsSort.
@@ -334,11 +397,22 @@ type APIKey struct {
 
 	// CreatedAt When the API key was created
 	CreatedAt time.Time `json:"created_at"`
-	Enabled   bool      `json:"enabled"`
+
+	// CreatedBy The OrgMember ID that created this API key.
+	CreatedBy *string `json:"created_by,omitempty"`
+
+	// Enabled Whether the API key is enabled.
+	Enabled bool `json:"enabled"`
 
 	// EnvIDs The unique identifier for the environments this API key belongs to, or `["*"]` if the key applies to all environments.
 	EnvIDs []string `json:"envs"`
 	Role   Role     `json:"role"`
+
+	// ExpiresAt The expiration date and time for the API key. If not provided, the key will not expire. Example: "2023-12-31T23:59:59Z"
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
+
+	// LastUsedAt The last time the API key was used. This is updated each time the key is used to make a request.
+	LastUsedAt *time.Time `json:"last_used_at,omitempty"`
 }
 
 // APIKeyCreatedAuditEvent defines model for APIKeyCreatedAuditEvent.
@@ -363,6 +437,9 @@ type APIKeyUpdateRequest struct {
 
 	// EnvIDs The unique identifier for the environments this API key belongs to, or `["*"]` if the key applies to all environments.
 	EnvIDs []string `json:"envs,omitempty"`
+
+	// ExpiresAt The expiration date and time for the API key. If not provided, the key will not expire. Example: "2023-12-31T23:59:59Z"
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 }
 
 // APIKeyUpdatedAuditEvent defines model for APIKeyUpdatedAuditEvent.
@@ -379,7 +456,7 @@ type Account struct {
 	// DirectoryIdentifiers The identifiers for the account used by the directory (typically an email address, username)
 	DirectoryIdentifiers []string `json:"directory_identifiers"`
 
-	// DirectoryImmutableIdentifier The unchanging identifier for the account used by the directory. Most directories have an UUID or other opaque identifier that doesn't change even when `directory_identifiers` changes.
+	// DirectoryImmutableIdentifier The unchanging identifier for the account used by the directory. Most directories have a UUID or other opaque identifier that doesn't change even when `directory_identifiers` changes.
 	DirectoryImmutableIdentifier string `json:"directory_immutable_identifier"`
 
 	// Name The person's name, according to the directory
@@ -463,13 +540,25 @@ type AccountUpdatedAuditEvent struct {
 	Request   AccountUpdateRequest `json:"request"`
 }
 
+// AccountValue defines model for AccountValue.
+type AccountValue struct {
+	// ImmutableExternalId A GUID that uniquely identifies this entry in the directory, even if the external IDs change
+	ImmutableExternalId *string `json:"immutable_external_id,omitempty"`
+
+	// Ids The list of ID's associated with the account
+	Ids *[]string `json:"ids,omitempty"`
+
+	// BindingStrength The binding strength used to determine account info
+	BindingStrength *string `json:"binding_strength,omitempty"`
+}
+
 // AccountsList defines model for AccountsList.
 type AccountsList struct {
 	// Accounts The list of accounts
 	Accounts []Account `json:"accounts"`
 
 	// NextOffset A value for the offset query parameter for the next page of results
-	NextOffset *string `json:"next_offset,omitempty"`
+	NextOffset *int `json:"next_offset,omitempty"`
 }
 
 // AuditEvent defines model for AuditEvent.
@@ -479,68 +568,76 @@ type AuditEvent struct {
 	ID string `json:"id"`
 
 	// Time The time the event occurred
-	Time time.Time `json:"time"`
+	Time time.Time      `json:"time"`
+	Kind AuditEventKind `json:"kind"`
 
 	// Trace A unique identifier for the event
 	Trace string `json:"trace"`
 
+	// Truncated True if the details of this record have been removed because the record would exceed the size limit for audit logs.
+	Truncated *bool `json:"truncated,omitempty"`
+
 	// RemoteAddr The IP address of the client that made the request
 	RemoteAddr *string `json:"remote_addr,omitempty"`
 
-	// UserAgent The remote user agent of the client that make the request
+	// UserAgent The remote user agent of the client that made the request
 	UserAgent *string `json:"user_agent,omitempty"`
 
 	// OrgID The ID of the organization for the actor performing the action. This will be the same for all your events.
 	OrgID string `json:"org"`
 
 	// EnvID The ID of the environment that this action refers to.
-	EnvID                          *string                                     `json:"env,omitempty"`
-	Principal                      *Principal                                  `json:"principal,omitempty"`
-	EnvCreated                     *EnvCreatedAuditEvent                       `json:"env_created,omitempty"`
-	EnvUpdated                     *EnvUpdatedAuditEvent                       `json:"env_updated,omitempty"`
-	EnvDeleted                     *EnvDeletedAuditEvent                       `json:"env_deleted,omitempty"`
-	EnvLogoUploaded                *EnvLogoUploadedAuditEvent                  `json:"env_logo_uploaded,omitempty"`
-	EnvLogoDeleted                 *EnvLogoDeletedAuditEvent                   `json:"env_logo_deleted,omitempty"`
-	TemplateCreated                *TemplateCreatedAuditEvent                  `json:"template_created,omitempty"`
-	TemplateUpdated                *TemplateUpdatedAuditEvent                  `json:"template_updated,omitempty"`
-	TemplateDeleted                *TemplateDeletedAuditEvent                  `json:"template_deleted,omitempty"`
-	EnvWebhookSecretUpdated        *EnvWebhookSecretUpdatedAuditEvent          `json:"env_webhook_secret_updated,omitempty"`
-	OrgUpdated                     *OrgUpdatedAuditEvent                       `json:"org_updated,omitempty"`
-	OrgMemberInvited               *OrgMemberInvitedAuditEvent                 `json:"org_member_invited,omitempty"`
-	OrgMemberRemoved               *OrgMemberRemoveAuditEvent                  `json:"org_member_removed,omitempty"`
-	OrgMemberUpdated               *OrgMemberUpdatedAuditEvent                 `json:"org_member_updated,omitempty"`
-	ApikeyCreated                  *APIKeyCreatedAuditEvent                    `json:"apikey_created,omitempty"`
-	ApikeyUpdated                  *APIKeyUpdatedAuditEvent                    `json:"apikey_updated,omitempty"`
-	ApikeyDeleted                  *APIKeyDeletedAuditEvent                    `json:"apikey_deleted,omitempty"`
-	RequestCreated                 *RequestCreatedAuditEvent                   `json:"request_created,omitempty"`
-	RequestUpdated                 *RequestUpdatedAuditEvent                   `json:"request_updated,omitempty"`
-	RequestCanceled                *RequestCanceledAuditEvent                  `json:"request_canceled,omitempty"`
-	AccountUpdated                 *AccountUpdatedAuditEvent                   `json:"account_updated,omitempty"`
-	AccountPhotoUploaded           *AccountPhotoUploadedAuditEvent             `json:"account_photo_uploaded,omitempty"`
-	DirectoryCreated               *DirectoryCreatedAuditEvent                 `json:"directory_created,omitempty"`
-	DirectoryUpdated               *DirectoryUpdatedAuditEvent                 `json:"directory_updated,omitempty"`
-	DirectoryDeleted               *DirectoryDeletedAuditEvent                 `json:"directory_deleted,omitempty"`
-	DirectoryAuthorized            *DirectoryAuthorizedAuditEvent              `json:"directory_authorized,omitempty"`
-	DirectorySetCredentials        *DirectorySetCredentialsAuditEvent          `json:"directory_set_credentials,omitempty"`
-	DirectoryLogoUploaded          *DirectoryLogoUploadedAuditEvent            `json:"directory_logo_uploaded,omitempty"`
-	DirectoryLogoDeleted           *DirectoryLogoDeletedAuditEvent             `json:"directory_logo_deleted,omitempty"`
-	ConsoleSignin                  *ConsoleSigninAuditEvent                    `json:"console_signin,omitempty"`
-	ConsoleSinginConfigureEmail    *ConsoleSinginConfigureEmailAuditEvent      `json:"console_singin_configure_email,omitempty"`
-	ConsoleSinginConfigureSaml     *ConsoleSinginConfigureSAMLAuditEvent       `json:"console_singin_configure_saml,omitempty"`
-	CliSignin                      *CLISigninAuditEvent                        `json:"cli_signin,omitempty"`
-	Oauth2PushedAuthorizationEvent *OAuth2PushedAuthorizationRequestAuditEvent `json:"oauth2_pushed_authorization_event,omitempty"`
-	Oauth2Authorize                *OAuth2AuthorizeAuditEvent                  `json:"oauth2_authorize,omitempty"`
-	Oauth2V2Authorize              *OAuth2V2AuthorizeAuditEvent                `json:"oauth2_v2_authorize,omitempty"`
-	Oauth2RequestCanceled          *OAuth2RequestCanceledAuditEvent            `json:"oauth2_request_canceled,omitempty"`
-	Oauth2Token                    *OAuth2TokenAuditEvent                      `json:"oauth2_token,omitempty"`
-	EntraEamAuthorize              *EntraEamAuthorizeAuditEvent                `json:"entra_eam_authorize,omitempty"`
-	EntraEamFinish                 *EntraEamFinishAuditEvent                   `json:"entra_eam_finish,omitempty"`
-	OktaEamAuthorize               *OktaEamAuthorizeAuditEvent                 `json:"okta_eam_authorize,omitempty"`
-	OktaEamFinish                  *OktaEamFinishAuditEvent                    `json:"okta_eam_finish,omitempty"`
-	PeopleCompare                  *PeopleCompareAuditEvent                    `json:"people_compare,omitempty"`
-	SelfieCompare                  *SelfieCompareAuditEvent                    `json:"selfie_compare,omitempty"`
-	SharingRevoked                 *SharingRevokedAuditEvent                   `json:"sharing_revoked,omitempty"`
+	EnvID                            *string                                     `json:"env,omitempty"`
+	Principal                        *Principal                                  `json:"principal,omitempty"`
+	EnvCreated                       *EnvCreatedAuditEvent                       `json:"env_created,omitempty"`
+	EnvUpdated                       *EnvUpdatedAuditEvent                       `json:"env_updated,omitempty"`
+	EnvDeleted                       *EnvDeletedAuditEvent                       `json:"env_deleted,omitempty"`
+	EnvLogoUploaded                  *EnvLogoUploadedAuditEvent                  `json:"env_logo_uploaded,omitempty"`
+	EnvLogoDeleted                   *EnvLogoDeletedAuditEvent                   `json:"env_logo_deleted,omitempty"`
+	TemplateCreated                  *TemplateCreatedAuditEvent                  `json:"template_created,omitempty"`
+	TemplateUpdated                  *TemplateUpdatedAuditEvent                  `json:"template_updated,omitempty"`
+	TemplateDeleted                  *TemplateDeletedAuditEvent                  `json:"template_deleted,omitempty"`
+	EnvWebhookSecretUpdated          *EnvWebhookSecretUpdatedAuditEvent          `json:"env_webhook_secret_updated,omitempty"`
+	OrgUpdated                       *OrgUpdatedAuditEvent                       `json:"org_updated,omitempty"`
+	OrgMemberInvited                 *OrgMemberInvitedAuditEvent                 `json:"org_member_invited,omitempty"`
+	OrgMemberRemoved                 *OrgMemberRemovedAuditEvent                 `json:"org_member_removed,omitempty"`
+	OrgMemberUpdated                 *OrgMemberUpdatedAuditEvent                 `json:"org_member_updated,omitempty"`
+	ApikeyCreated                    *APIKeyCreatedAuditEvent                    `json:"apikey_created,omitempty"`
+	ApikeyUpdated                    *APIKeyUpdatedAuditEvent                    `json:"apikey_updated,omitempty"`
+	ApikeyDeleted                    *APIKeyDeletedAuditEvent                    `json:"apikey_deleted,omitempty"`
+	RequestCreated                   *RequestCreatedAuditEvent                   `json:"request_created,omitempty"`
+	RequestUpdated                   *RequestUpdatedAuditEvent                   `json:"request_updated,omitempty"`
+	RequestCanceled                  *RequestCanceledAuditEvent                  `json:"request_canceled,omitempty"`
+	AccountUpdated                   *AccountUpdatedAuditEvent                   `json:"account_updated,omitempty"`
+	AccountPhotoUploaded             *AccountPhotoUploadedAuditEvent             `json:"account_photo_uploaded,omitempty"`
+	DirectoryCreated                 *DirectoryCreatedAuditEvent                 `json:"directory_created,omitempty"`
+	DirectoryUpdated                 *DirectoryUpdatedAuditEvent                 `json:"directory_updated,omitempty"`
+	DirectoryDeleted                 *DirectoryDeletedAuditEvent                 `json:"directory_deleted,omitempty"`
+	DirectoryAuthorized              *DirectoryAuthorizedAuditEvent              `json:"directory_authorized,omitempty"`
+	DirectorySetCredentials          *DirectorySetCredentialsAuditEvent          `json:"directory_set_credentials,omitempty"`
+	DirectoryLogoUploaded            *DirectoryLogoUploadedAuditEvent            `json:"directory_logo_uploaded,omitempty"`
+	DirectoryLogoDeleted             *DirectoryLogoDeletedAuditEvent             `json:"directory_logo_deleted,omitempty"`
+	ConsoleSignin                    *ConsoleSigninAuditEvent                    `json:"console_signin,omitempty"`
+	ConsoleSinginConfigureEmail      *ConsoleSinginConfigureEmailAuditEvent      `json:"console_singin_configure_email,omitempty"`
+	ConsoleSinginConfigureSaml       *ConsoleSinginConfigureSAMLAuditEvent       `json:"console_singin_configure_saml,omitempty"`
+	CliSignin                        *CLISigninAuditEvent                        `json:"cli_signin,omitempty"`
+	Oauth2PushedAuthorizationRequest *OAuth2PushedAuthorizationRequestAuditEvent `json:"oauth2_pushed_authorization_request,omitempty"`
+	Oauth2Authorize                  *OAuth2AuthorizeAuditEvent                  `json:"oauth2_authorize,omitempty"`
+	Oauth2V2Authorize                *OAuth2V2AuthorizeAuditEvent                `json:"oauth2_v2_authorize,omitempty"`
+	Oauth2RequestCanceled            *OAuth2RequestCanceledAuditEvent            `json:"oauth2_request_canceled,omitempty"`
+	Oauth2Token                      *OAuth2TokenAuditEvent                      `json:"oauth2_token,omitempty"`
+	EntraEamAuthorize                *EntraEamAuthorizeAuditEvent                `json:"entra_eam_authorize,omitempty"`
+	EntraEamFinish                   *EntraEamFinishAuditEvent                   `json:"entra_eam_finish,omitempty"`
+	OktaEamAuthorize                 *OktaEamAuthorizeAuditEvent                 `json:"okta_eam_authorize,omitempty"`
+	OktaEamFinish                    *OktaEamFinishAuditEvent                    `json:"okta_eam_finish,omitempty"`
+	PeopleCompare                    *PeopleCompareAuditEvent                    `json:"people_compare,omitempty"`
+	SelfieCompare                    *SelfieCompareAuditEvent                    `json:"selfie_compare,omitempty"`
+	SharingRevoked                   *SharingRevokedAuditEvent                   `json:"sharing_revoked,omitempty"`
+	ExtensionInvoked                 *ExtensionInvokedAuditEvent                 `json:"extension_invoked,omitempty"`
 }
+
+// AuditEventKind defines model for AuditEventKind.
+type AuditEventKind string
 
 // AuthorizeRequest defines model for AuthorizeRequest.
 type AuthorizeRequest struct {
@@ -666,13 +763,13 @@ type BulkUploadAccountPhotosResponseItem struct {
 	// DirectoryIdentifiers The identifiers for the account used by the directory (typically an email address, username)
 	DirectoryIdentifiers *[]string `json:"directory_identifiers,omitempty"`
 
-	// DirectoryImmutableIdentifier The unchanging identifier for the account used by the directory. Most directories have an UUID or other opaque identifier that doesn't change even when `directory_identifiers` changes.
+	// DirectoryImmutableIdentifier The unchanging identifier for the account used by the directory. Most directories have a UUID or other opaque identifier that doesn't change even when `directory_identifiers` changes.
 	DirectoryImmutableIdentifier *string `json:"directory_immutable_identifier,omitempty"`
 
 	// Status This field is 200 if adding the photo was successful, 404 if an account could not be found,  400 if the image is invalid, or 422 if the image contains multiple faces, doesn't match the existing selfie, or no face at all.
 	Status int `json:"status"`
 
-	// Error A human readable error message describing the reason a file could not be processed.
+	// Error A human-readable error message describing the reason a file could not be processed.
 	Error *string `json:"error,omitempty"`
 }
 
@@ -686,7 +783,7 @@ type CancelResponse struct {
 	RedirectURI string `json:"redirect_uri"`
 }
 
-// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 type Claim string
 
 // CompareSelfieResult defines model for CompareSelfieResult.
@@ -696,14 +793,24 @@ type CompareSelfieResult struct {
 
 	// Confidence A number between 0 and 1 that represents Nametag's confidence that the values match. A value of 1 means Nametag is very confident that the values match, while 0 means that the values do not match at all.
 	Confidence float64 `json:"confidence"`
+
+	// NoFace The photo provided does not contain a person's face.
+	NoFace *bool `json:"no_face,omitempty"`
+
+	// NotMatched The face in the photo provided does not match any of the selfies on file for this person.
+	NotMatched *bool `json:"not_matched,omitempty"`
+
+	// MultipleFaces The photo provided contains more than one face.
+	MultipleFaces *bool                          `json:"multiple_faces,omitempty"`
+	EmployeeBadge *EmployeeBadgeValidationResult `json:"employee_badge,omitempty"`
 }
 
 // Comparison defines model for Comparison.
 type Comparison struct {
-	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Scope *Scope `json:"scope,omitempty"`
 
-	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Claim Claim `json:"claim"`
 
 	// Expected The expected value for this claim.
@@ -767,6 +874,9 @@ type CreateAPIKeyRequest struct {
 	// EnvIDs The unique identifier for the environments this API key belongs to, or `["*"]` if the key applies to all environments.
 	EnvIDs []string `json:"envs"`
 	Role   *Role    `json:"role,omitempty"`
+
+	// ExpiresAt The expiration date and time for the API key. If not provided, the key will not expire. Example: "2023-12-31T23:59:59Z"
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 }
 
 // CreateAPIKeyResponse defines model for CreateAPIKeyResponse.
@@ -821,11 +931,12 @@ type CreateRequestRequest struct {
 	Scopes []Scope `json:"scopes,omitempty"`
 
 	// Claims A list of the information (claims) that the request is asking for.
+	// > **Note**: This field is required unless `template` is specified.
 	Claims []Claim `json:"claims,omitempty"`
 
 	// Template The name of a template that customizes how the request is presented to the user.
 	//
-	// Because a template contains it's own claim definitions, you can provide either `claims` or `templates`, providing both results in an amalgamation of the two.
+	// Because a template contains its own claim definitions, you can provide either `claims` or `template`; providing both results in an amalgamation of the two.
 	Template string `json:"template,omitempty"`
 
 	// ExpiresAt The last time this request will be valid. After this time, the request is expired and the user will no longer be able to complete it. This cannot be used with `ttl`.
@@ -834,10 +945,10 @@ type CreateRequestRequest struct {
 	// Phone The phone number to which the request link should be sent.
 	Phone string `json:"phone,omitempty"`
 
-	// Whatsapp The Whatsapp phone number to which the request link should be sent.
+	// Whatsapp The WhatsApp phone number to which the request link should be sent.
 	Whatsapp string `json:"whatsapp,omitempty"`
 
-	// Label An internal label for this request. You can use this field to help you track the request in your own systems. Nametag stores this field, but does not process it at
+	// Label An internal label for this request. You can use this field to help you track the request in your own systems. Nametag stores this field, but does not process it at all.
 	Label string `json:"label,omitempty"`
 }
 
@@ -862,11 +973,11 @@ type CreateRequestResponse struct {
 	// Link An authorization link. Passing this link to the user will prompt them to complete the request.
 	Link string `json:"link"`
 
-	// Phone The phone number to which the request link was sent, in E.184 format.
+	// Phone The phone number to which the request link was sent, in E.164 format.
 	Phone string `json:"phone,omitempty"`
 
 	// Label An internal label for this request. You can use this field to help you track the
-	// request in your own systems. Nametag stores this field, but does not process it at
+	// request in your own systems. Nametag stores this field, but does not process it at all.
 	Label string `json:"label,omitempty"`
 
 	// ExpiresAt The last time this request will be valid. After this time, the request is expired
@@ -885,7 +996,7 @@ type CreateTemplateRequest struct {
 	// QrHeadline The text that appears above the QR code when directing the user from desktop to mobile.
 	QrHeadline *string `json:"qr_headline,omitempty"`
 
-	// ExpirationText The text that describes when the request expires. This should include `{{.TTL}}` which is a placeholder  for the expiration of the data sharing authorization in human readable form, e.g. "3 hours"
+	// ExpirationText The text that describes when the request expires. This should include `{{.TTL}}` which is a placeholder  for the expiration of the data sharing authorization in human-readable form, e.g. "3 hours"
 	ExpirationText *string `json:"expiration_text,omitempty"`
 
 	// AcceptText The text on the accept button in the mobile app.
@@ -918,7 +1029,7 @@ type CreateTemplateRequest struct {
 	// RequireSelfieReverification If true, existing users must provide a new selfie to validate their identity.
 	RequireSelfieReverification *bool `json:"require_selfie_reverification,omitempty"`
 
-	// QRCustomText The Custom QR code text for this template.
+	// QRCustomText The text that appears below the desktop QR page headline.
 	QRCustomText *string `json:"qr_custom_text,omitempty"`
 }
 
@@ -933,17 +1044,38 @@ type Credentials struct {
 	// Account * For Duo, the integration key
 	// * For Okta, this field should be blank
 	// * For Onelogin, the client ID, e.g. `98ea6e4f216f2fb4b69fff9b3a44842c38686ca685f3f55dc48c5d3fb1107be4`
+	// * For BeyondIdentity, the client ID, e.g. `Tf9IGY976IqEjEHJrYSJW7JF`
 	Account string `json:"account,omitempty"`
+
+	// ApplicationID * For Duo, this field should be blank
+	// * For Okta, this field should be blank
+	// * For Onelogin, this field should be blank
+	// * For BeyondIdentity, the application ID, e.g. `9f6b7c1e-2d44-4c2b-8c9f-3ab59e92c123`
+	ApplicationID string `json:"application_id,omitempty"`
 
 	// Partition * For Duo, the API hostname, e.g. `api-33091yc9.duosecurity.com`.
 	// * For Okta, the service hostname, e.g. `your-company.okta.com`.
 	// * For Onelogin, the subdomain, e.g. `example.onelogin.com`.
+	// * For BeyondIdentity, the BaseURL, e.g. `https://api-us.beyondidentity.com`.
 	Partition string `json:"partition"`
+
+	// RealmID * For Duo, this field should be blank
+	// * For Okta, this field should be blank
+	// * For Onelogin, this field should be blank
+	// * For BeyondIdentity, the realm ID, e.g. `8b4e3oxk01qwu19`
+	RealmID string `json:"realm_id,omitempty"`
 
 	// Secret * For Duo, the secret key, e.g. `cv9wJSC10XDFRGY5L9DcgHuNtR76vM8kuB1sDCpc`
 	// * For Okta, the API token, e.g. `21lgux-M8uJC4w-9kN_PL0ivV5tM81AvSd7l0IuAS3`
 	// * For Onelogin, the client secret, e.g. `f3d4bd80d4d4007be3455453819d3359f8a5eb2eb66fdbc7bae5e44083605118`
+	// * For BeyondIdentity, the client secret, e.g. `Y0p8Q~a1Bx3K-4lHnV9zYt2sA7jRkLmF5gS9xTqW`
 	Secret string `json:"secret"`
+
+	// TenantID * For Duo, this field should be blank
+	// * For Okta, this field should be blank
+	// * For Onelogin, this field should be blank
+	// * For BeyondIdentity, the tenant ID, e.g. `1124mn2az1yglqq`
+	TenantID string `json:"tenant_id,omitempty"`
 }
 
 // Directory defines model for Directory.
@@ -958,7 +1090,7 @@ type Directory struct {
 	Kind DirectoryKind `json:"kind"`
 
 	// Name The internal name of the directory.
-	// This field is derived from inspecting the directory itself, for example for  Entra ID this field is the primary domain name. This field is used to you identify the directory.
+	// This field is derived from inspecting the directory itself, for example for  Entra ID this field is the primary domain name. This field is used to help you identify the directory.
 	Name                      string              `json:"name"`
 	AuthenticatePolicy        RecoveryPolicyRules `json:"authenticate_policy"`
 	MfaPolicy                 RecoveryPolicyRules `json:"mfa_policy"`
@@ -1013,14 +1145,15 @@ type Directory struct {
 	// CanRemoveAllMFA true if the directory supports removing all MFA devices
 	CanRemoveAllMFA *bool `json:"can_remove_all_mfa,omitempty"`
 
-	// CanUnlock true if the directory supports generating unlocking a locked account
+	// CanUnlock true if the directory supports unlocking a locked account
 	CanUnlock *bool `json:"can_unlock,omitempty"`
 
-	// CanUpdateAccountsList true if the directory supports progressive update of the list of accounts
+	// CanUpdateAccountsList true if the directory supports progressive updates to the list of accounts
 	CanUpdateAccountsList *bool `json:"can_update_accounts_list,omitempty"`
 
-	// LogoURL A URL of the logo image for this directory.
-	LogoURL *string `json:"logo_url,omitempty"`
+	// LogoURL The URL of the logo image for this directory.
+	LogoURL                    *string                     `json:"logo_url,omitempty"`
+	RecoveryOperationRateLimit *RecoveryOperationRateLimit `json:"recovery_operation_rate_limit,omitempty"`
 }
 
 // DirectoryAuthorizedAuditEvent defines model for DirectoryAuthorizedAuditEvent.
@@ -1070,6 +1203,27 @@ type DirectorySetCredentialsAuditEvent struct {
 type DirectoryUpdatedAuditEvent struct {
 	Directory string                 `json:"directory"`
 	Request   UpdateDirectoryRequest `json:"request"`
+}
+
+// EmployeeBadgeValidationResult defines model for EmployeeBadgeValidationResult.
+type EmployeeBadgeValidationResult struct {
+	// Valid True if the photo is appropriate for use as an employee badge, false otherwise.
+	Valid bool `json:"valid"`
+
+	// Reason If the photo is not appropriate for use as an employee badge, a human-readable explanation of why the photo is not valid.
+	Reason *string `json:"reason,omitempty"`
+}
+
+// EncryptSecretRequest defines model for EncryptSecretRequest.
+type EncryptSecretRequest struct {
+	// Plaintext The secret to encrypt
+	Plaintext string `json:"plaintext"`
+}
+
+// EncryptSecretResponse defines model for EncryptSecretResponse.
+type EncryptSecretResponse struct {
+	// Ciphertext The encrypted secret value
+	Ciphertext string `json:"ciphertext"`
 }
 
 // EntraEamAuthorizeAuditEvent defines model for EntraEamAuthorizeAuditEvent.
@@ -1155,6 +1309,12 @@ type Env struct {
 	// Templates A list of request templates.
 	Templates []Template  `json:"templates"`
 	Storage   *EnvStorage `json:"storage,omitempty"`
+
+	// OidcDelegates A list of OIDC Delegates.
+	OidcDelegates []OIDCDelegate `json:"oidc_delegates"`
+
+	// MicrositeSAMLDirectories A list of directory ID's that back the SAML verify flow.
+	MicrositeSAMLDirectories []string `json:"microsite_saml_directories"`
 }
 
 // EnvCreatedAuditEvent defines model for EnvCreatedAuditEvent.
@@ -1227,6 +1387,13 @@ type EnvUpdateRequest struct {
 	AddWebhooks   []WebhookDefinition      `json:"add_webhooks,omitempty"`
 	UpdateWebhook *WebhookDefinitionUpdate `json:"update_webhook,omitempty"`
 	Storage       *EnvStorage              `json:"storage,omitempty"`
+
+	// RemoveOidcDelegates Remove OIDC delegate from the environment (IDs of the delegates to remove)
+	RemoveOidcDelegates []string `json:"remove_oidc_delegates,omitempty"`
+
+	// AddOidcDelegates Add OIDC delegates to the environment
+	AddOidcDelegates   []OIDCDelegate      `json:"add_oidc_delegates,omitempty"`
+	UpdateOidcDelegate *OIDCDelegateUpdate `json:"update_oidc_delegate,omitempty"`
 }
 
 // EnvUpdatedAtFilterParams defines model for EnvUpdatedAtFilterParams.
@@ -1244,14 +1411,26 @@ type EnvWebhookSecretUpdatedAuditEvent struct {
 
 // Expectation defines model for Expectation.
 type Expectation struct {
-	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Scope *Scope `json:"scope,omitempty"`
 
-	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Claim Claim `json:"claim"`
 
 	// Value The value you expect the person to have for this claim.
 	Value string `json:"value"`
+}
+
+// ExtensionInvokedAuditEvent defines model for ExtensionInvokedAuditEvent.
+type ExtensionInvokedAuditEvent struct {
+	// Method The extension method name
+	Method string `json:"method"`
+
+	// Logs Messages that are emitted by console logs during the execution of the extension  function.
+	Logs []string `json:"logs,omitempty"`
+
+	// Error If the extension method returned an error, this will contain the error message. Otherwise, it will be empty.
+	Error *string `json:"error,omitempty"`
 }
 
 // GetDirectoriesResponse defines model for GetDirectoriesResponse.
@@ -1284,7 +1463,7 @@ type GetMicrometricsResponse struct {
 // GetRequestsResponse defines model for GetRequestsResponse.
 type GetRequestsResponse struct {
 	Requests         []Request `json:"requests"`
-	NextOffset       string    `json:"next_offset"`
+	NextOffset       int       `json:"next_offset"`
 	TotalResultCount int64     `json:"total_result_count"`
 }
 
@@ -1330,7 +1509,9 @@ type ListAPIKeysResponse struct {
 // ListAuditEventsResponse defines model for ListAuditEventsResponse.
 type ListAuditEventsResponse struct {
 	// Events A list of audit events
-	Events []AuditEvent `json:"events"`
+	Events         []AuditEvent `json:"events"`
+	BackwardCursor *string      `json:"backward_cursor,omitempty"`
+	ForwardCursor  *string      `json:"forward_cursor,omitempty"`
 }
 
 // ListEnvsResponse defines model for ListEnvsResponse.
@@ -1424,6 +1605,33 @@ type OAuth2V2AuthorizeAuditEvent struct {
 	Response AuthorizeResponse  `json:"response"`
 }
 
+// OIDCDelegate defines model for OIDCDelegate.
+type OIDCDelegate struct {
+	// ID A unique identifier for the OIDC delegate.
+	ID string `json:"id"`
+
+	// Name The name of the delegate
+	Name string `json:"name"`
+
+	// ClientID The client ID for the OAuth delegate.
+	ClientID *string `json:"client_id,omitempty"`
+
+	// ClientSecret The client secret for the OAuth delegate.
+	ClientSecret *string `json:"client_secret,omitempty"`
+
+	// Issuer The URL of the issuer for the OIDC delegate.
+	Issuer string `json:"issuer"`
+}
+
+// OIDCDelegateUpdate defines model for OIDCDelegateUpdate.
+type OIDCDelegateUpdate struct {
+	ID           string  `json:"id"`
+	Name         *string `json:"name,omitempty"`
+	ClientID     *string `json:"client_id,omitempty"`
+	ClientSecret *string `json:"client_secret,omitempty"`
+	Issuer       *string `json:"issuer,omitempty"`
+}
+
 // OktaEamAuthorizeAuditEvent defines model for OktaEamAuthorizeAuditEvent.
 type OktaEamAuthorizeAuditEvent struct {
 	Directory string                   `json:"directory"`
@@ -1507,7 +1715,7 @@ type OrgMember struct {
 	// InvitePending True if the member has been invited to the organization but has not  yet signed in.
 	InvitePending bool `json:"invite_pending"`
 
-	// RequestsCount The number of request the member has sent.
+	// RequestsCount The number of requests the member has sent.
 	RequestsCount *int `json:"requests_count,omitempty"`
 
 	// Principal The principal of this org member
@@ -1519,8 +1727,8 @@ type OrgMemberInvitedAuditEvent struct {
 	Request InviteOrgMemberRequest `json:"request"`
 }
 
-// OrgMemberRemoveAuditEvent defines model for OrgMemberRemoveAuditEvent.
-type OrgMemberRemoveAuditEvent struct {
+// OrgMemberRemovedAuditEvent defines model for OrgMemberRemovedAuditEvent.
+type OrgMemberRemovedAuditEvent struct {
 	OrgMember string `json:"org_member"`
 }
 
@@ -1566,6 +1774,7 @@ type PollResponse struct {
 	Status           AuthorizeStatus `json:"status"`
 	RedirectURI      string          `json:"redirect_uri,omitempty"`
 	WaitingForReview bool            `json:"waiting_for_review,omitempty"`
+	LastEvent        interface{}     `json:"last_event,omitempty"`
 }
 
 // Principal defines model for Principal.
@@ -1605,10 +1814,10 @@ type PropertyResponse struct {
 	// Expires When your access to this data expires
 	Expires string `json:"expires,omitempty"`
 
-	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Scope *Scope `json:"scope,omitempty"`
 
-	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Claim Claim `json:"claim"`
 
 	// Value The value of the property. The type of this field varies depending on the claim. See [this table](#scopes).
@@ -1655,6 +1864,9 @@ type PushedAuthorizationRequest struct {
 
 	// EmailHint The email hint
 	EmailHint *openapi_types.Email `json:"email_hint,omitempty"`
+
+	// ExpirySeconds The expiration time in seconds for the PAR
+	ExpirySeconds *int `json:"expiry_seconds,omitempty"`
 
 	// RedirectUri The redirect URI
 	RedirectUri string `json:"redirect_uri"`
@@ -1720,6 +1932,16 @@ type RecoveryMicrositePresignResponse struct {
 	Url string `json:"url"`
 }
 
+// RecoveryOperationRateLimit defines model for RecoveryOperationRateLimit.
+type RecoveryOperationRateLimit struct {
+	// Count The number of operations allowed in the window.
+	Count int `json:"count"`
+
+	// Window The duration of the window. The duration is specified as a string
+	// in the format `1h30m` for 1 hour and 30 minutes, or `1m20s` for 1 minute and 20 seconds.
+	Window jsonx.Duration `json:"window"`
+}
+
 // RecoveryPolicy defines model for RecoveryPolicy.
 type RecoveryPolicy string
 
@@ -1768,7 +1990,7 @@ type Request struct {
 	// Ticket The request ticket (used to construct the link)
 	Ticket string `json:"ticket"`
 
-	// Link The URL which should be send to the user. This link launches the mobile app and prompts the user to verify their identity.
+	// Link The URL which should be sent to the user. This link launches the mobile app and prompts the user to verify their identity.
 	Link string `json:"link"`
 
 	// Phone The phone number that will receive an authorization link via SMS
@@ -1803,14 +2025,15 @@ type Request struct {
 	// IsKnownUser If the user is known as an account
 	IsKnownUser *bool `json:"is_known_user,omitempty"`
 
-	// Photo The photo associate with this person
+	// Photo The photo associated with this person
 	Photo *string `json:"photo,omitempty"`
 
 	// ExternalIds External IDs for accounts if the user is known
 	ExternalIds *[]string `json:"external_ids,omitempty"`
 
 	// MarkedForDeletionAfter Indicates whether the person associated with this request has asked for their data to be deleted and the earliest time that will occur at.
-	MarkedForDeletionAfter *time.Time `json:"marked_for_deletion_after,omitempty"`
+	MarkedForDeletionAfter *time.Time                 `json:"marked_for_deletion_after,omitempty"`
+	VerificationSource     *RequestVerificationSource `json:"verification_source,omitempty"`
 }
 
 // RequestBrowser defines model for RequestBrowser.
@@ -1910,8 +2133,9 @@ type RequestProperties struct {
 	Address *string      `json:"address,omitempty"`
 	Govtid  *GovtidValue `json:"govtid,omitempty"`
 
-	// GovtidExpired `true` if we have a govtid expiration date, and it is past that date. `false` if we either cant get expiration date or it is not expired.
-	GovtidExpired *bool `json:"govtid_Expired,omitempty"`
+	// GovtidExpired `true` if we have a govtid expiration date and it is past that date; `false` if we either can't get an expiration date or it is not expired.
+	GovtidExpired *bool         `json:"govtid_Expired,omitempty"`
+	Account       *AccountValue `json:"account,omitempty"`
 }
 
 // RequestStatus defines model for RequestStatus.
@@ -1923,10 +2147,13 @@ type RequestUpdatedAuditEvent struct {
 	Request   UpdateRequestRequest `json:"request"`
 }
 
+// RequestVerificationSource defines model for RequestVerificationSource.
+type RequestVerificationSource string
+
 // Role defines model for Role.
 type Role string
 
-// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 type Scope string
 
 // SelfieCompareAuditEvent defines model for SelfieCompareAuditEvent.
@@ -1986,7 +2213,7 @@ type Template struct {
 	// QrHeadline The text that appears above the QR code when directing the user from desktop to mobile.
 	QrHeadline string `json:"qr_headline"`
 
-	// ExpirationText The text that describes when the request expires. This should include `{{.TTL}}` which is a placeholder  for the expiration of the data sharing authorization in human readable form, e.g. "3 hours"
+	// ExpirationText The text that describes when the request expires. This should include `{{.TTL}}` which is a placeholder  for the expiration of the data sharing authorization in human-readable form, e.g. "3 hours"
 	ExpirationText string `json:"expiration_text"`
 
 	// AcceptText The text on the accept button in the mobile app.
@@ -2019,13 +2246,13 @@ type Template struct {
 	// RequireSelfieReverification If true, existing users must provide a new selfie to validate their identity.
 	RequireSelfieReverification bool `json:"require_selfie_reverification"`
 
-	// QRCustomText The Custom QR code text for this template.
+	// QRCustomText The text that appears below the desktop QR page headline.
 	QRCustomText string `json:"qr_custom_text"`
 }
 
 // TemplateClaimDefinition defines model for TemplateClaimDefinition.
 type TemplateClaimDefinition struct {
-	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Claim Claims are used to describe the information you want people to share with you. In order to request a claim you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Claim Claim `json:"claim"`
 }
 
@@ -2042,7 +2269,7 @@ type TemplateDeletedAuditEvent struct {
 
 // TemplateScopeDefinition defines model for TemplateScopeDefinition.
 type TemplateScopeDefinition struct {
-	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the developer console.
+	// Scope Scopes are used to describe the information you want people to share with you. In order to request a scope you  must first define it in your environment and provide additional parameters, such as what type of data and how  long you need the data. This is done separately for each environment you manage in the Nametag console.
 	Scope Scope `json:"scope"`
 
 	// RestrictEmailDomains If the scope definition is for nt:email or similar, require that the email domain match one of the provided values. If the scope definition is not for email, or if the list is empty, then emails from any domain are allowed.
@@ -2105,7 +2332,8 @@ type UpdateDirectoryRequest struct {
 	TemporaryAccessPassReusable *bool `json:"temporary_access_pass_reusable,omitempty"`
 
 	// BirthDateHMACSecret A shared secret for hashed birth dates in the directory
-	BirthDateHMACSecret []byte `json:"birth_date_hmac_secret,omitempty"`
+	BirthDateHMACSecret        []byte                      `json:"birth_date_hmac_secret,omitempty"`
+	RecoveryOperationRateLimit *RecoveryOperationRateLimit `json:"recovery_operation_rate_limit,omitempty"`
 }
 
 // UpdateOrgMemberRequest defines model for UpdateOrgMemberRequest.
@@ -2133,7 +2361,7 @@ type UpdateTemplateRequest struct {
 	// QrHeadline The text that appears above the QR code when directing the user from desktop to mobile.
 	QrHeadline *string `json:"qr_headline,omitempty"`
 
-	// ExpirationText The text that describes when the request expires. This should include `{{.TTL}}` which is a placeholder  for the expiration of the data sharing authorization in human readable form, e.g. "3 hours"
+	// ExpirationText The text that describes when the request expires. This should include `{{.TTL}}` which is a placeholder  for the expiration of the data sharing authorization in human-readable form, e.g. "3 hours"
 	ExpirationText *string `json:"expiration_text,omitempty"`
 
 	// AcceptText The text on the accept button in the mobile app.
@@ -2166,7 +2394,7 @@ type UpdateTemplateRequest struct {
 	// RequireSelfieReverification If true, existing users must provide a new selfie to validate their identity.
 	RequireSelfieReverification *bool `json:"require_selfie_reverification,omitempty"`
 
-	// QRCustomText The Custom QR code text for this template.
+	// QRCustomText The text that appears below the desktop QR page headline.
 	QRCustomText *string `json:"qr_custom_text,omitempty"`
 }
 
@@ -2263,8 +2491,26 @@ type ListAuditEventsParams struct {
 	// Start Show records created at or after this time
 	Start *time.Time `form:"start,omitempty" json:"start,omitempty"`
 
-	// Count The number of items to return
+	// End Show records created before this time
+	End *time.Time `form:"end,omitempty" json:"end,omitempty"`
+
+	// Reverse If false (the default), logs are emitted newest to oldest. If this parameter is true, logs are emitted  oldest to newest.
+	Reverse *bool `form:"reverse,omitempty" json:"reverse,omitempty"`
+
+	// Count The number of items to return. Note that the API may return fewer items than specified (even zero) and there  still may be more records available if the forward_cursor or backward_cursor response fields are set.
 	Count *int `form:"count,omitempty" json:"count,omitempty"`
+
+	// Env Limit audit events to those relating to the specified environment (or environments)
+	Env *[]string `form:"env,omitempty" json:"env,omitempty"`
+
+	// Kind Limit audit events to those matching the specified kind.
+	Kind *[]AuditEventKind `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// Query Show only results containing the specified query string.
+	Query *string `form:"query,omitempty" json:"query,omitempty"`
+
+	// Cursor Continue a paginated query that previously returned a  cursor.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
 }
 
 // Oauth2CancelParams defines parameters for Oauth2Cancel.
@@ -2319,7 +2565,7 @@ type ListEnvRequestsParams struct {
 	Q            *string                    `form:"q,omitempty" json:"q,omitempty"`
 	Requestor    *string                    `form:"requestor,omitempty" json:"requestor,omitempty"`
 	Count        *int                       `form:"count,omitempty" json:"count,omitempty"`
-	Offset       *string                    `form:"offset,omitempty" json:"offset,omitempty"`
+	Offset       *int                       `form:"offset,omitempty" json:"offset,omitempty"`
 	Sort         *ListEnvRequestsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
 	StatusFilter *EnvStatusFilterParams     `form:"statusFilter,omitempty" json:"statusFilter,omitempty"`
 	UpdatedAt    *EnvUpdatedAtFilterParams  `form:"updatedAt,omitempty" json:"updatedAt,omitempty"`
@@ -2404,6 +2650,9 @@ type Oauth2AuthorizeIframeParams struct {
 
 	// Template The template to use
 	Template *string `form:"template,omitempty" json:"template,omitempty"`
+
+	// ThemeColor The QR code color
+	ThemeColor *string `form:"theme_color,omitempty" json:"theme_color,omitempty"`
 
 	// Return The return URL
 	Return *AuthorizeReturn `form:"return,omitempty" json:"return,omitempty"`
@@ -2524,6 +2773,9 @@ type CreateEnvJSONRequestBody = CreateEnvRequest
 
 // UpdateEnvJSONRequestBody defines body for UpdateEnv for application/json ContentType.
 type UpdateEnvJSONRequestBody = EnvUpdateRequest
+
+// EncryptSecretJSONRequestBody defines body for EncryptSecret for application/json ContentType.
+type EncryptSecretJSONRequestBody = EncryptSecretRequest
 
 // UploadLogoMultipartRequestBody defines body for UploadLogo for multipart/form-data ContentType.
 type UploadLogoMultipartRequestBody UploadLogoMultipartBody
@@ -2744,6 +2996,11 @@ type ClientInterface interface {
 	UpdateEnvWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateEnv(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EncryptSecretWithBody request with any body
+	EncryptSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EncryptSecret(ctx context.Context, env string, body EncryptSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteLogo request
 	DeleteLogo(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3336,6 +3593,30 @@ func (c *Client) UpdateEnvWithBody(ctx context.Context, env string, contentType 
 
 func (c *Client) UpdateEnv(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateEnvRequest(c.Server, env, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EncryptSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEncryptSecretRequestWithBody(c.Server, env, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EncryptSecret(ctx context.Context, env string, body EncryptSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEncryptSecretRequest(c.Server, env, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4475,9 +4756,105 @@ func NewListAuditEventsRequest(server string, params *ListAuditEventsParams) (*h
 
 		}
 
+		if params.End != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end", runtime.ParamLocationQuery, *params.End); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Reverse != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "reverse", runtime.ParamLocationQuery, *params.Reverse); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.Count != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "count", runtime.ParamLocationQuery, *params.Count); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Env != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "env", runtime.ParamLocationQuery, *params.Env); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Kind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "kind", runtime.ParamLocationQuery, *params.Kind); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Query != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "query", runtime.ParamLocationQuery, *params.Query); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -5222,6 +5599,53 @@ func NewUpdateEnvRequestWithBody(server string, env string, contentType string, 
 	}
 
 	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEncryptSecretRequest calls the generic EncryptSecret builder with application/json body
+func NewEncryptSecretRequest(server string, env string, body EncryptSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEncryptSecretRequestWithBody(server, env, "application/json", bodyReader)
+}
+
+// NewEncryptSecretRequestWithBody generates requests for EncryptSecret with any type of body
+func NewEncryptSecretRequestWithBody(server string, env string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/encrypt-secret", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -6715,6 +7139,22 @@ func NewOauth2AuthorizeIframeRequest(server string, params *Oauth2AuthorizeIfram
 
 		}
 
+		if params.ThemeColor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "theme_color", runtime.ParamLocationQuery, *params.ThemeColor); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.Return != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "return", runtime.ParamLocationQuery, *params.Return); err != nil {
@@ -7588,6 +8028,11 @@ type ClientWithResponsesInterface interface {
 
 	UpdateEnvWithResponse(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateEnvResp, error)
 
+	// EncryptSecretWithBodyWithResponse request with any body
+	EncryptSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EncryptSecretResp, error)
+
+	EncryptSecretWithResponse(ctx context.Context, env string, body EncryptSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*EncryptSecretResp, error)
+
 	// DeleteLogoWithResponse request
 	DeleteLogoWithResponse(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*DeleteLogoResp, error)
 
@@ -8390,6 +8835,29 @@ func (r UpdateEnvResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateEnvResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EncryptSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EncryptSecretResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r EncryptSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EncryptSecretResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9544,6 +10012,23 @@ func (c *ClientWithResponses) UpdateEnvWithResponse(ctx context.Context, env str
 		return nil, err
 	}
 	return ParseUpdateEnvResp(rsp)
+}
+
+// EncryptSecretWithBodyWithResponse request with arbitrary body returning *EncryptSecretResp
+func (c *ClientWithResponses) EncryptSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EncryptSecretResp, error) {
+	rsp, err := c.EncryptSecretWithBody(ctx, env, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEncryptSecretResp(rsp)
+}
+
+func (c *ClientWithResponses) EncryptSecretWithResponse(ctx context.Context, env string, body EncryptSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*EncryptSecretResp, error) {
+	rsp, err := c.EncryptSecret(ctx, env, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEncryptSecretResp(rsp)
 }
 
 // DeleteLogoWithResponse request returning *DeleteLogoResp
@@ -10833,6 +11318,39 @@ func ParseUpdateEnvResp(rsp *http.Response) (*UpdateEnvResp, error) {
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEncryptSecretResp parses an HTTP response from a EncryptSecretWithResponse call
+func ParseEncryptSecretResp(rsp *http.Response) (*EncryptSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EncryptSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EncryptSecretResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

@@ -202,6 +202,12 @@ components:
             modification time of the account list. If supported, the server may
             set *updated_after* in *list_accounts* to indicate the agent should
             report only accounts that have been updated since that time.
+        can_authenticate:
+          type: boolean
+          x-go-name: Authenticate
+          x-order: 9
+          description: >
+            Indicates whether the agent supports authenticating an account.
     DirAgentListAccountsRequest:
       type: object
       properties:

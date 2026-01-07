@@ -18,22 +18,29 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/exec"
+
+	"github.com/nametaginc/cli/internal/pkg/genx"
+	"github.com/nametaginc/cli/internal/pkg/must"
 )
 
 //go:generate go run generate.go
 
 func main() {
-	cmd := exec.Command("go", "run",
-		"github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen",
-		"--config=config.yaml",
-		"diragent.yaml",
-	)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("ERROR: %v", err)
-	}
+	defer genx.Log()()
+
+	must.NotFail(genx.Cached(
+		[]string{"diragent.yaml", "config.yaml", "generate.go"},
+		[]string{"api.gen.go"},
+		func() error {
+			cmd := exec.Command("go", "run",
+				"github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen",
+				"--config=config.yaml",
+				"diragent.yaml",
+			)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			return cmd.Run()
+		}))
 }

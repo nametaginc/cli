@@ -42,7 +42,7 @@ To authenticate, you must specify an agent token. To get a token, use
 'nametag directory agent register'.
 This command connects to Nametag and relays requests and responses between the server 
 and an agent worker process that it manages.  The worker is specified by the --command flag.
-Nametag comes with several built-in workers, such as Okta and Entra, which are implemented 
+Nametag comes with several built-in workers, such as Okta and ActiveDirectory, which are implemented 
 as subcommands of this command.
     nametag directory agent --agent-token <token> --command "nametag directory agent okta --okta-url https://example.okta.com --okta-token 1234567890"
 For convenience, the built-in workers can be invoked directly. For example, the following 
@@ -50,7 +50,7 @@ command is equivalent to the one above:
 	NAMETAG_AGENT_TOKEN="abcd" \
 	OKTA_TOKEN="1234567890" \
 	OKTA_URL="https://example.okta.com" \
-    nametag directory agnet okta
+    nametag directory agent okta
 An agent worker can be anything that reads JSON requests from stdin and writes JSON responses 
 to stdout. The command you specify is invoked via your system shell. The environment variable 
 NAMETAG_AGENT_WORKER is set to "true" when the agent is invoked as a worker process. 
@@ -90,6 +90,7 @@ For example:
 	cmd.AddCommand(newDirAgentRegisterCmd())
 	cmd.AddCommand(newDirAgentOktaCmd())
 	cmd.AddCommand(newDirAgentADCmd())
+	cmd.AddCommand(newDirAgentLDAPCmd())
 	cmd.AddCommand(newDirAgentRegenerateTokenCmd())
 	return cmd
 }

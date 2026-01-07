@@ -52,6 +52,10 @@ git clone --bare git@github.com:nametaginc/cli "$dir/.git"
 cp -r "$source_root/cli/" "$dir"
 mkdir -p "$dir/internal/pkg/jsonx"
 cp -r "$source_root/pkg/jsonx/duration.go" "$dir/internal/pkg/jsonx/duration.go"
+cp -r "$source_root/pkg/genx" "$dir/internal/pkg/genx"
+cp -r "$source_root/pkg/lox" "$dir/internal/pkg/lox"
+cp -r "$source_root/pkg/must" "$dir/internal/pkg/must"
+cp -r "$source_root/pkg/thunks" "$dir/internal/pkg/thunks"
 cp "$source_root"/go.{mod,sum} "$dir"
 
 cd "$dir"
@@ -89,6 +93,7 @@ cat go.mod |
 	grep -v -e 'github.com/bas-d/appattest' |
 	cat >go.mod~
 mv go.mod~ go.mod
+go mod edit -replace github.com/docker/docker=github.com/docker/docker@v27.5.0+incompatible
 go mod tidy
 
 # make sure we can actually build before we commit or push anything
