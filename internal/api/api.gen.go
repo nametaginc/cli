@@ -83,6 +83,8 @@ const (
 	AuditEventKindOrgMemberUpdated                 AuditEventKind = "org_member_updated"
 	AuditEventKindOrgUpdated                       AuditEventKind = "org_updated"
 	AuditEventKindPeopleCompare                    AuditEventKind = "people_compare"
+	AuditEventKindPeopleSetPicture                 AuditEventKind = "people_set_picture"
+	AuditEventKindPeopleSetPreferredName           AuditEventKind = "people_set_preferred_name"
 	AuditEventKindRequestCanceled                  AuditEventKind = "request_canceled"
 	AuditEventKindRequestCreated                   AuditEventKind = "request_created"
 	AuditEventKindRequestUpdated                   AuditEventKind = "request_updated"
@@ -241,6 +243,7 @@ const (
 	RecoveryPolicyDisabled         RecoveryPolicy = "disabled"
 	RecoveryPolicyNameAndBirthDate RecoveryPolicy = "name_and_birth_date"
 	RecoveryPolicyNameMatch        RecoveryPolicy = "name_match"
+	RecoveryPolicyNone             RecoveryPolicy = "none"
 	RecoveryPolicyPhoto            RecoveryPolicy = "photo"
 	RecoveryPolicyWeakNameMatch    RecoveryPolicy = "weak_name_match"
 )
@@ -274,6 +277,7 @@ const (
 const (
 	RequestVerificationSourceExpressReverification RequestVerificationSource = "express_reverification"
 	RequestVerificationSourceFullIDV               RequestVerificationSource = "full_idv"
+	RequestVerificationSourceSelfieOnly            RequestVerificationSource = "selfie_only"
 )
 
 // Defines values for Role.
@@ -305,6 +309,16 @@ const (
 	NtPhone           Scope = "nt:phone"
 	NtProfilePicture  Scope = "nt:profile_picture"
 	Openid            Scope = "openid"
+)
+
+// Defines values for SetPictureError.
+const (
+	SetPictureErrorInvalidFormat SetPictureError = "invalid_format"
+	SetPictureErrorNoFace        SetPictureError = "no_face"
+	SetPictureErrorNoReference   SetPictureError = "no_reference"
+	SetPictureErrorNotMatched    SetPictureError = "not_matched"
+	SetPictureErrorTooLarge      SetPictureError = "too_large"
+	SetPictureErrorTooManyFaces  SetPictureError = "too_many_faces"
 )
 
 // Defines values for TokenRequestGrantType.
@@ -631,6 +645,8 @@ type AuditEvent struct {
 	OktaEamAuthorize                 *OktaEamAuthorizeAuditEvent                 `json:"okta_eam_authorize,omitempty"`
 	OktaEamFinish                    *OktaEamFinishAuditEvent                    `json:"okta_eam_finish,omitempty"`
 	PeopleCompare                    *PeopleCompareAuditEvent                    `json:"people_compare,omitempty"`
+	PeopleSetPreferredName           *PeopleSetPreferredNameAuditEvent           `json:"people_set_preferred_name,omitempty"`
+	PeopleSetPicture                 *PeopleSetPictureAuditEvent                 `json:"people_set_picture,omitempty"`
 	SelfieCompare                    *SelfieCompareAuditEvent                    `json:"selfie_compare,omitempty"`
 	SharingRevoked                   *SharingRevokedAuditEvent                   `json:"sharing_revoked,omitempty"`
 	ExtensionInvoked                 *ExtensionInvokedAuditEvent                 `json:"extension_invoked,omitempty"`
@@ -1031,6 +1047,9 @@ type CreateTemplateRequest struct {
 
 	// QRCustomText The text that appears below the desktop QR page headline.
 	QRCustomText *string `json:"qr_custom_text,omitempty"`
+
+	// EnableSelfieOnly If true, existing users only need to scan a selfie to complete a scan.  Not compatible with all scopes.
+	EnableSelfieOnly *bool `json:"enable_selfie_only,omitempty"`
 }
 
 // CreateTemplateResponse defines model for CreateTemplateResponse.
@@ -1769,6 +1788,25 @@ type PeopleCompareAuditEvent struct {
 	Response ComparisonResult         `json:"response"`
 }
 
+// PeopleSetPictureAuditEvent defines model for PeopleSetPictureAuditEvent.
+type PeopleSetPictureAuditEvent struct {
+	// Error An error that occurred when setting a person's profile picture.
+	Error *SetPictureError `json:"error,omitempty"`
+
+	// ImageHash The SHA256 hash of the image that was uploaded
+	ImageHash *string `json:"image_hash,omitempty"`
+
+	// ImageSize The size of the image that was uploaded, in bytes
+	ImageSize *int   `json:"image_size,omitempty"`
+	Subject   string `json:"subject"`
+}
+
+// PeopleSetPreferredNameAuditEvent defines model for PeopleSetPreferredNameAuditEvent.
+type PeopleSetPreferredNameAuditEvent struct {
+	Request SetPreferredNameRequest `json:"request"`
+	Subject string                  `json:"subject"`
+}
+
 // PollResponse defines model for PollResponse.
 type PollResponse struct {
 	Status           AuthorizeStatus `json:"status"`
@@ -1925,6 +1963,9 @@ type RecoveryMicrositePresignRequest struct {
 	// Directories The identifiers of the directories that the presigned URL should apply to.
 	Directories *[]string              `json:"directories,omitempty"`
 	Flow        *RecoveryMicrositeFlow `json:"flow,omitempty"`
+
+	// RecoveryPolicy A map of operation names to recovery policies to embed in the presigned URL.
+	RecoveryPolicy *map[string]RecoveryPolicy `json:"recovery_policy,omitempty"`
 }
 
 // RecoveryMicrositePresignResponse defines model for RecoveryMicrositePresignResponse.
@@ -2034,6 +2075,9 @@ type Request struct {
 	// MarkedForDeletionAfter Indicates whether the person associated with this request has asked for their data to be deleted and the earliest time that will occur at.
 	MarkedForDeletionAfter *time.Time                 `json:"marked_for_deletion_after,omitempty"`
 	VerificationSource     *RequestVerificationSource `json:"verification_source,omitempty"`
+
+	// SelfieOnly Indicates whether this request requires full IDV or only a selfie
+	SelfieOnly bool `json:"selfie_only"`
 }
 
 // RequestBrowser defines model for RequestBrowser.
@@ -2162,6 +2206,33 @@ type SelfieCompareAuditEvent struct {
 	Subject  string              `json:"subject"`
 }
 
+// SetPictureError An error that occurred when setting a person's profile picture.
+type SetPictureError string
+
+// SetPictureErrorResponse defines model for SetPictureErrorResponse.
+type SetPictureErrorResponse struct {
+	// OK always false
+	OK bool `json:"ok"`
+
+	// Error An error that occurred when setting a person's profile picture.
+	Error SetPictureError `json:"error"`
+}
+
+// SetPictureResponse defines model for SetPictureResponse.
+type SetPictureResponse struct {
+	// OK always true
+	OK bool `json:"ok"`
+
+	// URL The URL of the newly set profile picture.
+	URL string `json:"url"`
+}
+
+// SetPreferredNameRequest defines model for SetPreferredNameRequest.
+type SetPreferredNameRequest struct {
+	// PreferredName The preferred name to set for the person.
+	PreferredName string `json:"preferred_name"`
+}
+
 // SharingRevokedAuditEvent defines model for SharingRevokedAuditEvent.
 type SharingRevokedAuditEvent struct {
 	Claims  []Claim  `json:"claims"`
@@ -2248,6 +2319,9 @@ type Template struct {
 
 	// QRCustomText The text that appears below the desktop QR page headline.
 	QRCustomText string `json:"qr_custom_text"`
+
+	// EnableSelfieOnly If true, existing users only need to scan a selfie to complete a scan.  Not compatible with all scopes.
+	EnableSelfieOnly bool `json:"enable_selfie_only"`
 }
 
 // TemplateClaimDefinition defines model for TemplateClaimDefinition.
@@ -2396,6 +2470,9 @@ type UpdateTemplateRequest struct {
 
 	// QRCustomText The text that appears below the desktop QR page headline.
 	QRCustomText *string `json:"qr_custom_text,omitempty"`
+
+	// EnableSelfieOnly If true, existing users only need to scan a selfie to complete a scan.  Not compatible with all scopes.
+	EnableSelfieOnly *bool `json:"enable_selfie_only,omitempty"`
 }
 
 // Webhook defines model for Webhook.
@@ -2813,6 +2890,9 @@ type GetBulkPeoplePropertiesJSONRequestBody = BulkRequest
 // ComparePeopleJSONRequestBody defines body for ComparePeople for application/json ContentType.
 type ComparePeopleJSONRequestBody = SubjectComparisonRequest
 
+// SetPreferredNameJSONRequestBody defines body for SetPreferredName for application/json ContentType.
+type SetPreferredNameJSONRequestBody = SetPreferredNameRequest
+
 // Oauth2TokenFormdataRequestBody defines body for Oauth2Token for application/x-www-form-urlencoded ContentType.
 type Oauth2TokenFormdataRequestBody = TokenRequest
 
@@ -3116,6 +3196,14 @@ type ClientInterface interface {
 
 	// CompareSelfieWithBody request with any body
 	CompareSelfieWithBody(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetPictureWithBody request with any body
+	SetPictureWithBody(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetPreferredNameWithBody request with any body
+	SetPreferredNameWithBody(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetPreferredName(ctx context.Context, subject string, body SetPreferredNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePersonProperties request
 	DeletePersonProperties(ctx context.Context, subject string, scopes string, params *DeletePersonPropertiesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -4121,6 +4209,42 @@ func (c *Client) ComparePeople(ctx context.Context, subject string, body Compare
 
 func (c *Client) CompareSelfieWithBody(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCompareSelfieRequestWithBody(c.Server, subject, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetPictureWithBody(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetPictureRequestWithBody(c.Server, subject, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetPreferredNameWithBody(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetPreferredNameRequestWithBody(c.Server, subject, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetPreferredName(ctx context.Context, subject string, body SetPreferredNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetPreferredNameRequest(c.Server, subject, body)
 	if err != nil {
 		return nil, err
 	}
@@ -7405,6 +7529,89 @@ func NewCompareSelfieRequestWithBody(server string, subject string, contentType 
 	return req, nil
 }
 
+// NewSetPictureRequestWithBody generates requests for SetPicture with any type of body
+func NewSetPictureRequestWithBody(server string, subject string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "subject", runtime.ParamLocationPath, subject)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/people/%s/picture", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSetPreferredNameRequest calls the generic SetPreferredName builder with application/json body
+func NewSetPreferredNameRequest(server string, subject string, body SetPreferredNameJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetPreferredNameRequestWithBody(server, subject, "application/json", bodyReader)
+}
+
+// NewSetPreferredNameRequestWithBody generates requests for SetPreferredName with any type of body
+func NewSetPreferredNameRequestWithBody(server string, subject string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "subject", runtime.ParamLocationPath, subject)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/people/%s/preferred-name", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeletePersonPropertiesRequest generates requests for DeletePersonProperties
 func NewDeletePersonPropertiesRequest(server string, subject string, scopes string, params *DeletePersonPropertiesParams) (*http.Request, error) {
 	var err error
@@ -8147,6 +8354,14 @@ type ClientWithResponsesInterface interface {
 
 	// CompareSelfieWithBodyWithResponse request with any body
 	CompareSelfieWithBodyWithResponse(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompareSelfieResp, error)
+
+	// SetPictureWithBodyWithResponse request with any body
+	SetPictureWithBodyWithResponse(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetPictureResp, error)
+
+	// SetPreferredNameWithBodyWithResponse request with any body
+	SetPreferredNameWithBodyWithResponse(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetPreferredNameResp, error)
+
+	SetPreferredNameWithResponse(ctx context.Context, subject string, body SetPreferredNameJSONRequestBody, reqEditors ...RequestEditorFn) (*SetPreferredNameResp, error)
 
 	// DeletePersonPropertiesWithResponse request
 	DeletePersonPropertiesWithResponse(ctx context.Context, subject string, scopes string, params *DeletePersonPropertiesParams, reqEditors ...RequestEditorFn) (*DeletePersonPropertiesResp, error)
@@ -9560,6 +9775,51 @@ func (r CompareSelfieResp) StatusCode() int {
 	return 0
 }
 
+type SetPictureResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SetPictureResponse
+	JSON400      *SetPictureErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r SetPictureResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetPictureResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetPreferredNameResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r SetPreferredNameResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetPreferredNameResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeletePersonPropertiesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -10396,6 +10656,32 @@ func (c *ClientWithResponses) CompareSelfieWithBodyWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseCompareSelfieResp(rsp)
+}
+
+// SetPictureWithBodyWithResponse request with arbitrary body returning *SetPictureResp
+func (c *ClientWithResponses) SetPictureWithBodyWithResponse(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetPictureResp, error) {
+	rsp, err := c.SetPictureWithBody(ctx, subject, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetPictureResp(rsp)
+}
+
+// SetPreferredNameWithBodyWithResponse request with arbitrary body returning *SetPreferredNameResp
+func (c *ClientWithResponses) SetPreferredNameWithBodyWithResponse(ctx context.Context, subject string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetPreferredNameResp, error) {
+	rsp, err := c.SetPreferredNameWithBody(ctx, subject, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetPreferredNameResp(rsp)
+}
+
+func (c *ClientWithResponses) SetPreferredNameWithResponse(ctx context.Context, subject string, body SetPreferredNameJSONRequestBody, reqEditors ...RequestEditorFn) (*SetPreferredNameResp, error) {
+	rsp, err := c.SetPreferredName(ctx, subject, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetPreferredNameResp(rsp)
 }
 
 // DeletePersonPropertiesWithResponse request returning *DeletePersonPropertiesResp
@@ -12252,6 +12538,65 @@ func ParseCompareSelfieResp(rsp *http.Response) (*CompareSelfieResp, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetPictureResp parses an HTTP response from a SetPictureWithResponse call
+func ParseSetPictureResp(rsp *http.Response) (*SetPictureResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetPictureResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SetPictureResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest SetPictureErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetPreferredNameResp parses an HTTP response from a SetPreferredNameWithResponse call
+func ParseSetPreferredNameResp(rsp *http.Response) (*SetPreferredNameResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetPreferredNameResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

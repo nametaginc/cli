@@ -122,9 +122,12 @@ func (p *Provider) client(ctx context.Context) (context.Context, *okta.Client, e
 
 const oktaClientAssertionTTL = time.Hour
 
+// now is a workaround since dirokta cannot import pkg/thunks to access thunks.TimeNow()
+var now = time.Now
+
 func (p *Provider) makeClientAssertion(clientID string, clientSecret string) func() (string, time.Time, error) {
 	return func() (string, time.Time, error) {
-		expires := time.Now().Add(oktaClientAssertionTTL)
+		expires := now().Add(oktaClientAssertionTTL)
 		claims := jwt.RegisteredClaims{
 			Audience:  jwt.ClaimStrings{p.URL + "/oauth2/v1/token"},
 			ExpiresAt: jwt.NewNumericDate(expires),

@@ -116,10 +116,7 @@ func (s *Service) Run(ctx context.Context) error {
 		return fmt.Errorf("error: %s %s", resp.Error.Code, resp.Error.Message)
 	}
 
-	bo := backoff.Backoff{
-		Min: time.Second,
-		Max: time.Minute,
-	}
+	bo := backoff.Backoff{Min: time.Second, Max: time.Minute}
 	for {
 		innerCtx, cancel := context.WithCancel(ctx)
 		runStartTime := time.Now()

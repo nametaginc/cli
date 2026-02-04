@@ -70,10 +70,7 @@ func newAuthLoginCmd() *cobra.Command {
 				_ = browserOpenURL(url)
 			}
 
-			bo := backoff.Backoff{
-				Min: time.Second,
-				Max: 10 * time.Second,
-			}
+			bo := backoff.Backoff{Min: time.Second, Max: 10 * time.Second}
 			for {
 				url := server + "/api/cli/login/" + base64.RawURLEncoding.EncodeToString(publicKey[:])
 				req, err := http.NewRequestWithContext(cmd.Context(), "GET", url, nil)

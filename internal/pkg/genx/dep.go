@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/samber/lo"
@@ -23,6 +24,9 @@ import (
 	"github.com/nametaginc/cli/internal/pkg/lox"
 	"github.com/nametaginc/cli/internal/pkg/must"
 )
+
+// Regenerate cache files, even if new cache files hash matches existing cache files hash
+var ignoreCached, _ = strconv.ParseBool(os.Getenv("GENX_IGNORE_CACHED"))
 
 // Cached invokes generator, a function that produces outputs from inputGlobs,
 // but only if the inputs and outputs have changed since the last invocation.
@@ -106,6 +110,8 @@ func Cached(
 			// ok
 		} else if err != nil {
 			return err
+		} else if ignoreCached {
+			// build anyway
 		} else if string(cacheContents) == fmt.Sprintf("%x", outputHash.Sum(nil)) {
 			fmt.Printf("generate: cache hit\n")
 			return nil

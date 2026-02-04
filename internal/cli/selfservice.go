@@ -16,6 +16,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/samber/lo"
@@ -82,6 +83,45 @@ func newSelfServicePresignCmd() *cobra.Command {
 			} else {
 				req.Flow = lo.ToPtr(api.RecoveryMicrositeFlow(v))
 			}
+			if v, err := cmd.Flags().GetStringArray("recovery-policy"); err != nil {
+				fmt.Fprintf(cmd.ErrOrStderr(), "cannot read recovery policy: %s\n", err)
+				return err
+			} else if len(v) > 0 {
+				recoveryPolicy := make(map[string]api.RecoveryPolicy, len(v))
+				for _, pair := range v {
+					parts := strings.SplitN(pair, "=", 2)
+					if len(parts) != 2 {
+						return fmt.Errorf("invalid recovery policy %q: expected key=value", pair)
+					}
+					key := parts[0]
+					value := parts[1]
+					if key == "" || value == "" {
+						return fmt.Errorf("invalid recovery policy %q: key and value must be non-empty", pair)
+					}
+					if key != strings.ToLower(key) {
+						return fmt.Errorf("invalid recovery policy %q: key must be lowercase", pair)
+					}
+					if value != strings.ToLower(value) {
+						return fmt.Errorf("invalid recovery policy %q: value must be lowercase", pair)
+					}
+					policy := api.RecoveryPolicy(value)
+					switch policy {
+					case api.RecoveryPolicyNone,
+						api.RecoveryPolicyDisabled,
+						api.RecoveryPolicyWeakNameMatch,
+						api.RecoveryPolicyNameAndBirthDate,
+						api.RecoveryPolicyNameMatch,
+						api.RecoveryPolicyPhoto:
+					default:
+						return fmt.Errorf("invalid recovery policy %q: value %q is not supported", pair, value)
+					}
+					if existing, exists := recoveryPolicy[key]; exists && existing != policy {
+						return fmt.Errorf("invalid recovery policy %q: conflicting value for %q", pair, key)
+					}
+					recoveryPolicy[key] = policy
+				}
+				req.RecoveryPolicy = &recoveryPolicy
+			}
 			if v, err := cmd.Flags().GetDuration("ttl"); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "cannot read ttl: %s\n", err)
 				return err
@@ -115,6 +155,9 @@ func newSelfServicePresignCmd() *cobra.Command {
 	cmd.Flags().String("flow", "",
 		"Which `flow` to use for recovery. If not specified, the default flow 'recover' is used. "+
 			"One of 'recover' or 'enroll'")
+	cmd.Flags().StringArray("recovery-policy", []string{},
+		"Recovery policy rules in the form `operation=policy`. Both must be lowercase. "+
+			"Examples: 'authenticate=name_match', 'password=photo'. Can be specified multiple times.")
 	cmd.Flags().Duration("ttl", 0, "How long the presigned URL should be valid. "+
 		"If not specified, the default of 1 hour is used.")
 	return cmd

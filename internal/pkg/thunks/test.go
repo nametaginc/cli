@@ -19,6 +19,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jpillora/backoff"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -76,5 +77,9 @@ func SetUpTest() {
 			return bcrypt.ErrMismatchedHashAndPassword
 		}
 		return nil
+	}
+
+	Backoff = func(minDuration, maxDuration time.Duration) backoff.Backoff {
+		return normalBackoff(1, 1) // infinitesimally fast backoff
 	}
 }

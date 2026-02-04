@@ -97,7 +97,7 @@ go mod edit -replace github.com/docker/docker=github.com/docker/docker@v27.5.0+i
 go mod tidy
 
 # make sure we can actually build before we commit or push anything
-go tool goreleaser --snapshot --clean
+goreleaser --snapshot --clean
 
 version=$(cat internal/cli/VERSION)
 echo "version: $version"
@@ -118,4 +118,4 @@ git push --tags
 # make a release
 ntsso secret decrypt "$(cat "$source_root/cli/docker.io-password.secret")" |
 	docker login --username nametaginc --password-stdin
-GITHUB_TOKEN=$(gh auth token) go tool goreleaser release --clean
+GITHUB_TOKEN=$(gh auth token) goreleaser release --clean
