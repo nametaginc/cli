@@ -57,6 +57,7 @@ func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfig
 			CanGetPasswordLink:    lo.ToPtr(true),
 			CanRemoveAllMFA:       lo.ToPtr(true),
 			CanUpdateAccountsList: lo.ToPtr(true),
+			Authenticate:          lo.ToPtr(true),
 		},
 		ImmutableID: fmt.Sprintf("urn:agent:authentik:%s", p.URL),
 	}, nil

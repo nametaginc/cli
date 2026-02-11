@@ -342,6 +342,17 @@ const (
 	WebhookEventTypeShare                WebhookEventType = "share"
 )
 
+// Defines values for WorkdayObjectType.
+const (
+	Applicant      WorkdayObjectType = "Applicant"
+	Candidate      WorkdayObjectType = "Candidate"
+	Employee       WorkdayObjectType = "Employee"
+	JobApplication WorkdayObjectType = "JobApplication"
+	PreHire        WorkdayObjectType = "PreHire"
+	Prospect       WorkdayObjectType = "Prospect"
+	Worker         WorkdayObjectType = "Worker"
+)
+
 // Defines values for ListEnvRequestsParamsSort.
 const (
 	LastCreated      ListEnvRequestsParamsSort = "last_created"
@@ -2511,6 +2522,9 @@ type WebhookDefinition struct {
 
 	// AuthorizationHeader The value of the Authorization header to include in the webhook request.
 	AuthorizationHeader *string `json:"authorization_header,omitempty"`
+
+	// Internal If true, this webhook is managed by the system and should not be shown in the console.
+	Internal *bool `json:"internal,omitempty"`
 }
 
 // WebhookDefinitionUpdate defines model for WebhookDefinitionUpdate.
@@ -2531,6 +2545,170 @@ type WebhookEventType string
 type WebhookHeader struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
+}
+
+// WorkdayIDVRequestRequest defines model for WorkdayIDVRequestRequest.
+type WorkdayIDVRequestRequest struct {
+	// IntegrationID Nametag's Workday Integration ID.
+	IntegrationID string `json:"integration_id"`
+
+	// WorkdayObjectType The type of Workday Business Object (e.g., Worker/Employee, Applicant/PreHire, Candidate/Prospect, or JobApplication).
+	WorkdayObjectType WorkdayObjectType `json:"workday_object_type"`
+
+	// WorkdayObjectID The Workday ID (WID) of the target Workday object of type specified in workday_object_type.
+	WorkdayObjectID string `json:"workday_object_id"`
+
+	// CandidateIDForJobApplication The ID of the Candidate associated with the Job Application. This is accepted only if workday_object_type is JobApplication.
+	CandidateIDForJobApplication string `json:"candidate_id_for_job_application,omitempty"`
+
+	// ClaimsToCompare A comma-separated list of claims to compare against asserted values already in Workday (e.g., "name,address").
+	ClaimsToCompare string `json:"claims_to_compare,omitempty"`
+
+	// Claims A comma-separated list of claims to collect from the end user (e.g., "name,address").
+	Claims string `json:"claims,omitempty"`
+
+	// Phone The phone number to which the request link should be sent.
+	Phone string `json:"phone,omitempty"`
+
+	// Whatsapp The WhatsApp phone number to which the request link should be sent.
+	Whatsapp string `json:"whatsapp,omitempty"`
+
+	// Label An internal label for this request. Nametag stores this field, but does not process it.
+	Label string `json:"label,omitempty"`
+
+	// Template The name of a template that customizes how the request is presented to the user.
+	//
+	// Because a template contains its own claim definitions, you can provide either `claims` or `template`; providing both results in an amalgamation of the two.
+	Template string `json:"template,omitempty"`
+}
+
+// WorkdayIDVRequestResponse defines model for WorkdayIDVRequestResponse.
+type WorkdayIDVRequestResponse struct {
+	// ID A unique identifier for the request
+	ID string `json:"id"`
+
+	// IntegrationID Nametag's Workday Integration ID.
+	IntegrationID string               `json:"integration_id"`
+	Status        NumericRequestStatus `json:"status"`
+
+	// WorkdayObjectType The type of Workday Business Object (e.g., Worker/Employee, Applicant/PreHire, Candidate/Prospect, or JobApplication).
+	WorkdayObjectType WorkdayObjectType `json:"workday_object_type"`
+
+	// EnvID The ID of the environment associated with the request.
+	EnvID string `json:"env"`
+
+	// WorkdayObjectID The Workday ID (WID) of the target Workday object of type specified in workday_object_type.
+	WorkdayObjectID string `json:"workday_object_id"`
+
+	// CandidateIDForJobApplication The ID of the Candidate associated with the Job Application. This is accepted only if workday_object_type is JobApplication.
+	CandidateIDForJobApplication string `json:"candidate_id_for_job_application,omitempty"`
+
+	// Scopes A list of the information (scopes) that the request is asking for.
+	Scopes []Scope `json:"scopes"`
+
+	// Claims A list of the information (claims) that the request is asking for.
+	Claims []Claim `json:"claims"`
+
+	// ClaimsToCompare A list of claims to compare against asserted values already in Workday.
+	ClaimsToCompare []string `json:"claims_to_compare,omitempty"`
+
+	// Template The name of a template that customizes how the request is presented to the user.
+	Template string `json:"template,omitempty"`
+
+	// Whatsapp The WhatsApp phone number to which the request link was sent.
+	Whatsapp string `json:"whatsapp,omitempty"`
+
+	// Link An authorization link. Passing this link to the user will prompt them to complete the request.
+	Link string `json:"link"`
+
+	// Phone The phone number to which the request link was sent, in E.164 format.
+	Phone string `json:"phone,omitempty"`
+
+	// Label An internal label for this request. You can use this field to help you track the
+	// request in your own systems. Nametag stores this field, but does not process it at all.
+	Label string `json:"label,omitempty"`
+
+	// ExpiresAt The last time this request will be valid. After this time, the request is expired
+	// and the user will no longer be able to complete it.
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
+}
+
+// WorkdayIntegrationRequest defines model for WorkdayIntegrationRequest.
+type WorkdayIntegrationRequest struct {
+	// Name Friendly name for the Workday integration.
+	Name *string `json:"name,omitempty"`
+
+	// HumanResourcesSOAPBindAddress The SOAP bind address for Workday Public Web Services > Human Resources.
+	HumanResourcesSOAPBindAddress *string `json:"human_resources_soap_bind_address,omitempty"`
+
+	// RecruitingSOAPBindAddress The SOAP bind address for Workday Public Web Services > Recruiting.
+	RecruitingSOAPBindAddress *string `json:"recruiting_soap_bind_address,omitempty"`
+
+	// RESTAPIEndpoint The Workday REST API endpoint.
+	RESTAPIEndpoint *string `json:"rest_api_endpoint,omitempty"`
+
+	// OAuth2TokenEndpoint The OAuth2 token endpoint used for Workday Public Web Services authentication.
+	OAuth2TokenEndpoint *string `json:"oauth2_token_endpoint,omitempty"`
+
+	// OAuth2ClientID The OAuth2 client ID used for Workday Public Web Services authentication.
+	OAuth2ClientID *string `json:"oauth2_client_id,omitempty"`
+
+	// OAuth2ClientSecret The OAuth2 client secret used for Workday Public Web Services authentication.
+	OAuth2ClientSecret *string `json:"oauth2_client_secret,omitempty"`
+
+	// OAuth2NonExpiringRefreshToken The non-expiring refresh token used for Workday Public Web Services authentication.
+	OAuth2NonExpiringRefreshToken *string `json:"oauth2_non_expiring_refresh_token,omitempty"`
+}
+
+// WorkdayIntegrationResponse defines model for WorkdayIntegrationResponse.
+type WorkdayIntegrationResponse struct {
+	// ID Nametag's unique identifier for the Workday integration.
+	ID string `json:"id"`
+
+	// Name Friendly name for the Workday integration.
+	Name string `json:"name"`
+
+	// HumanResourcesSOAPBindAddress The SOAP bind address for Workday Public Web Services > Human Resources.
+	HumanResourcesSOAPBindAddress string `json:"human_resources_soap_bind_address"`
+
+	// RecruitingSOAPBindAddress The SOAP bind address for Workday Public Web Services > Recruiting.
+	RecruitingSOAPBindAddress string `json:"recruiting_soap_bind_address"`
+
+	// RESTAPIEndpoint The Workday REST API endpoint.
+	RESTAPIEndpoint string `json:"rest_api_endpoint"`
+
+	// OAuth2TokenEndpoint The OAuth2 token endpoint used for Workday Public Web Services authentication.
+	OAuth2TokenEndpoint string `json:"oauth2_token_endpoint"`
+
+	// OAuth2ClientID The OAuth2 client ID used for Workday Public Web Services authentication.
+	OAuth2ClientID string `json:"oauth2_client_id"`
+}
+
+// WorkdayIntegrationsListResponse defines model for WorkdayIntegrationsListResponse.
+type WorkdayIntegrationsListResponse struct {
+	// Integrations A list of Workday integrations for this environment
+	Integrations []WorkdayIntegrationResponse `json:"integrations"`
+}
+
+// WorkdayObjectType The type of Workday Business Object (e.g., Worker/Employee, Applicant/PreHire, Candidate/Prospect, or JobApplication).
+type WorkdayObjectType string
+
+// WorkdayRequestData The data structure for an IDV request originating from Workday.
+type WorkdayRequestData struct {
+	// IntegrationID Nametag's Workday Integration ID.
+	IntegrationID string `json:"integration_id"`
+
+	// WorkdayObjectType The type of Workday Business Object (e.g., Worker/Employee, Applicant/PreHire, Candidate/Prospect, or JobApplication).
+	WorkdayObjectType WorkdayObjectType `json:"workday_object_type"`
+
+	// WorkdayObjectID The Workday ID (WID) of the target Workday object of type specified in workday_object_type.
+	WorkdayObjectID string `json:"workday_object_id"`
+
+	// CandidateIDForJobApplication The ID of the Candidate associated with the Job Application. This is accepted only if workday_object_type is JobApplication.
+	CandidateIDForJobApplication string `json:"candidate_id_for_job_application,omitempty"`
+
+	// ClaimsToCompare A comma-separated list of claims to compare against asserted values already in Workday (e.g., "name,address").
+	ClaimsToCompare string `json:"claims_to_compare,omitempty"`
 }
 
 // N400 defines model for 400.
@@ -2869,6 +3047,15 @@ type CreateTemplateJSONRequestBody = CreateTemplateRequest
 // UpdateTemplateJSONRequestBody defines body for UpdateTemplate for application/json ContentType.
 type UpdateTemplateJSONRequestBody = UpdateTemplateRequest
 
+// CreateWorkdayIntegrationJSONRequestBody defines body for CreateWorkdayIntegration for application/json ContentType.
+type CreateWorkdayIntegrationJSONRequestBody = WorkdayIntegrationRequest
+
+// UpdateWorkdayIntegrationJSONRequestBody defines body for UpdateWorkdayIntegration for application/json ContentType.
+type UpdateWorkdayIntegrationJSONRequestBody = WorkdayIntegrationRequest
+
+// CreateWorkdayRequestJSONRequestBody defines body for CreateWorkdayRequest for application/json ContentType.
+type CreateWorkdayRequestJSONRequestBody = WorkdayIDVRequestRequest
+
 // UpdateOrgJSONRequestBody defines body for UpdateOrg for application/json ContentType.
 type UpdateOrgJSONRequestBody = OrgUpdateRequest
 
@@ -3129,8 +3316,32 @@ type ClientInterface interface {
 	// ListWebhooks request
 	ListWebhooks(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListWorkdayIntegrations request
+	ListWorkdayIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWorkdayIntegrationWithBody request with any body
+	CreateWorkdayIntegrationWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWorkdayIntegration(ctx context.Context, env string, body CreateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWorkdayIntegration request
+	DeleteWorkdayIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWorkdayIntegration request
+	GetWorkdayIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWorkdayIntegrationWithBody request with any body
+	UpdateWorkdayIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWorkdayIntegration(ctx context.Context, env string, integration string, body UpdateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetSlackRequestDetails request
 	GetSlackRequestDetails(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWorkdayRequestWithBody request with any body
+	CreateWorkdayRequestWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWorkdayRequest(ctx context.Context, body CreateWorkdayRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetOrg request
 	GetOrg(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3919,8 +4130,116 @@ func (c *Client) ListWebhooks(ctx context.Context, env string, reqEditors ...Req
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListWorkdayIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkdayIntegrationsRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWorkdayIntegrationWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWorkdayIntegrationRequestWithBody(c.Server, env, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWorkdayIntegration(ctx context.Context, env string, body CreateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWorkdayIntegrationRequest(c.Server, env, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWorkdayIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWorkdayIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWorkdayIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWorkdayIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWorkdayIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWorkdayIntegrationRequestWithBody(c.Server, env, integration, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWorkdayIntegration(ctx context.Context, env string, integration string, body UpdateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWorkdayIntegrationRequest(c.Server, env, integration, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetSlackRequestDetails(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetSlackRequestDetailsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWorkdayRequestWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWorkdayRequestRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWorkdayRequest(ctx context.Context, body CreateWorkdayRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWorkdayRequestRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6515,6 +6834,223 @@ func NewListWebhooksRequest(server string, env string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewListWorkdayIntegrationsRequest generates requests for ListWorkdayIntegrations
+func NewListWorkdayIntegrationsRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workday", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWorkdayIntegrationRequest calls the generic CreateWorkdayIntegration builder with application/json body
+func NewCreateWorkdayIntegrationRequest(server string, env string, body CreateWorkdayIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWorkdayIntegrationRequestWithBody(server, env, "application/json", bodyReader)
+}
+
+// NewCreateWorkdayIntegrationRequestWithBody generates requests for CreateWorkdayIntegration with any type of body
+func NewCreateWorkdayIntegrationRequestWithBody(server string, env string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workday", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWorkdayIntegrationRequest generates requests for DeleteWorkdayIntegration
+func NewDeleteWorkdayIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "integration", runtime.ParamLocationPath, integration)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workday/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWorkdayIntegrationRequest generates requests for GetWorkdayIntegration
+func NewGetWorkdayIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "integration", runtime.ParamLocationPath, integration)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workday/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWorkdayIntegrationRequest calls the generic UpdateWorkdayIntegration builder with application/json body
+func NewUpdateWorkdayIntegrationRequest(server string, env string, integration string, body UpdateWorkdayIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWorkdayIntegrationRequestWithBody(server, env, integration, "application/json", bodyReader)
+}
+
+// NewUpdateWorkdayIntegrationRequestWithBody generates requests for UpdateWorkdayIntegration with any type of body
+func NewUpdateWorkdayIntegrationRequestWithBody(server string, env string, integration string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "env", runtime.ParamLocationPath, env)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "integration", runtime.ParamLocationPath, integration)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workday/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetSlackRequestDetailsRequest generates requests for GetSlackRequestDetails
 func NewGetSlackRequestDetailsRequest(server string) (*http.Request, error) {
 	var err error
@@ -6538,6 +7074,46 @@ func NewGetSlackRequestDetailsRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewCreateWorkdayRequestRequest calls the generic CreateWorkdayRequest builder with application/json body
+func NewCreateWorkdayRequestRequest(server string, body CreateWorkdayRequestJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWorkdayRequestRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWorkdayRequestRequestWithBody generates requests for CreateWorkdayRequest with any type of body
+func NewCreateWorkdayRequestRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/integrations/workday/requests")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -8287,8 +8863,32 @@ type ClientWithResponsesInterface interface {
 	// ListWebhooksWithResponse request
 	ListWebhooksWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWebhooksResp, error)
 
+	// ListWorkdayIntegrationsWithResponse request
+	ListWorkdayIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWorkdayIntegrationsResp, error)
+
+	// CreateWorkdayIntegrationWithBodyWithResponse request with any body
+	CreateWorkdayIntegrationWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkdayIntegrationResp, error)
+
+	CreateWorkdayIntegrationWithResponse(ctx context.Context, env string, body CreateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWorkdayIntegrationResp, error)
+
+	// DeleteWorkdayIntegrationWithResponse request
+	DeleteWorkdayIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteWorkdayIntegrationResp, error)
+
+	// GetWorkdayIntegrationWithResponse request
+	GetWorkdayIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetWorkdayIntegrationResp, error)
+
+	// UpdateWorkdayIntegrationWithBodyWithResponse request with any body
+	UpdateWorkdayIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkdayIntegrationResp, error)
+
+	UpdateWorkdayIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkdayIntegrationResp, error)
+
 	// GetSlackRequestDetailsWithResponse request
 	GetSlackRequestDetailsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSlackRequestDetailsResp, error)
+
+	// CreateWorkdayRequestWithBodyWithResponse request with any body
+	CreateWorkdayRequestWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkdayRequestResp, error)
+
+	CreateWorkdayRequestWithResponse(ctx context.Context, body CreateWorkdayRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWorkdayRequestResp, error)
 
 	// GetOrgWithResponse request
 	GetOrgWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrgResp, error)
@@ -9373,6 +9973,120 @@ func (r ListWebhooksResp) StatusCode() int {
 	return 0
 }
 
+type ListWorkdayIntegrationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkdayIntegrationsListResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkdayIntegrationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkdayIntegrationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWorkdayIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkdayIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWorkdayIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWorkdayIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWorkdayIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWorkdayIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWorkdayIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWorkdayIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkdayIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWorkdayIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWorkdayIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWorkdayIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkdayIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWorkdayIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWorkdayIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetSlackRequestDetailsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9390,6 +10104,29 @@ func (r GetSlackRequestDetailsResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetSlackRequestDetailsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWorkdayRequestResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *WorkdayIDVRequestResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWorkdayRequestResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWorkdayRequestResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -10440,6 +11177,67 @@ func (c *ClientWithResponses) ListWebhooksWithResponse(ctx context.Context, env 
 	return ParseListWebhooksResp(rsp)
 }
 
+// ListWorkdayIntegrationsWithResponse request returning *ListWorkdayIntegrationsResp
+func (c *ClientWithResponses) ListWorkdayIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWorkdayIntegrationsResp, error) {
+	rsp, err := c.ListWorkdayIntegrations(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkdayIntegrationsResp(rsp)
+}
+
+// CreateWorkdayIntegrationWithBodyWithResponse request with arbitrary body returning *CreateWorkdayIntegrationResp
+func (c *ClientWithResponses) CreateWorkdayIntegrationWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkdayIntegrationResp, error) {
+	rsp, err := c.CreateWorkdayIntegrationWithBody(ctx, env, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWorkdayIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateWorkdayIntegrationWithResponse(ctx context.Context, env string, body CreateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWorkdayIntegrationResp, error) {
+	rsp, err := c.CreateWorkdayIntegration(ctx, env, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWorkdayIntegrationResp(rsp)
+}
+
+// DeleteWorkdayIntegrationWithResponse request returning *DeleteWorkdayIntegrationResp
+func (c *ClientWithResponses) DeleteWorkdayIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteWorkdayIntegrationResp, error) {
+	rsp, err := c.DeleteWorkdayIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWorkdayIntegrationResp(rsp)
+}
+
+// GetWorkdayIntegrationWithResponse request returning *GetWorkdayIntegrationResp
+func (c *ClientWithResponses) GetWorkdayIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetWorkdayIntegrationResp, error) {
+	rsp, err := c.GetWorkdayIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWorkdayIntegrationResp(rsp)
+}
+
+// UpdateWorkdayIntegrationWithBodyWithResponse request with arbitrary body returning *UpdateWorkdayIntegrationResp
+func (c *ClientWithResponses) UpdateWorkdayIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkdayIntegrationResp, error) {
+	rsp, err := c.UpdateWorkdayIntegrationWithBody(ctx, env, integration, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWorkdayIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWorkdayIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateWorkdayIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkdayIntegrationResp, error) {
+	rsp, err := c.UpdateWorkdayIntegration(ctx, env, integration, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWorkdayIntegrationResp(rsp)
+}
+
 // GetSlackRequestDetailsWithResponse request returning *GetSlackRequestDetailsResp
 func (c *ClientWithResponses) GetSlackRequestDetailsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSlackRequestDetailsResp, error) {
 	rsp, err := c.GetSlackRequestDetails(ctx, reqEditors...)
@@ -10447,6 +11245,23 @@ func (c *ClientWithResponses) GetSlackRequestDetailsWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseGetSlackRequestDetailsResp(rsp)
+}
+
+// CreateWorkdayRequestWithBodyWithResponse request with arbitrary body returning *CreateWorkdayRequestResp
+func (c *ClientWithResponses) CreateWorkdayRequestWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkdayRequestResp, error) {
+	rsp, err := c.CreateWorkdayRequestWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWorkdayRequestResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateWorkdayRequestWithResponse(ctx context.Context, body CreateWorkdayRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWorkdayRequestResp, error) {
+	rsp, err := c.CreateWorkdayRequest(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWorkdayRequestResp(rsp)
 }
 
 // GetOrgWithResponse request returning *GetOrgResp
@@ -12043,6 +12858,164 @@ func ParseListWebhooksResp(rsp *http.Response) (*ListWebhooksResp, error) {
 	return response, nil
 }
 
+// ParseListWorkdayIntegrationsResp parses an HTTP response from a ListWorkdayIntegrationsWithResponse call
+func ParseListWorkdayIntegrationsResp(rsp *http.Response) (*ListWorkdayIntegrationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkdayIntegrationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkdayIntegrationsListResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWorkdayIntegrationResp parses an HTTP response from a CreateWorkdayIntegrationWithResponse call
+func ParseCreateWorkdayIntegrationResp(rsp *http.Response) (*CreateWorkdayIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWorkdayIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkdayIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWorkdayIntegrationResp parses an HTTP response from a DeleteWorkdayIntegrationWithResponse call
+func ParseDeleteWorkdayIntegrationResp(rsp *http.Response) (*DeleteWorkdayIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWorkdayIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWorkdayIntegrationResp parses an HTTP response from a GetWorkdayIntegrationWithResponse call
+func ParseGetWorkdayIntegrationResp(rsp *http.Response) (*GetWorkdayIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWorkdayIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkdayIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWorkdayIntegrationResp parses an HTTP response from a UpdateWorkdayIntegrationWithResponse call
+func ParseUpdateWorkdayIntegrationResp(rsp *http.Response) (*UpdateWorkdayIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWorkdayIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkdayIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetSlackRequestDetailsResp parses an HTTP response from a GetSlackRequestDetailsWithResponse call
 func ParseGetSlackRequestDetailsResp(rsp *http.Response) (*GetSlackRequestDetailsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12063,6 +13036,39 @@ func ParseGetSlackRequestDetailsResp(rsp *http.Response) (*GetSlackRequestDetail
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWorkdayRequestResp parses an HTTP response from a CreateWorkdayRequestWithResponse call
+func ParseCreateWorkdayRequestResp(rsp *http.Response) (*CreateWorkdayRequestResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWorkdayRequestResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest WorkdayIDVRequestResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest N400

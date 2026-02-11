@@ -42,7 +42,7 @@ To authenticate, you must specify an agent token. To get a token, use
 'nametag directory agent register'.
 This command connects to Nametag and relays requests and responses between the server 
 and an agent worker process that it manages.  The worker is specified by the --command flag.
-Nametag comes with several built-in workers, such as Authentik, Okta, LDAP, and ActiveDirectory, which are implemented 
+Nametag comes with several built-in workers, such as Okta, LDAP, Authentik and ActiveDirectory, which are implemented
 as subcommands of this command.
     nametag directory agent --agent-token <token> --command "nametag directory agent okta --okta-url https://example.okta.com --okta-token 1234567890"
 For convenience, the built-in workers can be invoked directly. For example, the following 

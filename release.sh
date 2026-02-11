@@ -10,6 +10,19 @@
 
 set -e -o pipefail
 
+check_only=false
+for arg in "$@"; do
+	case "$arg" in
+		--check)
+			check_only=true
+			;;
+		*)
+			echo "unknown argument: $arg"
+			exit 1
+			;;
+	esac
+done
+
 # This script copies the CLI from github.com/nametaginc/nt/cli to github.com/nametaginc/cli
 # which is where we publish the source.
 #
@@ -19,30 +32,32 @@ set -e -o pipefail
 # TODO: It would be a lot better if we could have more meaningful commit messages etc.
 #   but that is a problem for another day. Sorry.
 
-# Checks push permissions for the required repositories
-GITHUB_TOKEN=$(gh auth token)
-if [ -z "$GITHUB_TOKEN" ]; then
-	echo "GITHUB_TOKEN is not set"
-	exit 1
-fi
-
-REPOS=("nametaginc/cli" "nametaginc/homebrew-tap")
-
-for repo in "${REPOS[@]}"; do
-	echo "Checking push permission for $repo..."
-	response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-		"https://api.github.com/repos/$repo")
-
-	# Check push permission
-	has_push=$(echo "$response" | jq -r '.permissions.push')
-
-	if [ "$has_push" == "true" ]; then
-		echo "  ✅ User has push access to $repo"
-	else
-		echo "  ❌ User does not have push access to $repo"
+if [ "$check_only" = false ]; then
+	# Checks push permissions for the required repositories
+	GITHUB_TOKEN=$(gh auth token)
+	if [ -z "$GITHUB_TOKEN" ]; then
+		echo "GITHUB_TOKEN is not set"
 		exit 1
 	fi
-done
+
+	REPOS=("nametaginc/cli" "nametaginc/homebrew-tap")
+
+	for repo in "${REPOS[@]}"; do
+		echo "Checking push permission for $repo..."
+		response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+			"https://api.github.com/repos/$repo")
+
+		# Check push permission
+		has_push=$(echo "$response" | jq -r '.permissions.push')
+
+		if [ "$has_push" == "true" ]; then
+			echo "  ✅ User has push access to $repo"
+		else
+			echo "  ❌ User does not have push access to $repo"
+			exit 1
+		fi
+	done
+fi
 
 source_root=$(git rev-parse --show-toplevel)
 dir=$(mktemp -d)
@@ -52,19 +67,15 @@ git clone --bare git@github.com:nametaginc/cli "$dir/.git"
 cp -r "$source_root/cli/" "$dir"
 mkdir -p "$dir/internal/pkg/jsonx"
 cp -r "$source_root/pkg/jsonx/duration.go" "$dir/internal/pkg/jsonx/duration.go"
-cp -r "$source_root/pkg/genx" "$dir/internal/pkg/genx"
-cp -r "$source_root/pkg/lox" "$dir/internal/pkg/lox"
-cp -r "$source_root/pkg/must" "$dir/internal/pkg/must"
-cp -r "$source_root/pkg/thunks" "$dir/internal/pkg/thunks"
 cp "$source_root"/go.{mod,sum} "$dir"
 
 cd "$dir"
 git config core.bare false
 
-# builds internal/api/api.gen.go from the OpenAPI spec, but
-# depends on the internal mechanics of generating and validating
-# the spec.
+# builds internal/api/api.gen.go and diragentapi/api.gen.go from OpenAPI specs,
+# but depends on the internal mechanics of generating and validating the specs.
 rm internal/api/generate.go
+rm diragentapi/generate.go
 
 # utility for managing VERSION. Not a secret or anything but there is
 # no reason to have github.com/Masterminds/semver in our go.mod
@@ -91,13 +102,20 @@ find . -name \*.bak -exec rm {} \;
 cat go.mod |
 	sed 's|nametaginc/nt|nametaginc/cli|g' |
 	grep -v -e 'github.com/bas-d/appattest' |
+	grep -v -e 'github.com/nametaginc/cli/hack/cachemate' |
+	grep -v -e 'github.com/nametaginc/cli/hack/check' |
+	grep -v -e 'github.com/nametaginc/cli/sso/cmd' |
 	cat >go.mod~
 mv go.mod~ go.mod
-go mod edit -replace github.com/docker/docker=github.com/docker/docker@v27.5.0+incompatible
 go mod tidy
 
 # make sure we can actually build before we commit or push anything
-goreleaser --snapshot --clean
+go tool goreleaser --snapshot --clean
+
+if [ "$check_only" = true ]; then
+	echo "check: snapshot build ok"
+	exit 0
+fi
 
 version=$(cat internal/cli/VERSION)
 echo "version: $version"
@@ -118,4 +136,4 @@ git push --tags
 # make a release
 ntsso secret decrypt "$(cat "$source_root/cli/docker.io-password.secret")" |
 	docker login --username nametaginc --password-stdin
-GITHUB_TOKEN=$(gh auth token) goreleaser release --clean
+GITHUB_TOKEN=$(gh auth token) go tool goreleaser release --clean
