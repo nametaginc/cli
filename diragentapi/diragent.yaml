@@ -183,20 +183,27 @@ components:
             Indicates whether the agent can generate a bypass code that the user can
             use to sign in in place of their MFA device. Typically after using a
             bypass code the user will be able to enroll a replacement MFA device.
+        can_get_mfa_link:
+          type: boolean
+          x-go-name: CanGetMFALink
+          x-order: 6
+          description: >
+            Indicates whether the agent can generate a pre-authenticated link that
+            leads the user to a site where they can reset MFA.
         can_unlock:
           type: boolean
-          x-order: 6
+          x-order: 7
           description: >
             Indicates whether the agent can unlock an account that has been locked
             due to too many failed login attempts.
         can_get_temporary_access_pass:
           type: boolean
-          x-order: 7
+          x-order: 8
           description: >
             Indicates whether the agent can generate a temporary code that the user will use to log in temporarily without revoking their existing password or resetting any MFA devices.
         can_update_accounts_list:
           type: boolean
-          x-order: 8
+          x-order: 9
           description: >
             Indicates whether the directory service supports tracking the last
             modification time of the account list. If supported, the server may
@@ -205,7 +212,7 @@ components:
         can_authenticate:
           type: boolean
           x-go-name: Authenticate
-          x-order: 9
+          x-order: 10
           description: >
             Indicates whether the agent supports authenticating an account.
     DirAgentListAccountsRequest:
@@ -460,6 +467,7 @@ components:
       enum:
         - get_temporary_password
         - get_password_link
+        - get_mfa_link
         - remove_all_mfa
         - get_mfa_bypass_code
         - unlock
@@ -467,6 +475,7 @@ components:
       x-enum-varnames:
         - GetTemporaryPassword
         - GetPasswordLink
+        - GetMFALink
         - RemoveAllMFA
         - GetMFABypassCode
         - Unlock
@@ -474,6 +483,7 @@ components:
       x-enum-descriptions:
         - "Generate a temporary password for the account."
         - "Generate a pre-authenticated link that leads the user to a site where they can enter a new password."
+        - "Generate a pre-authenticated link that leads the user to a site where they can reset MFA."
         - "Remove all MFA factors from the account to permit a user to re-enroll in MFA."
         - "Generate a bypass code that the user can use to sign in in place of their MFA device."
         - "Unlock the account that has been locked due to too many failed login attempts."
@@ -501,3 +511,9 @@ components:
             If the operation was *get_mfa_bypass_code*, this field should contain
             the bypass code that the user can use to sign in in place of their MFA
             device.
+        mfa_reset_link:
+          type: string
+          x-order: 4
+          description: >
+            If the operation was *get_mfa_link*, this field should contain
+            a pre-authenticated link that the user can use to reset MFA.

@@ -40,9 +40,15 @@ const (
 
 // Provider represents the configuration details required to connect to Authentik.
 type Provider struct {
-	URL        string
-	Token      string
-	HTTPClient *http.Client
+	URL                string
+	Token              string
+	HTTPClient         *http.Client
+	Path               string
+	GroupsByName       []string
+	Types              []string
+	NameAttribute      string
+	BirthDateAttribute string
+	MFAResetFlowUUID   string
 }
 
 // Configure returns static information about the integration.
@@ -50,12 +56,13 @@ func (p *Provider) Configure(ctx context.Context, req diragentapi.DirAgentConfig
 	if err := p.validate(); err != nil {
 		return nil, err
 	}
+	canGetMFALink := strings.TrimSpace(p.MFAResetFlowUUID) != ""
 
 	return &diragentapi.DirAgentConfigureResponse{
 		Traits: diragentapi.DirAgentTraits{
 			Name:                  p.displayName(),
 			CanGetPasswordLink:    lo.ToPtr(true),
-			CanRemoveAllMFA:       lo.ToPtr(true),
+			CanGetMFALink:         lo.ToPtr(canGetMFALink),
 			CanUpdateAccountsList: lo.ToPtr(true),
 			Authenticate:          lo.ToPtr(true),
 		},
@@ -74,6 +81,12 @@ func (p *Provider) validate() error {
 		return directory.CodedError{
 			Code:    diragentapi.ConfigurationError,
 			Message: "authentik token is required",
+		}
+	}
+	if _, err := normalizedUserTypes(p.Types); err != nil {
+		return directory.CodedError{
+			Code:    diragentapi.ConfigurationError,
+			Message: err.Error(),
 		}
 	}
 	_, err := p.apiBaseURL()
@@ -103,6 +116,27 @@ func (p *Provider) apiBaseURL() (*url.URL, error) {
 	if !strings.HasSuffix(path, "/api/v3") {
 		path += "/api/v3"
 	}
+	base.Path = path + "/"
+	base.RawQuery = ""
+	base.Fragment = ""
+	return base, nil
+}
+
+func (p *Provider) appBaseURL() (*url.URL, error) {
+	if strings.TrimSpace(p.URL) == "" {
+		return nil, fmt.Errorf("authentik URL is required")
+	}
+
+	base, err := url.Parse(p.URL)
+	if err != nil {
+		return nil, fmt.Errorf("invalid authentik URL: %w", err)
+	}
+	if base.Scheme == "" || base.Host == "" {
+		return nil, fmt.Errorf("invalid authentik URL: %s", p.URL)
+	}
+
+	path := strings.TrimSuffix(base.Path, "/")
+	path = strings.TrimSuffix(path, "/api/v3")
 	base.Path = path + "/"
 	base.RawQuery = ""
 	base.Fragment = ""

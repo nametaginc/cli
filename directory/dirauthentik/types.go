@@ -14,6 +14,8 @@
 
 package dirauthentik
 
+import "time"
+
 type pagination struct {
 	Next       *int `json:"next"`
 	Previous   *int `json:"previous"`
@@ -30,14 +32,15 @@ type apiGroup struct {
 }
 
 type apiUser struct {
-	PK          int        `json:"pk"`
-	UUID        string     `json:"uuid"`
-	Username    string     `json:"username"`
-	Name        string     `json:"name"`
-	Email       string     `json:"email"`
-	UID         string     `json:"uid"`
-	LastUpdated string     `json:"last_updated"`
-	GroupsObj   []apiGroup `json:"groups_obj"`
+	PK          int            `json:"pk"`
+	UUID        string         `json:"uuid"`
+	Username    string         `json:"username"`
+	Name        string         `json:"name"`
+	Attributes  map[string]any `json:"attributes"`
+	Email       string         `json:"email"`
+	UID         string         `json:"uid"`
+	LastUpdated string         `json:"last_updated"`
+	GroupsObj   []apiGroup     `json:"groups_obj"`
 }
 
 type apiDevice struct {
@@ -58,4 +61,21 @@ type groupListResponse struct {
 
 type linkResponse struct {
 	Link string `json:"link"`
+}
+
+type invitationRequest struct {
+	Name      string         `json:"name"`
+	Expires   time.Time      `json:"expires"`
+	FixedData map[string]any `json:"fixed_data,omitempty"`
+	SingleUse bool           `json:"single_use"`
+	Flow      string         `json:"flow,omitempty"`
+}
+
+type invitationFlow struct {
+	Slug string `json:"slug"`
+}
+
+type invitationResponse struct {
+	PK      string         `json:"pk"`
+	FlowObj invitationFlow `json:"flow_obj"`
 }

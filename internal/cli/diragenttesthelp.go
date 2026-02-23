@@ -54,6 +54,7 @@ func main() {
 			resp.Configure = &diragentapi.DirAgentConfigureResponse{
 				Traits: diragentapi.DirAgentTraits{
 					CanGetMFABypassCode:   lo.ToPtr(true),
+					CanGetMFALink:         lo.ToPtr(true),
 					CanGetPasswordLink:    lo.ToPtr(true),
 					CanRemoveAllMFA:       lo.ToPtr(true),
 					CanUnlock:             lo.ToPtr(true),

@@ -109,10 +109,11 @@ func (p *Provider) accountFromUser(user apiUser) diragentapi.DirAgentAccount {
 	}
 
 	account := diragentapi.DirAgentAccount{
-		ImmutableID: userImmutableID(user),
-		IDs:         userExternalIDs(user),
-		Name:        userDisplayName(user),
-		UpdatedAt:   parseAPITime(user.LastUpdated),
+		ImmutableID: p.userImmutableID(user),
+		IDs:         p.userExternalIDs(user),
+		Name:        p.userDisplayName(user),
+		BirthDate:   p.userBirthDate(user),
+		UpdatedAt:   p.parseAPITime(user.LastUpdated),
 	}
 	account.Groups = &groups
 	return account

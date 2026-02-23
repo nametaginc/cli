@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/nametaginc/cli/diragentapi"
+	"github.com/nametaginc/cli/directory"
 )
 
 // ListAccounts returns a partial list of accounts. Callers should use Cursor to page
@@ -46,6 +47,12 @@ func (p *Provider) ListAccounts(ctx context.Context, req diragentapi.DirAgentLis
 	if req.UpdatedAfter != nil {
 		query.Set("last_updated__gt", req.UpdatedAfter.UTC().Format(time.RFC3339Nano))
 	}
+	if err := p.applyUserListFilters(query); err != nil {
+		return nil, directory.CodedError{
+			Code:    diragentapi.ConfigurationError,
+			Message: err.Error(),
+		}
+	}
 
 	var resp userListResponse
 	if err := p.doJSON(ctx, http.MethodGet, "core/users/", query, nil, &resp); err != nil {
@@ -54,15 +61,16 @@ func (p *Provider) ListAccounts(ctx context.Context, req diragentapi.DirAgentLis
 
 	accounts := make([]diragentapi.DirAgentAccount, 0, len(resp.Results))
 	for _, user := range resp.Results {
-		immutableID := userImmutableID(user)
+		immutableID := p.userImmutableID(user)
 		if immutableID == "" {
 			continue
 		}
-		updatedAt := parseAPITime(user.LastUpdated)
+		updatedAt := p.parseAPITime(user.LastUpdated)
 		account := diragentapi.DirAgentAccount{
 			ImmutableID: immutableID,
-			IDs:         userExternalIDs(user),
-			Name:        userDisplayName(user),
+			IDs:         p.userExternalIDs(user),
+			Name:        p.userDisplayName(user),
+			BirthDate:   p.userBirthDate(user),
 			UpdatedAt:   updatedAt,
 		}
 		accounts = append(accounts, account)

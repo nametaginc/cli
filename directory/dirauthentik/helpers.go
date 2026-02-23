@@ -15,6 +15,7 @@
 package dirauthentik
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
@@ -51,6 +52,10 @@ func parseAPITime(value string) *time.Time {
 	return nil
 }
 
+func (p *Provider) parseAPITime(value string) *time.Time {
+	return parseAPITime(value)
+}
+
 func userImmutableID(user apiUser) string {
 	if user.UUID != "" {
 		return user.UUID
@@ -61,7 +66,15 @@ func userImmutableID(user apiUser) string {
 	return ""
 }
 
-func userDisplayName(user apiUser) string {
+func (p *Provider) userImmutableID(user apiUser) string {
+	return userImmutableID(user)
+}
+
+func (p *Provider) userDisplayName(user apiUser) string {
+	if name, ok := userAttributeValue(user, p.NameAttribute); ok {
+		return name
+	}
+
 	if user.Name != "" {
 		return user.Name
 	}
@@ -71,7 +84,34 @@ func userDisplayName(user apiUser) string {
 	if user.Email != "" {
 		return user.Email
 	}
-	return userImmutableID(user)
+	return p.userImmutableID(user)
+}
+
+func (p *Provider) userBirthDate(user apiUser) *string {
+	if birthDate, ok := userAttributeValue(user, p.BirthDateAttribute); ok {
+		return &birthDate
+	}
+	return nil
+}
+
+func userAttributeValue(user apiUser, key string) (string, bool) {
+	attributeKey := strings.TrimSpace(key)
+	if attributeKey == "" || user.Attributes == nil {
+		return "", false
+	}
+	value, ok := user.Attributes[attributeKey]
+	if !ok {
+		return "", false
+	}
+	stringValue, ok := value.(string)
+	if !ok {
+		return "", false
+	}
+	trimmed := strings.TrimSpace(stringValue)
+	if trimmed == "" {
+		return "", false
+	}
+	return trimmed, true
 }
 
 func appendUnique(values []string, entry string) []string {
@@ -99,10 +139,68 @@ func userExternalIDs(user apiUser) []string {
 	return ids
 }
 
+func (p *Provider) userExternalIDs(user apiUser) []string {
+	return userExternalIDs(user)
+}
+
 func isNumeric(value string) bool {
 	if value == "" {
 		return false
 	}
 	_, err := strconv.Atoi(value)
 	return err == nil
+}
+
+func (p *Provider) applyUserListFilters(query url.Values) error {
+	path := strings.TrimSpace(p.Path)
+	if path != "" {
+		query.Set("path", path)
+	}
+
+	for _, group := range normalizedStringSet(p.GroupsByName) {
+		query.Add("groups_by_name", group)
+	}
+
+	types, err := normalizedUserTypes(p.Types)
+	if err != nil {
+		return err
+	}
+	for _, userType := range types {
+		query.Add("type", userType)
+	}
+	return nil
+}
+
+func normalizedStringSet(values []string) []string {
+	normalized := make([]string, 0, len(values))
+	for _, value := range values {
+		trimmed := strings.TrimSpace(value)
+		if trimmed == "" {
+			continue
+		}
+		normalized = appendUnique(normalized, trimmed)
+	}
+	return normalized
+}
+
+func normalizedUserTypes(values []string) ([]string, error) {
+	normalized := make([]string, 0, len(values))
+	for _, value := range values {
+		trimmed := strings.ToLower(strings.TrimSpace(value))
+		if trimmed == "" {
+			continue
+		}
+		if _, ok := allowedUserTypes[trimmed]; !ok {
+			return nil, fmt.Errorf("invalid authentik user type filter %q", value)
+		}
+		normalized = appendUnique(normalized, trimmed)
+	}
+	return normalized, nil
+}
+
+var allowedUserTypes = map[string]struct{}{
+	"external":                 {},
+	"internal":                 {},
+	"internal_service_account": {},
+	"service_account":          {},
 }

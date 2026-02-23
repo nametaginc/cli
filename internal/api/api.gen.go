@@ -1163,6 +1163,9 @@ type Directory struct {
 	// CanGetMFABypassCode true if the directory supports generating an MFA bypass code
 	CanGetMFABypassCode *bool `json:"can_get_mfa_bypass_code,omitempty"`
 
+	// CanGetMFALink true if the directory supports issuing a pre-authenticated MFA reset link
+	CanGetMFALink *bool `json:"can_get_mfa_link,omitempty"`
+
 	// CanGetPasswordLink true if the directory supports issuing a pre-authenticated password reset link
 	CanGetPasswordLink *bool `json:"can_get_password_link,omitempty"`
 

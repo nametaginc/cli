@@ -17,6 +17,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/kballard/go-shellquote"
 	"github.com/spf13/cobra"
@@ -64,6 +65,30 @@ the worker and the agent roles. For example, the following is equivalent to the 
 			if token == "" {
 				return fmt.Errorf("flag authentik-token or environment variable $AUTHENTIK_TOKEN is required")
 			}
+			path, err := cmd.Flags().GetString("authentik-users-path")
+			if err != nil {
+				return err
+			}
+			groupsByName, err := cmd.Flags().GetStringSlice("authentik-users-groups-by-name")
+			if err != nil {
+				return err
+			}
+			types, err := cmd.Flags().GetStringSlice("authentik-users-type")
+			if err != nil {
+				return err
+			}
+			nameAttribute, err := cmd.Flags().GetString("authentik-users-name-attribute")
+			if err != nil {
+				return err
+			}
+			birthDateAttribute, err := cmd.Flags().GetString("authentik-users-birth-date-attribute")
+			if err != nil {
+				return err
+			}
+			mfaResetFlowUUID, err := cmd.Flags().GetString("authentik-mfa-reset-flow-uuid")
+			if err != nil {
+				return err
+			}
 
 			// we are not the worker, we are called as a top-level command, so run the agent,
 			// passing the current command line as the command to run.
@@ -86,8 +111,14 @@ the worker and the agent roles. For example, the following is equivalent to the 
 			}
 
 			provider := dirauthentik.Provider{
-				URL:   url,
-				Token: token,
+				URL:                url,
+				Token:              token,
+				Path:               path,
+				GroupsByName:       groupsByName,
+				Types:              types,
+				NameAttribute:      nameAttribute,
+				BirthDateAttribute: birthDateAttribute,
+				MFAResetFlowUUID:   mfaResetFlowUUID,
 			}
 			return diragent.RunWorker(cmd.Context(), &provider)
 		},
@@ -95,5 +126,46 @@ the worker and the agent roles. For example, the following is equivalent to the 
 	cmd.Flags().String("agent-token", os.Getenv("NAMETAG_AGENT_TOKEN"), "Nametag directory agent authentication token ($NAMETAG_AGENT_TOKEN)")
 	cmd.Flags().String("authentik-url", os.Getenv("AUTHENTIK_URL"), "Your Authentik URL ($AUTHENTIK_URL)")
 	cmd.Flags().String("authentik-token", os.Getenv("AUTHENTIK_TOKEN"), "Your Authentik API token ($AUTHENTIK_TOKEN)")
+	cmd.Flags().String(
+		"authentik-mfa-reset-flow-uuid",
+		os.Getenv("AUTHENTIK_MFA_RESET_FLOW_UUID"),
+		"Authentik flow UUID used to issue MFA reset links ($AUTHENTIK_MFA_RESET_FLOW_UUID)",
+	)
+	cmd.Flags().String("authentik-users-path", os.Getenv("AUTHENTIK_USERS_PATH"), "Filter synced users by Authentik path ($AUTHENTIK_USERS_PATH)")
+	cmd.Flags().StringSlice(
+		"authentik-users-groups-by-name",
+		splitCommaSeparatedEnv(os.Getenv("AUTHENTIK_USERS_GROUPS_BY_NAME")),
+		"Filter synced users by Authentik group name (repeat flag or comma-separated, $AUTHENTIK_USERS_GROUPS_BY_NAME)",
+	)
+	cmd.Flags().StringSlice(
+		"authentik-users-type",
+		splitCommaSeparatedEnv(os.Getenv("AUTHENTIK_USERS_TYPE")),
+		"Filter synced users by Authentik type (repeat flag or comma-separated, $AUTHENTIK_USERS_TYPE)",
+	)
+	cmd.Flags().String(
+		"authentik-users-name-attribute",
+		os.Getenv("AUTHENTIK_USERS_NAME_ATTRIBUTE"),
+		"Use the Authentik user attributes key to populate account name ($AUTHENTIK_USERS_NAME_ATTRIBUTE)",
+	)
+	cmd.Flags().String(
+		"authentik-users-birth-date-attribute",
+		os.Getenv("AUTHENTIK_USERS_BIRTH_DATE_ATTRIBUTE"),
+		"Use the Authentik user attributes key to populate account birth date/hash ($AUTHENTIK_USERS_BIRTH_DATE_ATTRIBUTE)",
+	)
 	return cmd
+}
+
+func splitCommaSeparatedEnv(raw string) []string {
+	if strings.TrimSpace(raw) == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
+	values := make([]string, 0, len(parts))
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			values = append(values, trimmed)
+		}
+	}
+	return values
 }

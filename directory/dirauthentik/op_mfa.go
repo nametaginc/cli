@@ -21,10 +21,94 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/nametaginc/cli/diragentapi"
 	"github.com/nametaginc/cli/directory"
 )
+
+func (p *Provider) performOperationGetMFALink(ctx context.Context, req diragentapi.DirAgentPerformOperationRequest) (*diragentapi.DirAgentPerformOperationResponse, error) {
+	flowUUID := strings.TrimSpace(p.MFAResetFlowUUID)
+	if flowUUID == "" {
+		return nil, directory.CodedError{
+			Code:    diragentapi.ConfigurationError,
+			Message: "authentik MFA reset flow UUID is required",
+		}
+	}
+
+	user, err := p.lookupUserByImmutableID(ctx, req.AccountImmutableID)
+	if err != nil {
+		return nil, err
+	}
+	email := strings.TrimSpace(user.Email)
+	if email == "" {
+		return nil, directory.CodedError{
+			Code:    diragentapi.UnsupportedAccountState,
+			Message: "account has no email address",
+		}
+	}
+
+	if req.DryRun != nil && *req.DryRun {
+		return &diragentapi.DirAgentPerformOperationResponse{}, nil
+	}
+
+	payload := invitationRequest{
+		Name:      invitationName(email),
+		Expires:   time.Now().UTC().Add(15 * time.Minute),
+		FixedData: map[string]any{"email": email},
+		SingleUse: true,
+		Flow:      flowUUID,
+	}
+	var invitation invitationResponse
+	if err := p.doJSON(ctx, http.MethodPost, "stages/invitation/invitations/", nil, payload, &invitation); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(invitation.PK) == "" {
+		return nil, fmt.Errorf("authentik: invitation response missing pk")
+	}
+	if strings.TrimSpace(invitation.FlowObj.Slug) == "" {
+		return nil, fmt.Errorf("authentik: invitation response missing flow slug")
+	}
+
+	link, err := p.mfaResetLink(invitation.FlowObj.Slug, invitation.PK)
+	if err != nil {
+		return nil, err
+	}
+	return &diragentapi.DirAgentPerformOperationResponse{
+		MfaResetLink: &link,
+	}, nil
+}
+
+func invitationName(email string) string {
+	prefix := strings.TrimSpace(email)
+	if at := strings.Index(prefix, "@"); at >= 0 {
+		prefix = prefix[:at]
+	}
+	if prefix == "" {
+		prefix = "account"
+	}
+	return prefix + "_mfa_reset"
+}
+
+func (p *Provider) mfaResetLink(flowSlug string, invitationToken string) (string, error) {
+	base, err := p.appBaseURL()
+	if err != nil {
+		return "", err
+	}
+	flowSlug = strings.TrimSpace(flowSlug)
+	invitationToken = strings.TrimSpace(invitationToken)
+	if flowSlug == "" || invitationToken == "" {
+		return "", fmt.Errorf("authentik: invalid MFA reset link response")
+	}
+
+	link := base.ResolveReference(&url.URL{
+		Path: fmt.Sprintf("if/flow/%s/", flowSlug),
+	})
+	q := link.Query()
+	q.Set("itoken", invitationToken)
+	link.RawQuery = q.Encode()
+	return link.String(), nil
+}
 
 func (p *Provider) performOperationRemoveAllMfa(ctx context.Context, req diragentapi.DirAgentPerformOperationRequest) (*diragentapi.DirAgentPerformOperationResponse, error) {
 	user, err := p.lookupUserByImmutableID(ctx, req.AccountImmutableID)

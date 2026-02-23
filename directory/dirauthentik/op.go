@@ -26,6 +26,8 @@ func (p *Provider) PerformOperation(ctx context.Context, req diragentapi.DirAgen
 	switch req.Operation {
 	case diragentapi.GetPasswordLink:
 		return p.performOperationGetPasswordLink(ctx, req)
+	case diragentapi.GetMFALink:
+		return p.performOperationGetMFALink(ctx, req)
 	case diragentapi.RemoveAllMFA:
 		return p.performOperationRemoveAllMfa(ctx, req)
 	default:

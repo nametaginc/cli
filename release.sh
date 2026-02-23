@@ -10,19 +10,6 @@
 
 set -e -o pipefail
 
-check_only=false
-for arg in "$@"; do
-	case "$arg" in
-		--check)
-			check_only=true
-			;;
-		*)
-			echo "unknown argument: $arg"
-			exit 1
-			;;
-	esac
-done
-
 # This script copies the CLI from github.com/nametaginc/nt/cli to github.com/nametaginc/cli
 # which is where we publish the source.
 #
@@ -32,7 +19,18 @@ done
 # TODO: It would be a lot better if we could have more meaningful commit messages etc.
 #   but that is a problem for another day. Sorry.
 
-if [ "$check_only" = false ]; then
+mode="release"
+if [ "${1:-}" == "--ci-build-only" ]; then
+	mode="ci-build-only"
+	shift
+fi
+
+if [ "$#" -ne 0 ]; then
+	echo "Usage: $0 [--ci-build-only]"
+	exit 1
+fi
+
+if [ "$mode" == "release" ]; then
 	# Checks push permissions for the required repositories
 	GITHUB_TOKEN=$(gh auth token)
 	if [ -z "$GITHUB_TOKEN" ]; then
@@ -63,14 +61,21 @@ source_root=$(git rev-parse --show-toplevel)
 dir=$(mktemp -d)
 echo "dir: $dir"
 
-git clone --bare git@github.com:nametaginc/cli "$dir/.git"
-cp -r "$source_root/cli/" "$dir"
+if [ "$mode" == "release" ]; then
+	git clone --bare git@github.com:nametaginc/cli "$dir/.git"
+fi
+cp -r "$source_root/cli/." "$dir"
 mkdir -p "$dir/internal/pkg/jsonx"
 cp -r "$source_root/pkg/jsonx/duration.go" "$dir/internal/pkg/jsonx/duration.go"
 cp "$source_root"/go.{mod,sum} "$dir"
 
 cd "$dir"
-git config core.bare false
+if [ "$mode" == "release" ]; then
+	git config core.bare false
+else
+	git init
+	git checkout -B main
+fi
 
 # builds internal/api/api.gen.go and diragentapi/api.gen.go from OpenAPI specs,
 # but depends on the internal mechanics of generating and validating the specs.
@@ -104,18 +109,21 @@ cat go.mod |
 	grep -v -e 'github.com/bas-d/appattest' |
 	grep -v -e 'github.com/nametaginc/cli/hack/cachemate' |
 	grep -v -e 'github.com/nametaginc/cli/hack/check' |
+	grep -v -e 'github.com/nametaginc/cli/hack/generate' |
 	grep -v -e 'github.com/nametaginc/cli/sso/cmd' |
 	cat >go.mod~
 mv go.mod~ go.mod
 go mod tidy
 
-# make sure we can actually build before we commit or push anything
-go tool goreleaser --snapshot --clean
-
-if [ "$check_only" = true ]; then
-	echo "check: snapshot build ok"
+# make sure we can actually build before we commit or push anything.
+if [ "$mode" == "ci-build-only" ]; then
+	git add -A
+	git -c user.name=nt-ci -c user.email=nt-ci@nametag.local commit -m "prepare ci build workspace"
+	go tool goreleaser build --snapshot --clean
 	exit 0
 fi
+
+go tool goreleaser --snapshot --clean
 
 version=$(cat internal/cli/VERSION)
 echo "version: $version"

@@ -20,6 +20,7 @@ const (
 // Defines values for DirAgentOperation.
 const (
 	GetMFABypassCode       DirAgentOperation = "get_mfa_bypass_code"
+	GetMFALink             DirAgentOperation = "get_mfa_link"
 	GetPasswordLink        DirAgentOperation = "get_password_link"
 	GetTemporaryAccessPass DirAgentOperation = "get_temporary_access_pass"
 	GetTemporaryPassword   DirAgentOperation = "get_temporary_password"
@@ -164,6 +165,9 @@ type DirAgentPerformOperationResponse struct {
 
 	// MfaBypassCode If the operation was *get_mfa_bypass_code*, this field should contain the bypass code that the user can use to sign in in place of their MFA device.
 	MfaBypassCode *string `json:"mfa_bypass_code,omitempty"`
+
+	// MfaResetLink If the operation was *get_mfa_link*, this field should contain a pre-authenticated link that the user can use to reset MFA.
+	MfaResetLink *string `json:"mfa_reset_link,omitempty"`
 }
 
 // DirAgentRequest defines model for DirAgentRequest.
@@ -204,6 +208,9 @@ type DirAgentTraits struct {
 
 	// CanGetMFABypassCode Indicates whether the agent can generate a bypass code that the user can use to sign in in place of their MFA device. Typically after using a bypass code the user will be able to enroll a replacement MFA device.
 	CanGetMFABypassCode *bool `json:"can_get_mfa_bypass_code,omitempty"`
+
+	// CanGetMFALink Indicates whether the agent can generate a pre-authenticated link that leads the user to a site where they can reset MFA.
+	CanGetMFALink *bool `json:"can_get_mfa_link,omitempty"`
 
 	// CanUnlock Indicates whether the agent can unlock an account that has been locked due to too many failed login attempts.
 	CanUnlock *bool `json:"can_unlock,omitempty"`
