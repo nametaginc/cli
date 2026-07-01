@@ -43,6 +43,7 @@ func (p *Provider) ListAccounts(ctx context.Context, req diragentapi.DirAgentLis
 	query := baseUserQuery(false)
 	query.Set("page", strconv.Itoa(page))
 	query.Set("ordering", "last_updated")
+	query.Set("is_active", "true")
 
 	if req.UpdatedAfter != nil {
 		query.Set("last_updated__gt", req.UpdatedAfter.UTC().Format(time.RFC3339Nano))

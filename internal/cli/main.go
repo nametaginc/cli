@@ -68,7 +68,7 @@ func wrapText(s string) string {
 }
 
 func helpWidth() int {
-	fd := int(os.Stdout.Fd())
+	fd := int(os.Stdout.Fd()) //nolint:gosec // standard Go pattern for terminal fd conversion
 	width := 80
 
 	// Get the terminal width and dynamically set

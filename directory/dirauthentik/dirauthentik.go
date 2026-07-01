@@ -43,6 +43,7 @@ type Provider struct {
 	URL                string
 	Token              string
 	HTTPClient         *http.Client
+	ExtraHeaders       http.Header
 	Path               string
 	GroupsByName       []string
 	Types              []string
@@ -203,6 +204,14 @@ func (p *Provider) doJSON(ctx context.Context, method string, path string, query
 	req.Header.Set("Accept", "application/json")
 	if payload != nil {
 		req.Header.Set("Content-Type", "application/json")
+	}
+	for key, values := range p.ExtraHeaders {
+		if len(req.Header.Values(key)) > 0 {
+			continue
+		}
+		for _, value := range values {
+			req.Header.Add(key, value)
+		}
 	}
 
 	resp, err := client.Do(req)

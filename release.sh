@@ -58,6 +58,27 @@ if [ "$mode" == "release" ]; then
 fi
 
 source_root=$(git rev-parse --show-toplevel)
+
+# This export runs in a temporary public repo with no Bazel workspace. If the
+# caller's shell has the repo-local bazel_env Go wrapper first on PATH,
+# `go mod tidy` tries to run `bazel mod tidy` and fails outside the nt
+# workspace. Prefer a non-Bazel Go binary while leaving other bazel_env tools
+# such as goreleaser available.
+go_cmd=""
+while IFS= read -r candidate; do
+	case "$candidate" in
+	"$source_root"/bazel-out/*) continue ;;
+	esac
+	go_cmd="$candidate"
+	break
+done < <(type -P -a go)
+if [ -z "$go_cmd" ]; then
+	echo "ERROR: could not find a non-Bazel go binary on PATH"
+	exit 1
+fi
+PATH="$(dirname "$go_cmd"):$PATH"
+export PATH
+
 dir=$(mktemp -d)
 echo "dir: $dir"
 
@@ -79,8 +100,10 @@ fi
 
 # builds internal/api/api.gen.go and diragentapi/api.gen.go from OpenAPI specs,
 # but depends on the internal mechanics of generating and validating the specs.
-rm internal/api/generate.go
-rm diragentapi/generate.go
+rm -f internal/api/generate.go
+rm -f diragentapi/generate.go
+rm -rf genx
+rm -rf diragentapi/genx
 
 # utility for managing VERSION. Not a secret or anything but there is
 # no reason to have github.com/Masterminds/semver in our go.mod
@@ -91,6 +114,7 @@ rm internal/cli/version_bump.go
 find . -name \*_test.go -type f -exec rm {} \;
 find . -type d -name testdata -print0 | xargs -0 rm -rf
 find . -type d -name recording -print0 | xargs -0 rm -rf
+find . -name BUILD.bazel -type f -exec rm {} \;
 
 # no need to share the docker secret
 rm docker.io-password.secret
@@ -107,10 +131,10 @@ find . -name \*.bak -exec rm {} \;
 cat go.mod |
 	sed 's|nametaginc/nt|nametaginc/cli|g' |
 	grep -v -e 'github.com/bas-d/appattest' |
-	grep -v -e 'github.com/nametaginc/cli/hack/cachemate' |
-	grep -v -e 'github.com/nametaginc/cli/hack/check' |
-	grep -v -e 'github.com/nametaginc/cli/hack/generate' |
-	grep -v -e 'github.com/nametaginc/cli/sso/cmd' |
+	grep -v -e 'github.com/nametaginc/cli/hack/' |
+	grep -v -e 'github.com/nametaginc/cli/pkg/prettier' |
+	grep -v -e 'github.com/nametaginc/cli/pkg/redocly' |
+	grep -v -e 'github.com/nametaginc/cli/sso/' |
 	cat >go.mod~
 mv go.mod~ go.mod
 go mod tidy
@@ -119,11 +143,11 @@ go mod tidy
 if [ "$mode" == "ci-build-only" ]; then
 	git add -A
 	git -c user.name=nt-ci -c user.email=nt-ci@nametag.local commit -m "prepare ci build workspace"
-	go tool goreleaser build --snapshot --clean
+	goreleaser build --snapshot --clean
 	exit 0
 fi
 
-go tool goreleaser --snapshot --clean
+goreleaser --snapshot --clean
 
 version=$(cat internal/cli/VERSION)
 echo "version: $version"
@@ -144,4 +168,4 @@ git push --tags
 # make a release
 ntsso secret decrypt "$(cat "$source_root/cli/docker.io-password.secret")" |
 	docker login --username nametaginc --password-stdin
-GITHUB_TOKEN=$(gh auth token) go tool goreleaser release --clean
+GITHUB_TOKEN=$(gh auth token) goreleaser release --clean

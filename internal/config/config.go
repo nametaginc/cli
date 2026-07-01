@@ -43,9 +43,7 @@ type LDAPConfig struct {
 	DefaultPasswordPolicyDN string `yaml:"defaultPasswordPolicyDN"`
 }
 
-var (
-	cachedConfig *Config
-)
+var cachedConfig *Config
 
 // ReadConfig returns the config from the file system
 func ReadConfig(cmd *cobra.Command) (*Config, error) {
@@ -90,7 +88,7 @@ func GetPath(cmd *cobra.Command) (string, error) {
 		return "", err
 	}
 	configPath := filepath.Join(home, ".config", "nametag", "config.yaml")
-	if err := os.MkdirAll(filepath.Dir(configPath), 0700); err != nil {
+	if err := os.MkdirAll(filepath.Dir(configPath), 0o700); err != nil {
 		return "", err
 	}
 	return configPath, nil

@@ -4,3 +4,4 @@ generate:
   models: true
 output-options:
   response-type-suffix: Resp
+  skip-fmt: true

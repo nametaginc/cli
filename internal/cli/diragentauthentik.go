@@ -89,6 +89,14 @@ the worker and the agent roles. For example, the following is equivalent to the 
 			if err != nil {
 				return err
 			}
+			extraHeaders, err := getDirectoryHTTPHeaders(cmd)
+			if err != nil {
+				return err
+			}
+			env, err := directoryHTTPHeaderWorkerEnv(cmd)
+			if err != nil {
+				return err
+			}
 
 			// we are not the worker, we are called as a top-level command, so run the agent,
 			// passing the current command line as the command to run.
@@ -105,6 +113,7 @@ the worker and the agent roles. For example, the following is equivalent to the 
 					Server:    getServer(cmd),
 					AuthToken: agentToken,
 					Command:   shellquote.Join(os.Args...),
+					Env:       env,
 					Stderr:    cmd.ErrOrStderr(),
 				}
 				return svc.Run(cmd.Context())
@@ -119,6 +128,7 @@ the worker and the agent roles. For example, the following is equivalent to the 
 				NameAttribute:      nameAttribute,
 				BirthDateAttribute: birthDateAttribute,
 				MFAResetFlowUUID:   mfaResetFlowUUID,
+				ExtraHeaders:       extraHeaders,
 			}
 			return diragent.RunWorker(cmd.Context(), &provider)
 		},

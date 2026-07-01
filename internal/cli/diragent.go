@@ -73,16 +73,22 @@ For example:
 			if err != nil {
 				return err
 			}
+			env, err := directoryHTTPHeaderWorkerEnv(cmd)
+			if err != nil {
+				return err
+			}
 
 			svc := diragent.Service{
 				Server:    getServer(cmd),
 				AuthToken: agentToken,
 				Command:   command,
+				Env:       env,
 				Stderr:    cmd.ErrOrStderr(),
 			}
 			return svc.Run(cmd.Context())
 		},
 	}
+	addDirectoryHTTPHeaderFlags(cmd)
 	cmd.Flags().String("agent-token", "", "Nametag directory agent authentication token")
 	cmd.Flags().String("command", "", "Command to run")
 	_ = cmd.MarkFlagRequired("command")
