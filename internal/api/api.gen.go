@@ -67,6 +67,9 @@ const (
 	AuditEventKindAPIKeyUpdated                           AuditEventKind = "apikey_updated"
 	AuditEventKindAccountPhotoUploaded                    AuditEventKind = "account_photo_uploaded"
 	AuditEventKindAccountUpdated                          AuditEventKind = "account_updated"
+	AuditEventKindAshbyIntegrationCreated                 AuditEventKind = "ashby_integration_created"
+	AuditEventKindAshbyIntegrationDeleted                 AuditEventKind = "ashby_integration_deleted"
+	AuditEventKindAshbyIntegrationUpdated                 AuditEventKind = "ashby_integration_updated"
 	AuditEventKindCLISignin                               AuditEventKind = "cli_signin"
 	AuditEventKindConsoleSignin                           AuditEventKind = "console_signin"
 	AuditEventKindConsoleSinginConfigureEmail             AuditEventKind = "console_singin_configure_email"
@@ -112,6 +115,10 @@ const (
 	AuditEventKindPeopleCompare                           AuditEventKind = "people_compare"
 	AuditEventKindPeopleSetPicture                        AuditEventKind = "people_set_picture"
 	AuditEventKindPeopleSetPreferredName                  AuditEventKind = "people_set_preferred_name"
+	AuditEventKindRecruiteeIntegrationCreated             AuditEventKind = "recruitee_integration_created"
+	AuditEventKindRecruiteeIntegrationCredentialsUpdated  AuditEventKind = "recruitee_integration_credentials_updated"
+	AuditEventKindRecruiteeIntegrationDeleted             AuditEventKind = "recruitee_integration_deleted"
+	AuditEventKindRecruiteeIntegrationUpdated             AuditEventKind = "recruitee_integration_updated"
 	AuditEventKindRequestCanceled                         AuditEventKind = "request_canceled"
 	AuditEventKindRequestCreated                          AuditEventKind = "request_created"
 	AuditEventKindRequestUpdated                          AuditEventKind = "request_updated"
@@ -120,6 +127,10 @@ const (
 	AuditEventKindTemplateCreated                         AuditEventKind = "template_created"
 	AuditEventKindTemplateDeleted                         AuditEventKind = "template_deleted"
 	AuditEventKindTemplateUpdated                         AuditEventKind = "template_updated"
+	AuditEventKindWorkableIntegrationCreated              AuditEventKind = "workable_integration_created"
+	AuditEventKindWorkableIntegrationCredentialsUpdated   AuditEventKind = "workable_integration_credentials_updated"
+	AuditEventKindWorkableIntegrationDeleted              AuditEventKind = "workable_integration_deleted"
+	AuditEventKindWorkableIntegrationUpdated              AuditEventKind = "workable_integration_updated"
 )
 
 // Valid indicates whether the value is a known member of the AuditEventKind enum.
@@ -134,6 +145,12 @@ func (e AuditEventKind) Valid() bool {
 	case AuditEventKindAccountPhotoUploaded:
 		return true
 	case AuditEventKindAccountUpdated:
+		return true
+	case AuditEventKindAshbyIntegrationCreated:
+		return true
+	case AuditEventKindAshbyIntegrationDeleted:
+		return true
+	case AuditEventKindAshbyIntegrationUpdated:
 		return true
 	case AuditEventKindCLISignin:
 		return true
@@ -225,6 +242,14 @@ func (e AuditEventKind) Valid() bool {
 		return true
 	case AuditEventKindPeopleSetPreferredName:
 		return true
+	case AuditEventKindRecruiteeIntegrationCreated:
+		return true
+	case AuditEventKindRecruiteeIntegrationCredentialsUpdated:
+		return true
+	case AuditEventKindRecruiteeIntegrationDeleted:
+		return true
+	case AuditEventKindRecruiteeIntegrationUpdated:
+		return true
 	case AuditEventKindRequestCanceled:
 		return true
 	case AuditEventKindRequestCreated:
@@ -240,6 +265,14 @@ func (e AuditEventKind) Valid() bool {
 	case AuditEventKindTemplateDeleted:
 		return true
 	case AuditEventKindTemplateUpdated:
+		return true
+	case AuditEventKindWorkableIntegrationCreated:
+		return true
+	case AuditEventKindWorkableIntegrationCredentialsUpdated:
+		return true
+	case AuditEventKindWorkableIntegrationDeleted:
+		return true
+	case AuditEventKindWorkableIntegrationUpdated:
 		return true
 	default:
 		return false
@@ -455,28 +488,43 @@ func (e DeviceRegistrationStatus) Valid() bool {
 
 // Defines values for DirectoryKind.
 const (
+	DirectoryKindAuth0          DirectoryKind = "auth0"
+	DirectoryKindAuthentik      DirectoryKind = "authentik"
 	DirectoryKindAzureAD        DirectoryKind = "azure-ad"
 	DirectoryKindBeyondIdentity DirectoryKind = "beyond-identity"
+	DirectoryKindClerk          DirectoryKind = "clerk"
 	DirectoryKindCustom         DirectoryKind = "custom"
 	DirectoryKindDuo            DirectoryKind = "duo"
+	DirectoryKindGusto          DirectoryKind = "gusto"
 	DirectoryKindOkta           DirectoryKind = "okta"
 	DirectoryKindOnelogin       DirectoryKind = "onelogin"
+	DirectoryKindWorkOS         DirectoryKind = "workos"
 )
 
 // Valid indicates whether the value is a known member of the DirectoryKind enum.
 func (e DirectoryKind) Valid() bool {
 	switch e {
+	case DirectoryKindAuth0:
+		return true
+	case DirectoryKindAuthentik:
+		return true
 	case DirectoryKindAzureAD:
 		return true
 	case DirectoryKindBeyondIdentity:
+		return true
+	case DirectoryKindClerk:
 		return true
 	case DirectoryKindCustom:
 		return true
 	case DirectoryKindDuo:
 		return true
+	case DirectoryKindGusto:
+		return true
 	case DirectoryKindOkta:
 		return true
 	case DirectoryKindOnelogin:
+		return true
+	case DirectoryKindWorkOS:
 		return true
 	default:
 		return false
@@ -485,28 +533,28 @@ func (e DirectoryKind) Valid() bool {
 
 // Defines values for EnvStatusFilterParams.
 const (
-	Active               EnvStatusFilterParams = "active"
-	Expired              EnvStatusFilterParams = "expired"
-	HideExpired          EnvStatusFilterParams = "hideExpired"
-	RejectedAll          EnvStatusFilterParams = "rejectedAll"
-	RejectedFraud        EnvStatusFilterParams = "rejectedFraud"
-	ScheduledForDeletion EnvStatusFilterParams = "scheduledForDeletion"
+	EnvStatusFilterParamsActive               EnvStatusFilterParams = "active"
+	EnvStatusFilterParamsExpired              EnvStatusFilterParams = "expired"
+	EnvStatusFilterParamsHideExpired          EnvStatusFilterParams = "hideExpired"
+	EnvStatusFilterParamsRejectedAll          EnvStatusFilterParams = "rejectedAll"
+	EnvStatusFilterParamsRejectedFraud        EnvStatusFilterParams = "rejectedFraud"
+	EnvStatusFilterParamsScheduledForDeletion EnvStatusFilterParams = "scheduledForDeletion"
 )
 
 // Valid indicates whether the value is a known member of the EnvStatusFilterParams enum.
 func (e EnvStatusFilterParams) Valid() bool {
 	switch e {
-	case Active:
+	case EnvStatusFilterParamsActive:
 		return true
-	case Expired:
+	case EnvStatusFilterParamsExpired:
 		return true
-	case HideExpired:
+	case EnvStatusFilterParamsHideExpired:
 		return true
-	case RejectedAll:
+	case EnvStatusFilterParamsRejectedAll:
 		return true
-	case RejectedFraud:
+	case EnvStatusFilterParamsRejectedFraud:
 		return true
-	case ScheduledForDeletion:
+	case EnvStatusFilterParamsScheduledForDeletion:
 		return true
 	default:
 		return false
@@ -563,9 +611,22 @@ func (e GovtidType) Valid() bool {
 
 // Defines values for IntegrationListItemKind.
 const (
+	Ashby      IntegrationListItemKind = "ashby"
+	Breezy     IntegrationListItemKind = "breezy"
+	Catsone    IntegrationListItemKind = "catsone"
+	Dover      IntegrationListItemKind = "dover"
+	Freshdesk  IntegrationListItemKind = "freshdesk"
 	Greenhouse IntegrationListItemKind = "greenhouse"
+	Intercom   IntegrationListItemKind = "intercom"
+	Jira       IntegrationListItemKind = "jira"
+	Lever      IntegrationListItemKind = "lever"
+	Polymer    IntegrationListItemKind = "polymer"
+	Recruitee  IntegrationListItemKind = "recruitee"
 	Servicenow IntegrationListItemKind = "servicenow"
 	Slack      IntegrationListItemKind = "slack"
+	Stytch     IntegrationListItemKind = "stytch"
+	Talentlyft IntegrationListItemKind = "talentlyft"
+	Workable   IntegrationListItemKind = "workable"
 	Workday    IntegrationListItemKind = "workday"
 	Zoom       IntegrationListItemKind = "zoom"
 )
@@ -573,15 +634,107 @@ const (
 // Valid indicates whether the value is a known member of the IntegrationListItemKind enum.
 func (e IntegrationListItemKind) Valid() bool {
 	switch e {
+	case Ashby:
+		return true
+	case Breezy:
+		return true
+	case Catsone:
+		return true
+	case Dover:
+		return true
+	case Freshdesk:
+		return true
 	case Greenhouse:
+		return true
+	case Intercom:
+		return true
+	case Jira:
+		return true
+	case Lever:
+		return true
+	case Polymer:
+		return true
+	case Recruitee:
 		return true
 	case Servicenow:
 		return true
 	case Slack:
 		return true
+	case Stytch:
+		return true
+	case Talentlyft:
+		return true
+	case Workable:
+		return true
 	case Workday:
 		return true
 	case Zoom:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IntercomIntegrationResponseCoverage.
+const (
+	IntercomIntegrationResponseCoverageAllInboxes IntercomIntegrationResponseCoverage = "all_inboxes"
+	IntercomIntegrationResponseCoverageTeams      IntercomIntegrationResponseCoverage = "teams"
+)
+
+// Valid indicates whether the value is a known member of the IntercomIntegrationResponseCoverage enum.
+func (e IntercomIntegrationResponseCoverage) Valid() bool {
+	switch e {
+	case IntercomIntegrationResponseCoverageAllInboxes:
+		return true
+	case IntercomIntegrationResponseCoverageTeams:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IntercomIntegrationResponseTriggerMode.
+const (
+	IntercomIntegrationResponseTriggerModeManual IntercomIntegrationResponseTriggerMode = "manual"
+)
+
+// Valid indicates whether the value is a known member of the IntercomIntegrationResponseTriggerMode enum.
+func (e IntercomIntegrationResponseTriggerMode) Valid() bool {
+	switch e {
+	case IntercomIntegrationResponseTriggerModeManual:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IntercomIntegrationUpdateRequestCoverage.
+const (
+	IntercomIntegrationUpdateRequestCoverageAllInboxes IntercomIntegrationUpdateRequestCoverage = "all_inboxes"
+	IntercomIntegrationUpdateRequestCoverageTeams      IntercomIntegrationUpdateRequestCoverage = "teams"
+)
+
+// Valid indicates whether the value is a known member of the IntercomIntegrationUpdateRequestCoverage enum.
+func (e IntercomIntegrationUpdateRequestCoverage) Valid() bool {
+	switch e {
+	case IntercomIntegrationUpdateRequestCoverageAllInboxes:
+		return true
+	case IntercomIntegrationUpdateRequestCoverageTeams:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IntercomIntegrationUpdateRequestTriggerMode.
+const (
+	IntercomIntegrationUpdateRequestTriggerModeManual IntercomIntegrationUpdateRequestTriggerMode = "manual"
+)
+
+// Valid indicates whether the value is a known member of the IntercomIntegrationUpdateRequestTriggerMode enum.
+func (e IntercomIntegrationUpdateRequestTriggerMode) Valid() bool {
+	switch e {
+	case IntercomIntegrationUpdateRequestTriggerModeManual:
 		return true
 	default:
 		return false
@@ -786,6 +939,96 @@ func (e RecoveryPolicy) Valid() bool {
 	case RecoveryPolicyPhoto:
 		return true
 	case RecoveryPolicyWeakNameMatch:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecruiteeIntegrationResponseMode.
+const (
+	Partner RecruiteeIntegrationResponseMode = "partner"
+	Pilot   RecruiteeIntegrationResponseMode = "pilot"
+)
+
+// Valid indicates whether the value is a known member of the RecruiteeIntegrationResponseMode enum.
+func (e RecruiteeIntegrationResponseMode) Valid() bool {
+	switch e {
+	case Partner:
+		return true
+	case Pilot:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecruiteeIntegrationResponseStatus.
+const (
+	RecruiteeIntegrationResponseStatusActive RecruiteeIntegrationResponseStatus = "active"
+	RecruiteeIntegrationResponseStatusPaused RecruiteeIntegrationResponseStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the RecruiteeIntegrationResponseStatus enum.
+func (e RecruiteeIntegrationResponseStatus) Valid() bool {
+	switch e {
+	case RecruiteeIntegrationResponseStatusActive:
+		return true
+	case RecruiteeIntegrationResponseStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecruiteeIntegrationResponseTrigger.
+const (
+	RecruiteeIntegrationResponseTriggerOnApply   RecruiteeIntegrationResponseTrigger = "on_apply"
+	RecruiteeIntegrationResponseTriggerStageMove RecruiteeIntegrationResponseTrigger = "stage_move"
+)
+
+// Valid indicates whether the value is a known member of the RecruiteeIntegrationResponseTrigger enum.
+func (e RecruiteeIntegrationResponseTrigger) Valid() bool {
+	switch e {
+	case RecruiteeIntegrationResponseTriggerOnApply:
+		return true
+	case RecruiteeIntegrationResponseTriggerStageMove:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecruiteeIntegrationUpdateRequestStatus.
+const (
+	RecruiteeIntegrationUpdateRequestStatusActive RecruiteeIntegrationUpdateRequestStatus = "active"
+	RecruiteeIntegrationUpdateRequestStatusPaused RecruiteeIntegrationUpdateRequestStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the RecruiteeIntegrationUpdateRequestStatus enum.
+func (e RecruiteeIntegrationUpdateRequestStatus) Valid() bool {
+	switch e {
+	case RecruiteeIntegrationUpdateRequestStatusActive:
+		return true
+	case RecruiteeIntegrationUpdateRequestStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecruiteeIntegrationUpdateRequestTrigger.
+const (
+	RecruiteeIntegrationUpdateRequestTriggerOnApply   RecruiteeIntegrationUpdateRequestTrigger = "on_apply"
+	RecruiteeIntegrationUpdateRequestTriggerStageMove RecruiteeIntegrationUpdateRequestTrigger = "stage_move"
+)
+
+// Valid indicates whether the value is a known member of the RecruiteeIntegrationUpdateRequestTrigger enum.
+func (e RecruiteeIntegrationUpdateRequestTrigger) Valid() bool {
+	switch e {
+	case RecruiteeIntegrationUpdateRequestTriggerOnApply:
+		return true
+	case RecruiteeIntegrationUpdateRequestTriggerStageMove:
 		return true
 	default:
 		return false
@@ -1077,6 +1320,45 @@ func (e WebhookEventType) Valid() bool {
 	}
 }
 
+// Defines values for WorkableIntegrationResponseStatus.
+const (
+	WorkableIntegrationResponseStatusActive       WorkableIntegrationResponseStatus = "active"
+	WorkableIntegrationResponseStatusDisabled     WorkableIntegrationResponseStatus = "disabled"
+	WorkableIntegrationResponseStatusPendingScope WorkableIntegrationResponseStatus = "pending_scope"
+)
+
+// Valid indicates whether the value is a known member of the WorkableIntegrationResponseStatus enum.
+func (e WorkableIntegrationResponseStatus) Valid() bool {
+	switch e {
+	case WorkableIntegrationResponseStatusActive:
+		return true
+	case WorkableIntegrationResponseStatusDisabled:
+		return true
+	case WorkableIntegrationResponseStatusPendingScope:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WorkableIntegrationResponseConnectMethod.
+const (
+	AccountToken WorkableIntegrationResponseConnectMethod = "account_token"
+	Oauth        WorkableIntegrationResponseConnectMethod = "oauth"
+)
+
+// Valid indicates whether the value is a known member of the WorkableIntegrationResponseConnectMethod enum.
+func (e WorkableIntegrationResponseConnectMethod) Valid() bool {
+	switch e {
+	case AccountToken:
+		return true
+	case Oauth:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WorkdayObjectType.
 const (
 	JobApplication WorkdayObjectType = "JobApplication"
@@ -1320,8 +1602,8 @@ type APIKeyUpdateRequest struct {
 	// EnvIDs The unique identifier for the environments this API key belongs to, or `["*"]` if the key applies to all environments.
 	EnvIDs []string `json:"envs,omitempty"`
 
-	// ExpiresAt The expiration date and time for the API key. If not provided, the key will not expire. Example: "2023-12-31T23:59:59Z"
-	ExpiresAt *time.Time `json:"expires_at,omitempty"`
+	// ExpiresAt The expiration date and time for the API key. If the field is omitted, the expiration is left unchanged; if explicitly set to `null`, the expiration is cleared and the key will not expire. Example: "2023-12-31T23:59:59Z"
+	ExpiresAt json.RawMessage `json:"expires_at,omitempty"`
 }
 
 // APIKeyUpdatedAuditEvent defines model for APIKeyUpdatedAuditEvent.
@@ -1443,6 +1725,117 @@ type AccountsList struct {
 	NextOffset *int `json:"next_offset,omitempty"`
 }
 
+// AshbyConfig Per-tenant trigger and write-back configuration for an Ashby integration.
+type AshbyConfig struct {
+	// Triggers Which Ashby events launch a Nametag check. For stage changes, `stage_ids`
+	// limits the trigger to specific Ashby interview stage IDs.
+	Triggers *AshbyTriggerConfig `json:"triggers,omitempty"`
+
+	// Outputs Which write-back outputs are produced on a completed check.
+	Outputs           *AshbyOutputConfig `json:"outputs,omitempty"`
+	LocationIntegrity *bool              `json:"location_integrity,omitempty"`
+	FlagPendingFailed *bool              `json:"flag_pending_failed,omitempty"`
+}
+
+// AshbyIntegrationCreatedAuditEvent defines model for AshbyIntegrationCreatedAuditEvent.
+type AshbyIntegrationCreatedAuditEvent struct {
+	AshbyIntegration string `json:"ashby_integration"`
+}
+
+// AshbyIntegrationDeletedAuditEvent defines model for AshbyIntegrationDeletedAuditEvent.
+type AshbyIntegrationDeletedAuditEvent struct {
+	AshbyIntegration string `json:"ashby_integration"`
+}
+
+// AshbyIntegrationResponse defines model for AshbyIntegrationResponse.
+type AshbyIntegrationResponse struct {
+	// ID The unique identifier for the Ashby integration
+	ID string `json:"id"`
+
+	// Name The friendly name of the Ashby account.
+	Name string `json:"name"`
+
+	// Connected Whether this integration can currently reach Ashby with a valid API key.
+	Connected bool `json:"connected"`
+
+	// MissingScopes API key scopes that are required but missing. When non-empty, the
+	// integration is not fully functional and the key must be regenerated
+	// with the listed scopes.
+	MissingScopes *[]string `json:"missing_scopes,omitempty"`
+
+	// Config Per-tenant trigger and write-back configuration for an Ashby integration.
+	Config *AshbyConfig `json:"config,omitempty"`
+
+	// SelectedTemplateID The Nametag template used when launching checks.
+	SelectedTemplateID *string `json:"selected_template_id,omitempty"`
+
+	// FraudStatusWriteback Whether to write decisions back to Ashby's native fraud status.
+	FraudStatusWriteback *bool `json:"fraud_status_writeback,omitempty"`
+
+	// AssessmentsEnabled Phase-2 Assessments Framework flag (persisted, not yet active).
+	AssessmentsEnabled *bool `json:"assessments_enabled,omitempty"`
+}
+
+// AshbyIntegrationUpdateRequest defines model for AshbyIntegrationUpdateRequest.
+type AshbyIntegrationUpdateRequest struct {
+	// Name The friendly name of the Ashby account.
+	Name *string `json:"name,omitempty"`
+
+	// APIKey A replacement Ashby API key. When set, the integration is reconnected:
+	// the key is re-validated and custom fields, tags, and webhooks are repaired.
+	APIKey *string `json:"api_key,omitempty"`
+
+	// Config Per-tenant trigger and write-back configuration for an Ashby integration.
+	Config               *AshbyConfig `json:"config,omitempty"`
+	SelectedTemplateID   *string      `json:"selected_template_id,omitempty"`
+	FraudStatusWriteback *bool        `json:"fraud_status_writeback,omitempty"`
+	AssessmentsEnabled   *bool        `json:"assessments_enabled,omitempty"`
+}
+
+// AshbyIntegrationUpdatedAuditEvent defines model for AshbyIntegrationUpdatedAuditEvent.
+type AshbyIntegrationUpdatedAuditEvent struct {
+	AshbyIntegration string                        `json:"ashby_integration"`
+	Request          AshbyIntegrationUpdateRequest `json:"request"`
+	Response         *AshbyIntegrationResponse     `json:"response,omitempty"`
+}
+
+// AshbyIntegrationsListResponse defines model for AshbyIntegrationsListResponse.
+type AshbyIntegrationsListResponse struct {
+	// Integrations A list of Ashby integrations for this environment
+	Integrations []AshbyIntegrationResponse `json:"integrations"`
+}
+
+// AshbyOutputConfig Which write-back outputs are produced on a completed check.
+type AshbyOutputConfig struct {
+	CustomFields *bool `json:"custom_fields,omitempty"`
+	Tags         *bool `json:"tags,omitempty"`
+	Note         *bool `json:"note,omitempty"`
+	Certificate  *bool `json:"certificate,omitempty"`
+}
+
+// AshbyStage defines model for AshbyStage.
+type AshbyStage struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// AshbyStagesResponse defines model for AshbyStagesResponse.
+type AshbyStagesResponse struct {
+	// Stages The interview stages configured in Ashby, for the stage picker.
+	Stages []AshbyStage `json:"stages"`
+}
+
+// AshbyTriggerConfig Which Ashby events launch a Nametag check. For stage changes, `stage_ids`
+// limits the trigger to specific Ashby interview stage IDs.
+type AshbyTriggerConfig struct {
+	ApplicationSubmit       *bool     `json:"application_submit,omitempty"`
+	CandidateStageChange    *bool     `json:"candidate_stage_change,omitempty"`
+	StageIDs                *[]string `json:"stage_ids,omitempty"`
+	InterviewScheduleCreate *bool     `json:"interview_schedule_create,omitempty"`
+	OfferCreate             *bool     `json:"offer_create,omitempty"`
+	CandidateHire           *bool     `json:"candidate_hire,omitempty"`
+}
+
 // AuditEvent defines model for AuditEvent.
 type AuditEvent struct {
 	// ID The unique identifier for the event.
@@ -1529,6 +1922,17 @@ type AuditEvent struct {
 	InterviewVerificationStarted            *InterviewVerificationStartedAuditEvent            `json:"interview_verification_started,omitempty"`
 	InterviewOptedOut                       *InterviewOptedOutAuditEvent                       `json:"interview_opted_out,omitempty"`
 	InterviewLinkFollowed                   *InterviewLinkFollowedAuditEvent                   `json:"interview_link_followed,omitempty"`
+	AshbyIntegrationCreated                 *AshbyIntegrationCreatedAuditEvent                 `json:"ashby_integration_created,omitempty"`
+	RecruiteeIntegrationCreated             *RecruiteeIntegrationCreatedAuditEvent             `json:"recruitee_integration_created,omitempty"`
+	AshbyIntegrationUpdated                 *AshbyIntegrationUpdatedAuditEvent                 `json:"ashby_integration_updated,omitempty"`
+	RecruiteeIntegrationUpdated             *RecruiteeIntegrationUpdatedAuditEvent             `json:"recruitee_integration_updated,omitempty"`
+	AshbyIntegrationDeleted                 *AshbyIntegrationDeletedAuditEvent                 `json:"ashby_integration_deleted,omitempty"`
+	RecruiteeIntegrationDeleted             *RecruiteeIntegrationDeletedAuditEvent             `json:"recruitee_integration_deleted,omitempty"`
+	RecruiteeIntegrationCredentialsUpdated  *RecruiteeIntegrationCredentialsUpdatedAuditEvent  `json:"recruitee_integration_credentials_updated,omitempty"`
+	WorkableIntegrationCreated              *WorkableIntegrationCreatedAuditEvent              `json:"workable_integration_created,omitempty"`
+	WorkableIntegrationUpdated              *WorkableIntegrationUpdatedAuditEvent              `json:"workable_integration_updated,omitempty"`
+	WorkableIntegrationDeleted              *WorkableIntegrationDeletedAuditEvent              `json:"workable_integration_deleted,omitempty"`
+	WorkableIntegrationCredentialsUpdated   *WorkableIntegrationCredentialsUpdatedAuditEvent   `json:"workable_integration_credentials_updated,omitempty"`
 }
 
 // AuditEventKind defines model for AuditEventKind.
@@ -1940,6 +2344,7 @@ type Credentials struct {
 	// * For Okta, this field should be blank
 	// * For Onelogin, the client ID, e.g. `98ea6e4f216f2fb4b69fff9b3a44842c38686ca685f3f55dc48c5d3fb1107be4`
 	// * For BeyondIdentity, the client ID, e.g. `Tf9IGY976IqEjEHJrYSJW7JF`
+	// * For Auth0, the machine-to-machine application client ID
 	Account string `json:"account,omitempty"`
 
 	// ApplicationID * For Duo, this field should be blank
@@ -1952,6 +2357,7 @@ type Credentials struct {
 	// * For Okta, the service hostname, e.g. `your-company.okta.com`.
 	// * For Onelogin, the subdomain, e.g. `example.onelogin.com`.
 	// * For BeyondIdentity, the BaseURL, e.g. `https://api-us.beyondidentity.com`.
+	// * For Auth0, the tenant domain, e.g. `example.us.auth0.com`.
 	Partition string `json:"partition"`
 
 	// RealmID * For Duo, this field should be blank
@@ -2488,6 +2894,64 @@ type IntegrationsListResponse struct {
 	Integrations []IntegrationListItem `json:"integrations"`
 }
 
+// IntercomIntegrationResponse defines model for IntercomIntegrationResponse.
+type IntercomIntegrationResponse struct {
+	// ID The unique identifier for the Intercom integration
+	ID string `json:"id"`
+
+	// WorkspaceID The Intercom workspace identifier (app_id) resolved from the OAuth flow.
+	WorkspaceID string `json:"workspace_id"`
+
+	// Connected Whether or not this integration is currently connected to Intercom. If
+	// this is `false`, the Intercom OAuth authorization is unhealthy and the
+	// admin should reconnect.
+	Connected bool `json:"connected"`
+
+	// Enabled Whether the integration has been activated. When `false`, agents are not
+	// offered the Nametag card in any conversation even if OAuth is connected.
+	Enabled bool `json:"enabled"`
+
+	// Coverage Which Intercom conversations the Nametag card is offered on.
+	Coverage IntercomIntegrationResponseCoverage `json:"coverage"`
+
+	// TeamIDs When coverage is `teams`, the Intercom team IDs the card is offered on.
+	TeamIDs *[]string `json:"team_ids,omitempty"`
+
+	// TriggerMode How verification is initiated for a covered conversation.
+	TriggerMode IntercomIntegrationResponseTriggerMode `json:"trigger_mode"`
+
+	// CreatedAt When the integration was created.
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+}
+
+// IntercomIntegrationResponseCoverage Which Intercom conversations the Nametag card is offered on.
+type IntercomIntegrationResponseCoverage string
+
+// IntercomIntegrationResponseTriggerMode How verification is initiated for a covered conversation.
+type IntercomIntegrationResponseTriggerMode string
+
+// IntercomIntegrationUpdateRequest defines model for IntercomIntegrationUpdateRequest.
+type IntercomIntegrationUpdateRequest struct {
+	// Coverage Which Intercom conversations the Nametag card is offered on.
+	Coverage *IntercomIntegrationUpdateRequestCoverage `json:"coverage,omitempty"`
+
+	// TeamIDs When coverage is `teams`, the Intercom team IDs to cover.
+	TeamIDs *[]string `json:"team_ids,omitempty"`
+
+	// TriggerMode How verification is initiated for a covered conversation.
+	TriggerMode *IntercomIntegrationUpdateRequestTriggerMode `json:"trigger_mode,omitempty"`
+
+	// Enabled Whether the integration is activated. Set on the Review & activate step
+	// of the setup wizard.
+	Enabled *bool `json:"enabled,omitempty"`
+}
+
+// IntercomIntegrationUpdateRequestCoverage Which Intercom conversations the Nametag card is offered on.
+type IntercomIntegrationUpdateRequestCoverage string
+
+// IntercomIntegrationUpdateRequestTriggerMode How verification is initiated for a covered conversation.
+type IntercomIntegrationUpdateRequestTriggerMode string
+
 // InterviewConfig defines model for InterviewConfig.
 type InterviewConfig struct {
 	// HasSlackWebhook Whether a Slack webhook URL is configured for interview notifications.
@@ -2549,6 +3013,73 @@ type InviteOrgMemberRequest struct {
 	// Envs The list of environments the member will have access to. If the list contains `*`, the member will have access to all environments.
 	Envs []string `json:"envs"`
 	Role Role     `json:"role"`
+}
+
+// LeverIntegrationResponse defines model for LeverIntegrationResponse.
+type LeverIntegrationResponse struct {
+	// ID The unique identifier for the Lever integration
+	ID string `json:"id"`
+
+	// Name The name of the Lever account.
+	Name string `json:"name"`
+
+	// Connected Whether or not this integration is connected to Nametag. If this is `false`, the auth token may need to be refreshed by reconnecting this workspace.
+	Connected bool `json:"connected"`
+
+	// AutoMoveOnVerificationSuccess Whether to advance the opportunity to the next Lever stage upon successful verification in Nametag.
+	AutoMoveOnVerificationSuccess bool `json:"auto_move_on_verification_success"`
+
+	// TriggerStageID The Lever stage whose entry triggers verification.
+	TriggerStageID *string `json:"trigger_stage_id,omitempty"`
+
+	// NextStageID The Lever stage to advance to on success (auto-move only).
+	NextStageID *string `json:"next_stage_id,omitempty"`
+
+	// BaseTemplateID The Lever feedback template referenced when writing a structured verification result.
+	BaseTemplateID *string `json:"base_template_id,omitempty"`
+
+	// ServiceUserEmail The email of the Lever user that verification write-back actions are performed as (perform_as).
+	ServiceUserEmail *string `json:"service_user_email,omitempty"`
+
+	// PerformAsResolved Whether the service user email resolved to a Lever user id. Write-back fails closed until this is true.
+	PerformAsResolved bool `json:"perform_as_resolved"`
+
+	// LinkTemplate The URL template for sending candidates to Nametag for verification.
+	// The `{{OPPORTUNITY_ID}}` and `{{APPLICATION_ID}}` tokens are Lever template variables.
+	LinkTemplate *string `json:"link_template,omitempty"`
+
+	// SelectedTemplateIDs A list of template IDs selected for generating template-specific verification links.
+	SelectedTemplateIDs *[]string `json:"selected_template_ids,omitempty"`
+}
+
+// LeverIntegrationUpdateRequest defines model for LeverIntegrationUpdateRequest.
+type LeverIntegrationUpdateRequest struct {
+	// Name The name of the Lever account.
+	Name *string `json:"name,omitempty"`
+
+	// AutoMoveOnVerificationSuccess Whether to advance the opportunity to the next Lever stage upon successful verification in Nametag.
+	AutoMoveOnVerificationSuccess *bool `json:"auto_move_on_verification_success,omitempty"`
+
+	// TriggerStageID The Lever stage whose entry triggers verification.
+	TriggerStageID *string `json:"trigger_stage_id,omitempty"`
+
+	// NextStageID The Lever stage to advance to on success (auto-move only).
+	NextStageID *string `json:"next_stage_id,omitempty"`
+
+	// BaseTemplateID The Lever feedback template referenced when writing results.
+	BaseTemplateID *string `json:"base_template_id,omitempty"`
+
+	// ServiceUserEmail The email of the Lever user write-back is performed as.
+	ServiceUserEmail *string `json:"service_user_email,omitempty"`
+
+	// SelectedTemplateIDs A list of template IDs to select for generating template-specific verification links.
+	SelectedTemplateIDs *[]string `json:"selected_template_ids,omitempty"`
+}
+
+// LeverIntegrationsListResponse defines model for LeverIntegrationsListResponse.
+type LeverIntegrationsListResponse struct {
+	// Integrations A list of Lever integrations for this environment
+	Integrations []LeverIntegrationResponse `json:"integrations"`
 }
 
 // ListAPIKeysResponse defines model for ListAPIKeysResponse.
@@ -3030,6 +3561,126 @@ type RecoveryPolicyRules struct {
 	// When Nametag evaluates policy, the first entry in this list that matches will be applied. If no group matches, then the default policy is applied.
 	Groups  []GroupRecoveryPolicy `json:"groups"`
 	Default RecoveryPolicy        `json:"default"`
+}
+
+// RecruiteeIntegrationCreatedAuditEvent defines model for RecruiteeIntegrationCreatedAuditEvent.
+type RecruiteeIntegrationCreatedAuditEvent struct {
+	RecruiteeIntegration string `json:"recruitee_integration"`
+}
+
+// RecruiteeIntegrationCredentialsUpdatedAuditEvent defines model for RecruiteeIntegrationCredentialsUpdatedAuditEvent.
+type RecruiteeIntegrationCredentialsUpdatedAuditEvent struct {
+	RecruiteeIntegration string `json:"recruitee_integration"`
+}
+
+// RecruiteeIntegrationDeletedAuditEvent defines model for RecruiteeIntegrationDeletedAuditEvent.
+type RecruiteeIntegrationDeletedAuditEvent struct {
+	RecruiteeIntegration string `json:"recruitee_integration"`
+}
+
+// RecruiteeIntegrationResponse defines model for RecruiteeIntegrationResponse.
+type RecruiteeIntegrationResponse struct {
+	// ID The unique identifier for the Recruitee integration
+	ID string `json:"id"`
+
+	// Name A friendly name for the Recruitee connection.
+	Name string `json:"name"`
+
+	// CompanyID The Recruitee company id, required on every Recruitee ATS API call.
+	CompanyID string `json:"company_id"`
+
+	// Mode The credential direction. `pilot` uses a Recruitee personal API
+	// token; `partner` uses a Tellent Partner API grant (production).
+	Mode RecruiteeIntegrationResponseMode `json:"mode"`
+
+	// Status Whether the connection is active. Nothing fires while paused.
+	Status RecruiteeIntegrationResponseStatus `json:"status"`
+
+	// Connected Whether Nametag can currently reach Recruitee with the stored
+	// credential. If `false`, the credential may need to be re-authorized.
+	Connected bool `json:"connected"`
+
+	// Trigger When verification fires. Defaults to `stage_move`.
+	Trigger *RecruiteeIntegrationResponseTrigger `json:"trigger,omitempty"`
+
+	// StageID The target Recruitee stage id for the `stage_move` trigger. Empty
+	// means any stage move within scope.
+	StageID *string `json:"stage_id,omitempty"`
+
+	// StageCategory Optional target stage category for the `stage_move` trigger.
+	StageCategory *string `json:"stage_category,omitempty"`
+
+	// ReinviteOnExpiry Whether to re-invite candidates whose verification request expired.
+	ReinviteOnExpiry *bool `json:"reinvite_on_expiry,omitempty"`
+
+	// OfferIDs The Recruitee offer ids in scope. Empty means all offers.
+	OfferIDs *[]string `json:"offer_ids,omitempty"`
+
+	// DepartmentIDs The Recruitee department ids in scope. Empty means all departments.
+	DepartmentIDs *[]string `json:"department_ids,omitempty"`
+}
+
+// RecruiteeIntegrationResponseMode The credential direction. `pilot` uses a Recruitee personal API
+// token; `partner` uses a Tellent Partner API grant (production).
+type RecruiteeIntegrationResponseMode string
+
+// RecruiteeIntegrationResponseStatus Whether the connection is active. Nothing fires while paused.
+type RecruiteeIntegrationResponseStatus string
+
+// RecruiteeIntegrationResponseTrigger When verification fires. Defaults to `stage_move`.
+type RecruiteeIntegrationResponseTrigger string
+
+// RecruiteeIntegrationUpdateRequest defines model for RecruiteeIntegrationUpdateRequest.
+type RecruiteeIntegrationUpdateRequest struct {
+	// Name A friendly name for the Recruitee connection.
+	Name *string `json:"name,omitempty"`
+
+	// Status Whether the connection is active.
+	Status *RecruiteeIntegrationUpdateRequestStatus `json:"status,omitempty"`
+
+	// Credential A replacement Recruitee credential (re-authorize the target). Never
+	// a Nametag key.
+	Credential *string `json:"credential,omitempty"`
+
+	// WebhookSecret A replacement webhook secret.
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
+
+	// Trigger When verification fires.
+	Trigger *RecruiteeIntegrationUpdateRequestTrigger `json:"trigger,omitempty"`
+
+	// StageID The target Recruitee stage id for the stage_move trigger.
+	StageID *string `json:"stage_id,omitempty"`
+
+	// StageCategory Optional target stage category.
+	StageCategory *string `json:"stage_category,omitempty"`
+
+	// ReinviteOnExpiry Whether to re-invite candidates whose request expired.
+	ReinviteOnExpiry *bool `json:"reinvite_on_expiry,omitempty"`
+
+	// OfferIDs The Recruitee offer ids in scope. Empty means all offers.
+	OfferIDs *[]string `json:"offer_ids,omitempty"`
+
+	// DepartmentIDs The Recruitee department ids in scope. Empty means all.
+	DepartmentIDs *[]string `json:"department_ids,omitempty"`
+}
+
+// RecruiteeIntegrationUpdateRequestStatus Whether the connection is active.
+type RecruiteeIntegrationUpdateRequestStatus string
+
+// RecruiteeIntegrationUpdateRequestTrigger When verification fires.
+type RecruiteeIntegrationUpdateRequestTrigger string
+
+// RecruiteeIntegrationUpdatedAuditEvent defines model for RecruiteeIntegrationUpdatedAuditEvent.
+type RecruiteeIntegrationUpdatedAuditEvent struct {
+	RecruiteeIntegration string                            `json:"recruitee_integration"`
+	Request              RecruiteeIntegrationUpdateRequest `json:"request"`
+	Response             *RecruiteeIntegrationResponse     `json:"response,omitempty"`
+}
+
+// RecruiteeIntegrationsListResponse defines model for RecruiteeIntegrationsListResponse.
+type RecruiteeIntegrationsListResponse struct {
+	// Integrations A list of Recruitee integrations for this environment
+	Integrations []RecruiteeIntegrationResponse `json:"integrations"`
 }
 
 // RefreshWebhookSecretRequest defines model for RefreshWebhookSecretRequest.
@@ -3602,6 +4253,119 @@ type WebhookHeader struct {
 	Value string `json:"value"`
 }
 
+// WorkableIntegrationCreatedAuditEvent defines model for WorkableIntegrationCreatedAuditEvent.
+type WorkableIntegrationCreatedAuditEvent struct {
+	WorkableIntegration string `json:"workable_integration"`
+}
+
+// WorkableIntegrationCredentialsUpdatedAuditEvent defines model for WorkableIntegrationCredentialsUpdatedAuditEvent.
+type WorkableIntegrationCredentialsUpdatedAuditEvent struct {
+	WorkableIntegration string `json:"workable_integration"`
+}
+
+// WorkableIntegrationDeletedAuditEvent defines model for WorkableIntegrationDeletedAuditEvent.
+type WorkableIntegrationDeletedAuditEvent struct {
+	WorkableIntegration string `json:"workable_integration"`
+}
+
+// WorkableIntegrationResponse defines model for WorkableIntegrationResponse.
+type WorkableIntegrationResponse struct {
+	// ID The unique identifier for the Workable integration.
+	ID string `json:"id"`
+
+	// Name A human-readable name for this Workable connection.
+	Name string `json:"name"`
+
+	// Subdomain The Workable account subdomain (e.g. `acme-corp` for acme-corp.workable.com).
+	Subdomain string `json:"subdomain"`
+
+	// Status The lifecycle state of the connection.
+	Status WorkableIntegrationResponseStatus `json:"status"`
+
+	// Connected Whether Nametag can currently reach the Workable API with the stored credential.
+	Connected bool `json:"connected"`
+
+	// ConnectMethod How Nametag authenticates to Workable.
+	ConnectMethod WorkableIntegrationResponseConnectMethod `json:"connect_method"`
+
+	// TriggerJobs Workable job shortcodes that fire verification. `["*"]` means all jobs.
+	TriggerJobs *[]string `json:"trigger_jobs,omitempty"`
+
+	// TriggerStages Pipeline stage names that trigger verification when a candidate is moved into them.
+	TriggerStages *[]string `json:"trigger_stages,omitempty"`
+
+	// CustomAttrID The Workable custom attribute that receives the verification status write-back.
+	CustomAttrID *string `json:"custom_attr_id,omitempty"`
+
+	// CommentOnResult Post a timeline comment on the candidate when a verification completes.
+	CommentOnResult *bool `json:"comment_on_result,omitempty"`
+
+	// TagOnPass Add a "Nametag Verified" tag to the candidate on a passing verification.
+	TagOnPass *bool `json:"tag_on_pass,omitempty"`
+
+	// MoveOnPass Advance the candidate to the next stage on a passing verification (opt-in).
+	MoveOnPass *bool `json:"move_on_pass,omitempty"`
+
+	// DisqualifyOnFail Disqualify the candidate on a failing verification. Off by default (legal/fairness risk).
+	DisqualifyOnFail *bool `json:"disqualify_on_fail,omitempty"`
+
+	// Counts Aggregate verification counts for the connected detail view. Contains no PII.
+	Counts *WorkableVerificationCounts `json:"counts,omitempty"`
+}
+
+// WorkableIntegrationResponseStatus The lifecycle state of the connection.
+type WorkableIntegrationResponseStatus string
+
+// WorkableIntegrationResponseConnectMethod How Nametag authenticates to Workable.
+type WorkableIntegrationResponseConnectMethod string
+
+// WorkableIntegrationUpdateRequest Update the connection's name, trigger scope, and write-back rules. Only the provided
+// fields are changed.
+type WorkableIntegrationUpdateRequest struct {
+	Name             *string   `json:"name,omitempty"`
+	TriggerJobs      *[]string `json:"trigger_jobs,omitempty"`
+	TriggerStages    *[]string `json:"trigger_stages,omitempty"`
+	CustomAttrID     *string   `json:"custom_attr_id,omitempty"`
+	CommentOnResult  *bool     `json:"comment_on_result,omitempty"`
+	TagOnPass        *bool     `json:"tag_on_pass,omitempty"`
+	MoveOnPass       *bool     `json:"move_on_pass,omitempty"`
+	DisqualifyOnFail *bool     `json:"disqualify_on_fail,omitempty"`
+}
+
+// WorkableIntegrationUpdatedAuditEvent defines model for WorkableIntegrationUpdatedAuditEvent.
+type WorkableIntegrationUpdatedAuditEvent struct {
+	// Request Update the connection's name, trigger scope, and write-back rules. Only the provided
+	// fields are changed.
+	Request             WorkableIntegrationUpdateRequest `json:"request"`
+	Response            *WorkableIntegrationResponse     `json:"response,omitempty"`
+	WorkableIntegration string                           `json:"workable_integration"`
+}
+
+// WorkableIntegrationsListResponse defines model for WorkableIntegrationsListResponse.
+type WorkableIntegrationsListResponse struct {
+	// Integrations A list of Workable integrations for this environment.
+	Integrations []WorkableIntegrationResponse `json:"integrations"`
+}
+
+// WorkableJob defines model for WorkableJob.
+type WorkableJob struct {
+	Shortcode string    `json:"shortcode"`
+	Title     string    `json:"title"`
+	Stages    *[]string `json:"stages,omitempty"`
+}
+
+// WorkableJobsResponse defines model for WorkableJobsResponse.
+type WorkableJobsResponse struct {
+	Jobs []WorkableJob `json:"jobs"`
+}
+
+// WorkableVerificationCounts Aggregate verification counts for the connected detail view. Contains no PII.
+type WorkableVerificationCounts struct {
+	Failed   int `json:"failed"`
+	Pending  int `json:"pending"`
+	Verified int `json:"verified"`
+}
+
 // WorkdayIDVRequestRequest defines model for WorkdayIDVRequestRequest.
 type WorkdayIDVRequestRequest struct {
 	// IntegrationID Nametag's Workday Integration ID.
@@ -4113,17 +4877,29 @@ type CreateEnvJSONRequestBody = CreateEnvRequest
 // UpdateEnvJSONRequestBody defines body for UpdateEnv for application/json ContentType.
 type UpdateEnvJSONRequestBody = EnvUpdateRequest
 
+// UpdateAshbyIntegrationJSONRequestBody defines body for UpdateAshbyIntegration for application/json ContentType.
+type UpdateAshbyIntegrationJSONRequestBody = AshbyIntegrationUpdateRequest
+
 // EncryptSecretJSONRequestBody defines body for EncryptSecret for application/json ContentType.
 type EncryptSecretJSONRequestBody = EncryptSecretRequest
 
 // UpdateGreenhouseIntegrationJSONRequestBody defines body for UpdateGreenhouseIntegration for application/json ContentType.
 type UpdateGreenhouseIntegrationJSONRequestBody = GreenhouseIntegrationUpdateRequest
 
+// UpdateIntercomIntegrationJSONRequestBody defines body for UpdateIntercomIntegration for application/json ContentType.
+type UpdateIntercomIntegrationJSONRequestBody = IntercomIntegrationUpdateRequest
+
+// UpdateLeverIntegrationJSONRequestBody defines body for UpdateLeverIntegration for application/json ContentType.
+type UpdateLeverIntegrationJSONRequestBody = LeverIntegrationUpdateRequest
+
 // UploadLogoMultipartRequestBody defines body for UploadLogo for multipart/form-data ContentType.
 type UploadLogoMultipartRequestBody UploadLogoMultipartBody
 
 // PresignRecoveryMicrositeURLJSONRequestBody defines body for PresignRecoveryMicrositeURL for application/json ContentType.
 type PresignRecoveryMicrositeURLJSONRequestBody = RecoveryMicrositePresignRequest
+
+// UpdateRecruiteeIntegrationJSONRequestBody defines body for UpdateRecruiteeIntegration for application/json ContentType.
+type UpdateRecruiteeIntegrationJSONRequestBody = RecruiteeIntegrationUpdateRequest
 
 // RefreshWebhookSecretJSONRequestBody defines body for RefreshWebhookSecret for application/json ContentType.
 type RefreshWebhookSecretJSONRequestBody = RefreshWebhookSecretRequest
@@ -4133,6 +4909,9 @@ type CreateTemplateJSONRequestBody = CreateTemplateRequest
 
 // UpdateTemplateJSONRequestBody defines body for UpdateTemplate for application/json ContentType.
 type UpdateTemplateJSONRequestBody = UpdateTemplateRequest
+
+// UpdateWorkableIntegrationJSONRequestBody defines body for UpdateWorkableIntegration for application/json ContentType.
+type UpdateWorkableIntegrationJSONRequestBody = WorkableIntegrationUpdateRequest
 
 // CreateWorkdayIntegrationJSONRequestBody defines body for CreateWorkdayIntegration for application/json ContentType.
 type CreateWorkdayIntegrationJSONRequestBody = WorkdayIntegrationRequest
@@ -4366,6 +5145,23 @@ type ClientInterface interface {
 
 	UpdateEnv(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListAshbyIntegrations request
+	ListAshbyIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAshbyIntegration request
+	DeleteAshbyIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAshbyIntegration request
+	GetAshbyIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAshbyIntegrationWithBody request with any body
+	UpdateAshbyIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAshbyIntegration(ctx context.Context, env string, integration string, body UpdateAshbyIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAshbyStages request
+	ListAshbyStages(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// EncryptSecretWithBody request with any body
 	EncryptSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4388,6 +5184,34 @@ type ClientInterface interface {
 	// ListIntegrations request
 	ListIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetIntercomIntegration request
+	GetIntercomIntegration(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteIntercomIntegration request
+	DeleteIntercomIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIntercomIntegrationByID request
+	GetIntercomIntegrationByID(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateIntercomIntegrationWithBody request with any body
+	UpdateIntercomIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateIntercomIntegration(ctx context.Context, env string, integration string, body UpdateIntercomIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListLeverIntegrations request
+	ListLeverIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteLeverIntegration request
+	DeleteLeverIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetLeverIntegration request
+	GetLeverIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateLeverIntegrationWithBody request with any body
+	UpdateLeverIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateLeverIntegration(ctx context.Context, env string, integration string, body UpdateLeverIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteLogo request
 	DeleteLogo(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4401,6 +5225,20 @@ type ClientInterface interface {
 	PresignRecoveryMicrositeURLWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PresignRecoveryMicrositeURL(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListRecruiteeIntegrations request
+	ListRecruiteeIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteRecruiteeIntegration request
+	DeleteRecruiteeIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetRecruiteeIntegration request
+	GetRecruiteeIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateRecruiteeIntegrationWithBody request with any body
+	UpdateRecruiteeIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateRecruiteeIntegration(ctx context.Context, env string, integration string, body UpdateRecruiteeIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RefreshWebhookSecretWithBody request with any body
 	RefreshWebhookSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -4434,6 +5272,23 @@ type ClientInterface interface {
 
 	// ListWebhooks request
 	ListWebhooks(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWorkableIntegrations request
+	ListWorkableIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWorkableIntegration request
+	DeleteWorkableIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWorkableIntegration request
+	GetWorkableIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWorkableIntegrationWithBody request with any body
+	UpdateWorkableIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWorkableIntegration(ctx context.Context, env string, integration string, body UpdateWorkableIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWorkableJobs request
+	ListWorkableJobs(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListWorkdayIntegrations request
 	ListWorkdayIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -5074,6 +5929,78 @@ func (c *Client) UpdateEnv(ctx context.Context, env string, body UpdateEnvJSONRe
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListAshbyIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAshbyIntegrationsRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteAshbyIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAshbyIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAshbyIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAshbyIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAshbyIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAshbyIntegrationRequestWithBody(c.Server, env, integration, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAshbyIntegration(ctx context.Context, env string, integration string, body UpdateAshbyIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAshbyIntegrationRequest(c.Server, env, integration, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAshbyStages(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAshbyStagesRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) EncryptSecretWithBody(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEncryptSecretRequestWithBody(c.Server, env, contentType, body)
 	if err != nil {
@@ -5170,6 +6097,126 @@ func (c *Client) ListIntegrations(ctx context.Context, env string, reqEditors ..
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetIntercomIntegration(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIntercomIntegrationRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteIntercomIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteIntercomIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetIntercomIntegrationByID(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIntercomIntegrationByIDRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateIntercomIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateIntercomIntegrationRequestWithBody(c.Server, env, integration, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateIntercomIntegration(ctx context.Context, env string, integration string, body UpdateIntercomIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateIntercomIntegrationRequest(c.Server, env, integration, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListLeverIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListLeverIntegrationsRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteLeverIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteLeverIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetLeverIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLeverIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateLeverIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateLeverIntegrationRequestWithBody(c.Server, env, integration, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateLeverIntegration(ctx context.Context, env string, integration string, body UpdateLeverIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateLeverIntegrationRequest(c.Server, env, integration, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DeleteLogo(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteLogoRequest(c.Server, env, params)
 	if err != nil {
@@ -5220,6 +6267,66 @@ func (c *Client) PresignRecoveryMicrositeURLWithBody(ctx context.Context, env st
 
 func (c *Client) PresignRecoveryMicrositeURL(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPresignRecoveryMicrositeURLRequest(c.Server, env, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListRecruiteeIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListRecruiteeIntegrationsRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteRecruiteeIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteRecruiteeIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetRecruiteeIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetRecruiteeIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateRecruiteeIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateRecruiteeIntegrationRequestWithBody(c.Server, env, integration, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateRecruiteeIntegration(ctx context.Context, env string, integration string, body UpdateRecruiteeIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateRecruiteeIntegrationRequest(c.Server, env, integration, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5364,6 +6471,78 @@ func (c *Client) UpdateTemplate(ctx context.Context, env string, template string
 
 func (c *Client) ListWebhooks(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListWebhooksRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWorkableIntegrations(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkableIntegrationsRequest(c.Server, env)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWorkableIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWorkableIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWorkableIntegration(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWorkableIntegrationRequest(c.Server, env, integration)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWorkableIntegrationWithBody(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWorkableIntegrationRequestWithBody(c.Server, env, integration, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWorkableIntegration(ctx context.Context, env string, integration string, body UpdateWorkableIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWorkableIntegrationRequest(c.Server, env, integration, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWorkableJobs(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkableJobsRequest(c.Server, env, integration)
 	if err != nil {
 		return nil, err
 	}
@@ -7480,6 +8659,217 @@ func NewUpdateEnvRequestWithBody(server string, env string, contentType string, 
 	return req, nil
 }
 
+// NewListAshbyIntegrationsRequest generates requests for ListAshbyIntegrations
+func NewListAshbyIntegrationsRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/ashby", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteAshbyIntegrationRequest generates requests for DeleteAshbyIntegration
+func NewDeleteAshbyIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/ashby/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAshbyIntegrationRequest generates requests for GetAshbyIntegration
+func NewGetAshbyIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/ashby/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAshbyIntegrationRequest calls the generic UpdateAshbyIntegration builder with application/json body
+func NewUpdateAshbyIntegrationRequest(server string, env string, integration string, body UpdateAshbyIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAshbyIntegrationRequestWithBody(server, env, integration, "application/json", bodyReader)
+}
+
+// NewUpdateAshbyIntegrationRequestWithBody generates requests for UpdateAshbyIntegration with any type of body
+func NewUpdateAshbyIntegrationRequestWithBody(server string, env string, integration string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/ashby/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAshbyStagesRequest generates requests for ListAshbyStages
+func NewListAshbyStagesRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/ashby/%s/stages", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewEncryptSecretRequest calls the generic EncryptSecret builder with application/json body
 func NewEncryptSecretRequest(server string, env string, body EncryptSecretJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -7731,6 +9121,346 @@ func NewListIntegrationsRequest(server string, env string) (*http.Request, error
 	return req, nil
 }
 
+// NewGetIntercomIntegrationRequest generates requests for GetIntercomIntegration
+func NewGetIntercomIntegrationRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/intercom", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteIntercomIntegrationRequest generates requests for DeleteIntercomIntegration
+func NewDeleteIntercomIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/intercom/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetIntercomIntegrationByIDRequest generates requests for GetIntercomIntegrationByID
+func NewGetIntercomIntegrationByIDRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/intercom/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateIntercomIntegrationRequest calls the generic UpdateIntercomIntegration builder with application/json body
+func NewUpdateIntercomIntegrationRequest(server string, env string, integration string, body UpdateIntercomIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateIntercomIntegrationRequestWithBody(server, env, integration, "application/json", bodyReader)
+}
+
+// NewUpdateIntercomIntegrationRequestWithBody generates requests for UpdateIntercomIntegration with any type of body
+func NewUpdateIntercomIntegrationRequestWithBody(server string, env string, integration string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/intercom/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListLeverIntegrationsRequest generates requests for ListLeverIntegrations
+func NewListLeverIntegrationsRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/lever", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteLeverIntegrationRequest generates requests for DeleteLeverIntegration
+func NewDeleteLeverIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/lever/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetLeverIntegrationRequest generates requests for GetLeverIntegration
+func NewGetLeverIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/lever/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateLeverIntegrationRequest calls the generic UpdateLeverIntegration builder with application/json body
+func NewUpdateLeverIntegrationRequest(server string, env string, integration string, body UpdateLeverIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateLeverIntegrationRequestWithBody(server, env, integration, "application/json", bodyReader)
+}
+
+// NewUpdateLeverIntegrationRequestWithBody generates requests for UpdateLeverIntegration with any type of body
+func NewUpdateLeverIntegrationRequestWithBody(server string, env string, integration string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/lever/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeleteLogoRequest generates requests for DeleteLogo
 func NewDeleteLogoRequest(server string, env string, params *DeleteLogoParams) (*http.Request, error) {
 	var err error
@@ -7967,6 +9697,176 @@ func NewPresignRecoveryMicrositeURLRequestWithBody(server string, env string, co
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListRecruiteeIntegrationsRequest generates requests for ListRecruiteeIntegrations
+func NewListRecruiteeIntegrationsRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/recruitee", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteRecruiteeIntegrationRequest generates requests for DeleteRecruiteeIntegration
+func NewDeleteRecruiteeIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/recruitee/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetRecruiteeIntegrationRequest generates requests for GetRecruiteeIntegration
+func NewGetRecruiteeIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/recruitee/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateRecruiteeIntegrationRequest calls the generic UpdateRecruiteeIntegration builder with application/json body
+func NewUpdateRecruiteeIntegrationRequest(server string, env string, integration string, body UpdateRecruiteeIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateRecruiteeIntegrationRequestWithBody(server, env, integration, "application/json", bodyReader)
+}
+
+// NewUpdateRecruiteeIntegrationRequestWithBody generates requests for UpdateRecruiteeIntegration with any type of body
+func NewUpdateRecruiteeIntegrationRequestWithBody(server string, env string, integration string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/recruitee/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -8450,6 +10350,217 @@ func NewListWebhooksRequest(server string, env string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/api/envs/%s/webhooks", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListWorkableIntegrationsRequest generates requests for ListWorkableIntegrations
+func NewListWorkableIntegrationsRequest(server string, env string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workable", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteWorkableIntegrationRequest generates requests for DeleteWorkableIntegration
+func NewDeleteWorkableIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workable/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWorkableIntegrationRequest generates requests for GetWorkableIntegration
+func NewGetWorkableIntegrationRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workable/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWorkableIntegrationRequest calls the generic UpdateWorkableIntegration builder with application/json body
+func NewUpdateWorkableIntegrationRequest(server string, env string, integration string, body UpdateWorkableIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWorkableIntegrationRequestWithBody(server, env, integration, "application/json", bodyReader)
+}
+
+// NewUpdateWorkableIntegrationRequestWithBody generates requests for UpdateWorkableIntegration with any type of body
+func NewUpdateWorkableIntegrationRequestWithBody(server string, env string, integration string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workable/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListWorkableJobsRequest generates requests for ListWorkableJobs
+func NewListWorkableJobsRequest(server string, env string, integration string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "env", env, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "integration", integration, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envs/%s/workable/%s/jobs", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -10503,6 +12614,23 @@ type ClientWithResponsesInterface interface {
 
 	UpdateEnvWithResponse(ctx context.Context, env string, body UpdateEnvJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateEnvResp, error)
 
+	// ListAshbyIntegrationsWithResponse request
+	ListAshbyIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListAshbyIntegrationsResp, error)
+
+	// DeleteAshbyIntegrationWithResponse request
+	DeleteAshbyIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteAshbyIntegrationResp, error)
+
+	// GetAshbyIntegrationWithResponse request
+	GetAshbyIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetAshbyIntegrationResp, error)
+
+	// UpdateAshbyIntegrationWithBodyWithResponse request with any body
+	UpdateAshbyIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAshbyIntegrationResp, error)
+
+	UpdateAshbyIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateAshbyIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAshbyIntegrationResp, error)
+
+	// ListAshbyStagesWithResponse request
+	ListAshbyStagesWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*ListAshbyStagesResp, error)
+
 	// EncryptSecretWithBodyWithResponse request with any body
 	EncryptSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EncryptSecretResp, error)
 
@@ -10525,6 +12653,34 @@ type ClientWithResponsesInterface interface {
 	// ListIntegrationsWithResponse request
 	ListIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListIntegrationsResp, error)
 
+	// GetIntercomIntegrationWithResponse request
+	GetIntercomIntegrationWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*GetIntercomIntegrationResp, error)
+
+	// DeleteIntercomIntegrationWithResponse request
+	DeleteIntercomIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteIntercomIntegrationResp, error)
+
+	// GetIntercomIntegrationByIDWithResponse request
+	GetIntercomIntegrationByIDWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetIntercomIntegrationByIDResp, error)
+
+	// UpdateIntercomIntegrationWithBodyWithResponse request with any body
+	UpdateIntercomIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateIntercomIntegrationResp, error)
+
+	UpdateIntercomIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateIntercomIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateIntercomIntegrationResp, error)
+
+	// ListLeverIntegrationsWithResponse request
+	ListLeverIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListLeverIntegrationsResp, error)
+
+	// DeleteLeverIntegrationWithResponse request
+	DeleteLeverIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteLeverIntegrationResp, error)
+
+	// GetLeverIntegrationWithResponse request
+	GetLeverIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetLeverIntegrationResp, error)
+
+	// UpdateLeverIntegrationWithBodyWithResponse request with any body
+	UpdateLeverIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateLeverIntegrationResp, error)
+
+	UpdateLeverIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateLeverIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateLeverIntegrationResp, error)
+
 	// DeleteLogoWithResponse request
 	DeleteLogoWithResponse(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*DeleteLogoResp, error)
 
@@ -10538,6 +12694,20 @@ type ClientWithResponsesInterface interface {
 	PresignRecoveryMicrositeURLWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error)
 
 	PresignRecoveryMicrositeURLWithResponse(ctx context.Context, env string, body PresignRecoveryMicrositeURLJSONRequestBody, reqEditors ...RequestEditorFn) (*PresignRecoveryMicrositeURLResp, error)
+
+	// ListRecruiteeIntegrationsWithResponse request
+	ListRecruiteeIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListRecruiteeIntegrationsResp, error)
+
+	// DeleteRecruiteeIntegrationWithResponse request
+	DeleteRecruiteeIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteRecruiteeIntegrationResp, error)
+
+	// GetRecruiteeIntegrationWithResponse request
+	GetRecruiteeIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetRecruiteeIntegrationResp, error)
+
+	// UpdateRecruiteeIntegrationWithBodyWithResponse request with any body
+	UpdateRecruiteeIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRecruiteeIntegrationResp, error)
+
+	UpdateRecruiteeIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateRecruiteeIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRecruiteeIntegrationResp, error)
 
 	// RefreshWebhookSecretWithBodyWithResponse request with any body
 	RefreshWebhookSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RefreshWebhookSecretResp, error)
@@ -10571,6 +12741,23 @@ type ClientWithResponsesInterface interface {
 
 	// ListWebhooksWithResponse request
 	ListWebhooksWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWebhooksResp, error)
+
+	// ListWorkableIntegrationsWithResponse request
+	ListWorkableIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWorkableIntegrationsResp, error)
+
+	// DeleteWorkableIntegrationWithResponse request
+	DeleteWorkableIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteWorkableIntegrationResp, error)
+
+	// GetWorkableIntegrationWithResponse request
+	GetWorkableIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetWorkableIntegrationResp, error)
+
+	// UpdateWorkableIntegrationWithBodyWithResponse request with any body
+	UpdateWorkableIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkableIntegrationResp, error)
+
+	UpdateWorkableIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateWorkableIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkableIntegrationResp, error)
+
+	// ListWorkableJobsWithResponse request
+	ListWorkableJobsWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*ListWorkableJobsResp, error)
 
 	// ListWorkdayIntegrationsWithResponse request
 	ListWorkdayIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWorkdayIntegrationsResp, error)
@@ -11461,6 +13648,120 @@ func (r UpdateEnvResp) StatusCode() int {
 	return 0
 }
 
+type ListAshbyIntegrationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AshbyIntegrationsListResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAshbyIntegrationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAshbyIntegrationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteAshbyIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAshbyIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAshbyIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAshbyIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AshbyIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAshbyIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAshbyIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAshbyIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AshbyIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAshbyIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAshbyIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAshbyStagesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AshbyStagesResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAshbyStagesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAshbyStagesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type EncryptSecretResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -11598,6 +13899,188 @@ func (r ListIntegrationsResp) StatusCode() int {
 	return 0
 }
 
+type GetIntercomIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *IntercomIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIntercomIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIntercomIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteIntercomIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteIntercomIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteIntercomIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetIntercomIntegrationByIDResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *IntercomIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIntercomIntegrationByIDResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIntercomIntegrationByIDResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateIntercomIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *IntercomIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateIntercomIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateIntercomIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListLeverIntegrationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *LeverIntegrationsListResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListLeverIntegrationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListLeverIntegrationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteLeverIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteLeverIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteLeverIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetLeverIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *LeverIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetLeverIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetLeverIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateLeverIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *LeverIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateLeverIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateLeverIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteLogoResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -11682,6 +14165,97 @@ func (r PresignRecoveryMicrositeURLResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r PresignRecoveryMicrositeURLResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListRecruiteeIntegrationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RecruiteeIntegrationsListResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListRecruiteeIntegrationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListRecruiteeIntegrationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteRecruiteeIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteRecruiteeIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteRecruiteeIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetRecruiteeIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RecruiteeIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetRecruiteeIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetRecruiteeIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateRecruiteeIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RecruiteeIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateRecruiteeIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateRecruiteeIntegrationResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -11886,6 +14460,120 @@ func (r ListWebhooksResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListWebhooksResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListWorkableIntegrationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkableIntegrationsListResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkableIntegrationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkableIntegrationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWorkableIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWorkableIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWorkableIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWorkableIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkableIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWorkableIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWorkableIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWorkableIntegrationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkableIntegrationResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWorkableIntegrationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWorkableIntegrationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListWorkableJobsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkableJobsResponse
+	JSON400      *N400
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkableJobsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkableJobsResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12989,6 +15677,59 @@ func (c *ClientWithResponses) UpdateEnvWithResponse(ctx context.Context, env str
 	return ParseUpdateEnvResp(rsp)
 }
 
+// ListAshbyIntegrationsWithResponse request returning *ListAshbyIntegrationsResp
+func (c *ClientWithResponses) ListAshbyIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListAshbyIntegrationsResp, error) {
+	rsp, err := c.ListAshbyIntegrations(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAshbyIntegrationsResp(rsp)
+}
+
+// DeleteAshbyIntegrationWithResponse request returning *DeleteAshbyIntegrationResp
+func (c *ClientWithResponses) DeleteAshbyIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteAshbyIntegrationResp, error) {
+	rsp, err := c.DeleteAshbyIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAshbyIntegrationResp(rsp)
+}
+
+// GetAshbyIntegrationWithResponse request returning *GetAshbyIntegrationResp
+func (c *ClientWithResponses) GetAshbyIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetAshbyIntegrationResp, error) {
+	rsp, err := c.GetAshbyIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAshbyIntegrationResp(rsp)
+}
+
+// UpdateAshbyIntegrationWithBodyWithResponse request with arbitrary body returning *UpdateAshbyIntegrationResp
+func (c *ClientWithResponses) UpdateAshbyIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAshbyIntegrationResp, error) {
+	rsp, err := c.UpdateAshbyIntegrationWithBody(ctx, env, integration, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAshbyIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAshbyIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateAshbyIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAshbyIntegrationResp, error) {
+	rsp, err := c.UpdateAshbyIntegration(ctx, env, integration, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAshbyIntegrationResp(rsp)
+}
+
+// ListAshbyStagesWithResponse request returning *ListAshbyStagesResp
+func (c *ClientWithResponses) ListAshbyStagesWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*ListAshbyStagesResp, error) {
+	rsp, err := c.ListAshbyStages(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAshbyStagesResp(rsp)
+}
+
 // EncryptSecretWithBodyWithResponse request with arbitrary body returning *EncryptSecretResp
 func (c *ClientWithResponses) EncryptSecretWithBodyWithResponse(ctx context.Context, env string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EncryptSecretResp, error) {
 	rsp, err := c.EncryptSecretWithBody(ctx, env, contentType, body, reqEditors...)
@@ -13059,6 +15800,94 @@ func (c *ClientWithResponses) ListIntegrationsWithResponse(ctx context.Context, 
 	return ParseListIntegrationsResp(rsp)
 }
 
+// GetIntercomIntegrationWithResponse request returning *GetIntercomIntegrationResp
+func (c *ClientWithResponses) GetIntercomIntegrationWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*GetIntercomIntegrationResp, error) {
+	rsp, err := c.GetIntercomIntegration(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIntercomIntegrationResp(rsp)
+}
+
+// DeleteIntercomIntegrationWithResponse request returning *DeleteIntercomIntegrationResp
+func (c *ClientWithResponses) DeleteIntercomIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteIntercomIntegrationResp, error) {
+	rsp, err := c.DeleteIntercomIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteIntercomIntegrationResp(rsp)
+}
+
+// GetIntercomIntegrationByIDWithResponse request returning *GetIntercomIntegrationByIDResp
+func (c *ClientWithResponses) GetIntercomIntegrationByIDWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetIntercomIntegrationByIDResp, error) {
+	rsp, err := c.GetIntercomIntegrationByID(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIntercomIntegrationByIDResp(rsp)
+}
+
+// UpdateIntercomIntegrationWithBodyWithResponse request with arbitrary body returning *UpdateIntercomIntegrationResp
+func (c *ClientWithResponses) UpdateIntercomIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateIntercomIntegrationResp, error) {
+	rsp, err := c.UpdateIntercomIntegrationWithBody(ctx, env, integration, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateIntercomIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateIntercomIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateIntercomIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateIntercomIntegrationResp, error) {
+	rsp, err := c.UpdateIntercomIntegration(ctx, env, integration, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateIntercomIntegrationResp(rsp)
+}
+
+// ListLeverIntegrationsWithResponse request returning *ListLeverIntegrationsResp
+func (c *ClientWithResponses) ListLeverIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListLeverIntegrationsResp, error) {
+	rsp, err := c.ListLeverIntegrations(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListLeverIntegrationsResp(rsp)
+}
+
+// DeleteLeverIntegrationWithResponse request returning *DeleteLeverIntegrationResp
+func (c *ClientWithResponses) DeleteLeverIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteLeverIntegrationResp, error) {
+	rsp, err := c.DeleteLeverIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteLeverIntegrationResp(rsp)
+}
+
+// GetLeverIntegrationWithResponse request returning *GetLeverIntegrationResp
+func (c *ClientWithResponses) GetLeverIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetLeverIntegrationResp, error) {
+	rsp, err := c.GetLeverIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLeverIntegrationResp(rsp)
+}
+
+// UpdateLeverIntegrationWithBodyWithResponse request with arbitrary body returning *UpdateLeverIntegrationResp
+func (c *ClientWithResponses) UpdateLeverIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateLeverIntegrationResp, error) {
+	rsp, err := c.UpdateLeverIntegrationWithBody(ctx, env, integration, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateLeverIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateLeverIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateLeverIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateLeverIntegrationResp, error) {
+	rsp, err := c.UpdateLeverIntegration(ctx, env, integration, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateLeverIntegrationResp(rsp)
+}
+
 // DeleteLogoWithResponse request returning *DeleteLogoResp
 func (c *ClientWithResponses) DeleteLogoWithResponse(ctx context.Context, env string, params *DeleteLogoParams, reqEditors ...RequestEditorFn) (*DeleteLogoResp, error) {
 	rsp, err := c.DeleteLogo(ctx, env, params, reqEditors...)
@@ -13101,6 +15930,50 @@ func (c *ClientWithResponses) PresignRecoveryMicrositeURLWithResponse(ctx contex
 		return nil, err
 	}
 	return ParsePresignRecoveryMicrositeURLResp(rsp)
+}
+
+// ListRecruiteeIntegrationsWithResponse request returning *ListRecruiteeIntegrationsResp
+func (c *ClientWithResponses) ListRecruiteeIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListRecruiteeIntegrationsResp, error) {
+	rsp, err := c.ListRecruiteeIntegrations(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListRecruiteeIntegrationsResp(rsp)
+}
+
+// DeleteRecruiteeIntegrationWithResponse request returning *DeleteRecruiteeIntegrationResp
+func (c *ClientWithResponses) DeleteRecruiteeIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteRecruiteeIntegrationResp, error) {
+	rsp, err := c.DeleteRecruiteeIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteRecruiteeIntegrationResp(rsp)
+}
+
+// GetRecruiteeIntegrationWithResponse request returning *GetRecruiteeIntegrationResp
+func (c *ClientWithResponses) GetRecruiteeIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetRecruiteeIntegrationResp, error) {
+	rsp, err := c.GetRecruiteeIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetRecruiteeIntegrationResp(rsp)
+}
+
+// UpdateRecruiteeIntegrationWithBodyWithResponse request with arbitrary body returning *UpdateRecruiteeIntegrationResp
+func (c *ClientWithResponses) UpdateRecruiteeIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRecruiteeIntegrationResp, error) {
+	rsp, err := c.UpdateRecruiteeIntegrationWithBody(ctx, env, integration, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateRecruiteeIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateRecruiteeIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateRecruiteeIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRecruiteeIntegrationResp, error) {
+	rsp, err := c.UpdateRecruiteeIntegration(ctx, env, integration, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateRecruiteeIntegrationResp(rsp)
 }
 
 // RefreshWebhookSecretWithBodyWithResponse request with arbitrary body returning *RefreshWebhookSecretResp
@@ -13206,6 +16079,59 @@ func (c *ClientWithResponses) ListWebhooksWithResponse(ctx context.Context, env 
 		return nil, err
 	}
 	return ParseListWebhooksResp(rsp)
+}
+
+// ListWorkableIntegrationsWithResponse request returning *ListWorkableIntegrationsResp
+func (c *ClientWithResponses) ListWorkableIntegrationsWithResponse(ctx context.Context, env string, reqEditors ...RequestEditorFn) (*ListWorkableIntegrationsResp, error) {
+	rsp, err := c.ListWorkableIntegrations(ctx, env, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkableIntegrationsResp(rsp)
+}
+
+// DeleteWorkableIntegrationWithResponse request returning *DeleteWorkableIntegrationResp
+func (c *ClientWithResponses) DeleteWorkableIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*DeleteWorkableIntegrationResp, error) {
+	rsp, err := c.DeleteWorkableIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWorkableIntegrationResp(rsp)
+}
+
+// GetWorkableIntegrationWithResponse request returning *GetWorkableIntegrationResp
+func (c *ClientWithResponses) GetWorkableIntegrationWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*GetWorkableIntegrationResp, error) {
+	rsp, err := c.GetWorkableIntegration(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWorkableIntegrationResp(rsp)
+}
+
+// UpdateWorkableIntegrationWithBodyWithResponse request with arbitrary body returning *UpdateWorkableIntegrationResp
+func (c *ClientWithResponses) UpdateWorkableIntegrationWithBodyWithResponse(ctx context.Context, env string, integration string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkableIntegrationResp, error) {
+	rsp, err := c.UpdateWorkableIntegrationWithBody(ctx, env, integration, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWorkableIntegrationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWorkableIntegrationWithResponse(ctx context.Context, env string, integration string, body UpdateWorkableIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkableIntegrationResp, error) {
+	rsp, err := c.UpdateWorkableIntegration(ctx, env, integration, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWorkableIntegrationResp(rsp)
+}
+
+// ListWorkableJobsWithResponse request returning *ListWorkableJobsResp
+func (c *ClientWithResponses) ListWorkableJobsWithResponse(ctx context.Context, env string, integration string, reqEditors ...RequestEditorFn) (*ListWorkableJobsResp, error) {
+	rsp, err := c.ListWorkableJobs(ctx, env, integration, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkableJobsResp(rsp)
 }
 
 // ListWorkdayIntegrationsWithResponse request returning *ListWorkdayIntegrationsResp
@@ -14604,6 +17530,164 @@ func ParseUpdateEnvResp(rsp *http.Response) (*UpdateEnvResp, error) {
 	return response, nil
 }
 
+// ParseListAshbyIntegrationsResp parses an HTTP response from a ListAshbyIntegrationsWithResponse call
+func ParseListAshbyIntegrationsResp(rsp *http.Response) (*ListAshbyIntegrationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAshbyIntegrationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AshbyIntegrationsListResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAshbyIntegrationResp parses an HTTP response from a DeleteAshbyIntegrationWithResponse call
+func ParseDeleteAshbyIntegrationResp(rsp *http.Response) (*DeleteAshbyIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAshbyIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAshbyIntegrationResp parses an HTTP response from a GetAshbyIntegrationWithResponse call
+func ParseGetAshbyIntegrationResp(rsp *http.Response) (*GetAshbyIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAshbyIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AshbyIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAshbyIntegrationResp parses an HTTP response from a UpdateAshbyIntegrationWithResponse call
+func ParseUpdateAshbyIntegrationResp(rsp *http.Response) (*UpdateAshbyIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAshbyIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AshbyIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAshbyStagesResp parses an HTTP response from a ListAshbyStagesWithResponse call
+func ParseListAshbyStagesResp(rsp *http.Response) (*ListAshbyStagesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAshbyStagesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AshbyStagesResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseEncryptSecretResp parses an HTTP response from a EncryptSecretWithResponse call
 func ParseEncryptSecretResp(rsp *http.Response) (*EncryptSecretResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -14795,6 +17879,256 @@ func ParseListIntegrationsResp(rsp *http.Response) (*ListIntegrationsResp, error
 	return response, nil
 }
 
+// ParseGetIntercomIntegrationResp parses an HTTP response from a GetIntercomIntegrationWithResponse call
+func ParseGetIntercomIntegrationResp(rsp *http.Response) (*GetIntercomIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIntercomIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IntercomIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteIntercomIntegrationResp parses an HTTP response from a DeleteIntercomIntegrationWithResponse call
+func ParseDeleteIntercomIntegrationResp(rsp *http.Response) (*DeleteIntercomIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteIntercomIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIntercomIntegrationByIDResp parses an HTTP response from a GetIntercomIntegrationByIDWithResponse call
+func ParseGetIntercomIntegrationByIDResp(rsp *http.Response) (*GetIntercomIntegrationByIDResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIntercomIntegrationByIDResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IntercomIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateIntercomIntegrationResp parses an HTTP response from a UpdateIntercomIntegrationWithResponse call
+func ParseUpdateIntercomIntegrationResp(rsp *http.Response) (*UpdateIntercomIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateIntercomIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IntercomIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListLeverIntegrationsResp parses an HTTP response from a ListLeverIntegrationsWithResponse call
+func ParseListLeverIntegrationsResp(rsp *http.Response) (*ListLeverIntegrationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListLeverIntegrationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest LeverIntegrationsListResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteLeverIntegrationResp parses an HTTP response from a DeleteLeverIntegrationWithResponse call
+func ParseDeleteLeverIntegrationResp(rsp *http.Response) (*DeleteLeverIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteLeverIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetLeverIntegrationResp parses an HTTP response from a GetLeverIntegrationWithResponse call
+func ParseGetLeverIntegrationResp(rsp *http.Response) (*GetLeverIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetLeverIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest LeverIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateLeverIntegrationResp parses an HTTP response from a UpdateLeverIntegrationWithResponse call
+func ParseUpdateLeverIntegrationResp(rsp *http.Response) (*UpdateLeverIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateLeverIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest LeverIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteLogoResp parses an HTTP response from a DeleteLogoWithResponse call
 func ParseDeleteLogoResp(rsp *http.Response) (*DeleteLogoResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -14896,6 +18230,131 @@ func ParsePresignRecoveryMicrositeURLResp(rsp *http.Response) (*PresignRecoveryM
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest RecoveryMicrositePresignResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListRecruiteeIntegrationsResp parses an HTTP response from a ListRecruiteeIntegrationsWithResponse call
+func ParseListRecruiteeIntegrationsResp(rsp *http.Response) (*ListRecruiteeIntegrationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListRecruiteeIntegrationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RecruiteeIntegrationsListResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteRecruiteeIntegrationResp parses an HTTP response from a DeleteRecruiteeIntegrationWithResponse call
+func ParseDeleteRecruiteeIntegrationResp(rsp *http.Response) (*DeleteRecruiteeIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteRecruiteeIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetRecruiteeIntegrationResp parses an HTTP response from a GetRecruiteeIntegrationWithResponse call
+func ParseGetRecruiteeIntegrationResp(rsp *http.Response) (*GetRecruiteeIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetRecruiteeIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RecruiteeIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateRecruiteeIntegrationResp parses an HTTP response from a UpdateRecruiteeIntegrationWithResponse call
+func ParseUpdateRecruiteeIntegrationResp(rsp *http.Response) (*UpdateRecruiteeIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateRecruiteeIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RecruiteeIntegrationResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15172,6 +18631,164 @@ func ParseListWebhooksResp(rsp *http.Response) (*ListWebhooksResp, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ListWebhooksResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWorkableIntegrationsResp parses an HTTP response from a ListWorkableIntegrationsWithResponse call
+func ParseListWorkableIntegrationsResp(rsp *http.Response) (*ListWorkableIntegrationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkableIntegrationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkableIntegrationsListResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWorkableIntegrationResp parses an HTTP response from a DeleteWorkableIntegrationWithResponse call
+func ParseDeleteWorkableIntegrationResp(rsp *http.Response) (*DeleteWorkableIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWorkableIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWorkableIntegrationResp parses an HTTP response from a GetWorkableIntegrationWithResponse call
+func ParseGetWorkableIntegrationResp(rsp *http.Response) (*GetWorkableIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWorkableIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkableIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWorkableIntegrationResp parses an HTTP response from a UpdateWorkableIntegrationWithResponse call
+func ParseUpdateWorkableIntegrationResp(rsp *http.Response) (*UpdateWorkableIntegrationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWorkableIntegrationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkableIntegrationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWorkableJobsResp parses an HTTP response from a ListWorkableJobsWithResponse call
+func ParseListWorkableJobsResp(rsp *http.Response) (*ListWorkableJobsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkableJobsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkableJobsResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

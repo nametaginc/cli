@@ -9,10 +9,10 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jpillora/backoff v1.0.0
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	golang.org/x/crypto v0.50.0
-	golang.org/x/net v0.53.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
-	golang.org/x/text v0.36.0 // indirect
+	golang.org/x/crypto v0.52.0
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
@@ -32,7 +32,7 @@ require (
 	github.com/sethvargo/go-password v0.3.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
-	golang.org/x/term v0.42.0
+	golang.org/x/term v0.43.0
 )
 
 require (
@@ -56,7 +56,7 @@ require (
 	github.com/speakeasy-api/jsonpath v0.6.0 // indirect
 	github.com/woodsbury/decimal128 v1.3.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/mod v0.34.0 // indirect
+	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/tools/go/expect v0.1.1-deprecated // indirect
 	golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated // indirect
@@ -91,8 +91,8 @@ require (
 	github.com/vasi-stripe/gogroup v0.0.0-20230202112607-d3d06dd1ea7e // indirect
 	github.com/vektah/gqlparser/v2 v2.5.32 // indirect
 	github.com/vmware-labs/yaml-jsonpath v0.3.2 // indirect
-	golang.org/x/telemetry v0.0.0-20260316223853-b6b0c46d1ccd // indirect
-	golang.org/x/tools v0.43.0 // indirect
+	golang.org/x/telemetry v0.0.0-20260409153401-be6f6cb8b1fa // indirect
+	golang.org/x/tools v0.44.0 // indirect
 	golang.org/x/vuln v1.1.4 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

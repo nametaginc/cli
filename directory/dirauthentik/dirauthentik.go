@@ -161,7 +161,16 @@ func (p *Provider) client() (*http.Client, error) {
 		return nil, err
 	}
 	if p.HTTPClient == nil {
-		p.HTTPClient = &http.Client{Timeout: requestTimeout}
+		p.HTTPClient = &http.Client{
+			Timeout: requestTimeout,
+			// Do not follow redirects: Go would re-send the Authorization
+			// Bearer token to the redirect target, which could leak the
+			// token (e.g. an https->http or cross-host redirect from a
+			// misconfigured or hostile instance). Fail closed instead. 🤖
+			CheckRedirect: func(*http.Request, []*http.Request) error {
+				return http.ErrUseLastResponse
+			},
+		}
 	}
 	return p.HTTPClient, nil
 }
@@ -308,4 +317,18 @@ func (p *Provider) fetchUserByPK(ctx context.Context, pk string) (*apiUser, erro
 		return nil, err
 	}
 	return &resp, nil
+}
+
+// Ping verifies connectivity and credentials by making a minimal, read-only
+// request to the authentik API (GET /core/users/?page_size=1). It returns an
+// error when the instance is unreachable or the token is rejected, so callers
+// can fail closed. 🤖
+func (p *Provider) Ping(ctx context.Context) error {
+	if err := p.validate(); err != nil {
+		return err
+	}
+	query := url.Values{}
+	query.Set("page_size", "1")
+	var resp userListResponse
+	return p.doJSON(ctx, http.MethodGet, "core/users/", query, nil, &resp)
 }
